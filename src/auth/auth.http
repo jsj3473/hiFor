@@ -1,0 +1,55 @@
+### 회원가입
+
+POST http://localhost:3000/auth/register
+content-type: application/json
+
+{
+    "email" : "andy8@podo.com",
+    "password" : "1234",
+    "username" : "andy"
+}
+
+### 로그인 
+POST http://localhost:3000/auth/login
+content-type: application/json
+
+{
+    "email" : "andy8@podo.com",
+    "password" : "1234"
+}
+
+### 로그인2 : LoginGuard
+POST http://localhost:3000/auth/login2
+content-type: application/json
+
+{
+    "email" : "andy8@podo.com",
+    "password" : "1234"
+}
+
+### Guard Test 
+GET  http://localhost:3000/auth/test-guard
+
+### 로그인3 : With Session
+POST http://localhost:3000/auth/login3
+content-type: application/json
+
+{
+    "email" : "andy8@podo.com",
+    "password" : "1234"
+}
+
+
+### 로그인3 : 틀린 패스워드 
+POST http://localhost:3000/auth/login3
+content-type: application/json
+
+{
+    "email" : "andy8@podo.com",
+    "password" : "12345"
+}
+
+
+### 인증됐는지 테스트 
+GET http://localhost:3000/auth/test-guard2
+

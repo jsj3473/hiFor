@@ -1,0 +1,30 @@
+# Node.js dependencies
+node_modules/
+
+# Build output
+dist/
+trash/
+
+# Environment variables
+.env
+
+# IDE settings
+.vscode/
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# TypeScript build output
+*.tsbuildinfo
+
+# SQLite database files
+*.sqlite
+
+# Vue.js and project-specific settings
+vue-frontend/
+
+# 기타 불필요한 파일들
+.DS_Store
+Thumbs.db
