@@ -56,4 +56,7 @@ export class User {
   
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   passwordLastChanged: Date;
+
+  @Column({ default: false })
+  passwordReset: boolean;
 }

@@ -14,8 +14,8 @@
     </form>
     <div class="buttons">
       <button @click="handleGoogleLogin">구글 계정으로 로그인</button>
-      <button @click="handleFindUsername">아이디 찾기</button>
-      <button @click="handleFindPassword">비밀번호 찾기</button>
+      <button type="button"><router-link to="/findUsername">아이디 찾기</router-link></button>
+      <button type="button"><router-link to="/findPassword">비밀번호 찾기</router-link></button>
     </div>
   </div>
 </template>

@@ -2,7 +2,6 @@
   <div id="app">
     <!-- 헤더 영역 -->
     <header>
-      <h1>Our Application</h1>
       <nav>
         <ul>
           <li><router-link to="/">홈</router-link></li>

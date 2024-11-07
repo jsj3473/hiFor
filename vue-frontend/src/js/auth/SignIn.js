@@ -22,11 +22,13 @@ export default {
       store.commit('setUserId', form.value.userId);
       sessionStorage.setItem('token', response.data.access_token);
 
-      // if (response.data.passwordChangeRequired) {
-      //   alert('비밀번호 변경이 필요합니다. 비밀번호 변경 페이지로 이동합니다.');
-      //   this.$router.push('/passwordChange'); // 비밀번호 변경 페이지로 리다이렉트
-      //   return;
-      // }
+
+
+      if (response.data.passwordChangeRequired) {
+        alert('비밀번호 변경이 필요합니다. 비밀번호 변경 페이지로 이동합니다.');
+        router.push('/passwordChange'); // 비밀번호 변경 페이지로 리다이렉트
+        return;
+      }
 
       alert('로그인이 완료되었습니다!');
       router.push('/'); // 로그인 후 메인 페이지로 이동
@@ -39,10 +41,15 @@ export default {
   const handleGoogleLogin = () => {
     window.location.href = 'http://localhost:3000/auth/to-google';
   };
+
+  const handleFindUsername = () => {
+
+  }
 return {
   form,
   handleLogin,
   handleGoogleLogin,
+  handleFindUsername,
 };
 }
 

@@ -8,6 +8,9 @@ import {
   Response,
   UseGuards,
   UnauthorizedException,
+  BadRequestException,
+  HttpException,
+  HttpStatus 
 } from '@nestjs/common';
 import { CreateUserDto, SignInUserDto } from 'src/user/user.dto';
 import {
@@ -45,8 +48,11 @@ export class AuthController {
       throw new UnauthorizedException('잘못된 사용자 정보입니다.');
     }
 
-    // 2. 비밀번호 변경 기간 확인 (예: 6개월 경과 여부 확인)
-    const isPasswordChangeRequired = this.authService.isPasswordChangeRequired(userInfo.passwordLastChanged, 6);
+     // 2. 비밀번호 변경 기간 확인 (예: 6개월 경과 여부 확인) 및 초기화 여부 확인
+    const isPasswordChangeRequired =
+    userInfo.passwordReset || // 비밀번호 초기화 여부 확인
+    this.authService.isPasswordChangeRequired(userInfo.passwordLastChanged, 6); // 마지막 변경일 확인
+
   
     // 3. JWT 토큰 생성
     const jwtToken = await this.authService.generateJwtToken(userInfo);
@@ -58,37 +64,13 @@ export class AuthController {
       passwordChangeRequired: isPasswordChangeRequired,
     };
   }
-
   @Patch('updatePassword')
-  async updatePassword(@Request() req, @Response() res, @Body() userDto: CreateUserDto) {
-  try {
-    const { userId, password, newPassword } = req.body;
-    console.log(userId, password)
-    // 1. 사용자 정보 확인
-    const user = await this.authService.validateUser(userId, password);
-    if (!user) {
-      return res.status(401).send({ message: '현재 비밀번호가 올바르지 않습니다.' });
-    }
-
-    // 2. 새 비밀번호와 현재 비밀번호 비교
-    if (password === newPassword) {
-      return res.status(400).send({ message: '새 비밀번호는 현재 비밀번호와 다르게 설정해야 합니다.' });
-    }
-    // 3. 사용자 객체 가져오기 (비밀번호 변경을 위해 비밀번호 필드가 포함된 객체 필요)
-    const userToUpdate = await this.userService.getUser(userId);
-    if (!userToUpdate) {
-      return res.status(404).send({ message: '사용자를 찾을 수 없습니다.' });
-    }
-
-    // 3. 비밀번호 업데이트   
-    //await this.authService.updatePassword(userDto);
-
-    // 4. 응답
-    return res.send({ message: '비밀번호가 성공적으로 변경되었습니다.' });
-    } 
-  catch (error) {
-    console.error('비밀번호 변경 오류:', error);
-    return res.status(500).send({ message: '서버 오류가 발생했습니다. 다시 시도해주세요.' });
+  async updatePassword(@Body() userDto: SignInUserDto): Promise<void> {
+    try {
+      await this.authService.updatePassword(userDto);
+    } catch (error) {
+      console.error('Error updating password:', error);
+      throw new HttpException('Failed to update password', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -119,17 +101,23 @@ export class AuthController {
     res.redirect('http://localhost:8080');
   }
 
-  // /auth/profile 엔드포인트: 사용자의 프로필 정보를 반환합니다.
   @Get('profile')
-  @UseGuards(JwtAuthGuard) // JWT 인증을 적용하여 보호된 엔드포인트로 설정
+  @UseGuards(JwtAuthGuard) 
   getProfile(@Request() req: Request) {
-    // req.user는 JwtAuthGuard에 의해 설정된 인증된 사용자 정보를 포함합니다.
-    console.log('1111')
     const user = (req as any).user;  
-    console.log('1111',user)
-    // 사용자 정보를 반환
     return { user };
-  }
+  }  
   
+  @Post('checkCurrentPassword')
+  async checkCurrentPassword(@Body('userId') userId: string, @Body('password') password: string) {
+
+    const userInfo = await this.authService.validateUser(userId, password);
+
+    if (!userInfo) {
+      throw new BadRequestException('현재 비밀번호가 일치하지 않습니다.');
+    }
+    // 3. 비밀번호가 일치하면 성공 메시지 반환
+    return { valid: true, message: '비밀번호가 일치합니다.' };
+  }
 }
 

@@ -4,6 +4,8 @@ import SignUp from '../components/auth/SignUp.vue';
 import SignIn from '../components/auth/SignIn.vue';
 import PasswordChange from '../components/auth/PasswordChange.vue';
 import MyPage from '../components/MyPage.vue'
+import FindUsername from '../components/auth/FindUsername.vue';
+import FindPassword from '../components/auth/FindPassword.vue';
 
 const routes = [
   {
@@ -30,7 +32,17 @@ const routes = [
     path: '/passwordChange',
     name: 'PasswordChange',
     component: PasswordChange,
-  }
+  },
+  {
+    path: '/findUsername',
+    name: 'FindUsername',
+    component: FindUsername
+  },
+  {
+    path: '/findPassword',
+    name: 'FindPassword',
+    component: FindPassword
+  },
 ];
 
 const router = createRouter({
