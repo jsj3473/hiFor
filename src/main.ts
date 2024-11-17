@@ -5,6 +5,8 @@ import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import * as dotenv from 'dotenv';
+import * as express from 'express';
+import { join } from 'path';
 
 dotenv.config();
 
@@ -16,6 +18,8 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
+
   app.use(
     session({
       secret: 'very-important-secret', // 세션 암호화에 사용되는 키

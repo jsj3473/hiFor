@@ -4,12 +4,14 @@
       <h1>Welcome to Our Community!</h1>
       <p>당신의 여행과 소모임을 계획하고 커뮤니티에 참여해보세요!</p>
     </div>
-
+    
     <div class="features">
       <div class="feature-card">
         <h2>소모임</h2>
         <p>관심 있는 소모임에 참여하고 사람들과 교류하세요.</p>
         <router-link to="/group"><button>소모임 둘러보기</button></router-link>
+        <router-link to="/createEvent">이벤트 생성</router-link>
+        <router-link to="/showAllEvents">showall</router-link>
       </div>
       <div class="feature-card">
         <h2>커뮤니티</h2>

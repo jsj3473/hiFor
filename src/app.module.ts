@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { MailModule } from './mail/mail.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { GatheringModule } from './gathering/gathering.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -19,6 +20,7 @@ import { ConfigModule } from '@nestjs/config';
     UserModule,
     AuthModule,
     MailModule,
+    GatheringModule,
     ConfigModule.forRoot(),
   ],
   controllers: [AppController],

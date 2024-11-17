@@ -6,6 +6,8 @@ import PasswordChange from '../components/auth/PasswordChange.vue';
 import MyPage from '../components/MyPage.vue'
 import FindUsername from '../components/auth/FindUsername.vue';
 import FindPassword from '../components/auth/FindPassword.vue';
+import CreateEvent from '../components/gathering/CreateEvent.vue';
+import ShowAllEvents from '../components/gathering/ShowAllEvents.vue';
 
 const routes = [
   {
@@ -42,6 +44,16 @@ const routes = [
     path: '/findPassword',
     name: 'FindPassword',
     component: FindPassword
+  },
+  {
+    path: '/createEvent',
+    name: 'CreateEvent',
+    component: CreateEvent
+  },
+  {
+    path: '/showAllEvents',
+    name: 'ShowAllEvents',
+    component: ShowAllEvents
   },
 ];
 

@@ -42,7 +42,7 @@ export class AuthService {
     const { password: hashedPassword, ...userInfo } = user;
     //console.log('pw:',password);
     //console.log('hpw:',hashedPassword)
-    if (bcrypt.compare(password, hashedPassword)) {
+    if (await bcrypt.compare(password, hashedPassword)) {
       return userInfo;
     }
     return null;
