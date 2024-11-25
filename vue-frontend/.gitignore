@@ -1,11 +1,8 @@
 .DS_Store
 node_modules
 /dist
+AppData/
 
-
-# local env files
-.env.local
-.env.*.local
 
 # Log files
 npm-debug.log*

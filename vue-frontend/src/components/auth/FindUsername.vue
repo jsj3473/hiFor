@@ -1,24 +1,9 @@
 <template>
-    <div>
-      <h2>아이디 찾기</h2>
-      <form @submit.prevent="submitEmail">
-        <label for="email">이메일을 입력해 주세요:</label>
-        <input
-          type="email"
-          id="email"
-          v-model="email"
-          required
-          placeholder="your-email@example.com"
-        />
-        <button type="submit">아이디 찾기</button>
-      </form>
-      <p v-if="message">{{ message }}</p>
-    </div>
     <div class="mobile">
         <div class="container mobile-login">
             <div class="row">
                 <div class="col">
-                    <img class="back-icon" src="@/assets/Union.png" alt="">
+                    <router-link to="/"><img class="back-icon" src="@/assets/Union.png" alt=""></router-link>
                 </div>
             </div>
             <div class="row">
@@ -47,7 +32,7 @@
             <div class="row">
                 <div class="col">
                     <a href="#">
-                        <img src="/vue-frontend/src/assets/Union.png" alt="">
+                        <router-link to="/"><img class="back-icon" src="@/assets/Union.png" alt=""></router-link>
                     </a>
                 </div>
             </div>
@@ -82,7 +67,7 @@
   </script>
 
   <!-- css -->
-<style>
+<style scoped>
 
 html, body{
     height: 100%;

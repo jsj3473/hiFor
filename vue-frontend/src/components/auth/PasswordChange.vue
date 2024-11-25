@@ -1,53 +1,12 @@
 <template>
-  <div class="password-change">
-    <h2>비밀번호 변경</h2>
-    <form @submit.prevent="handleSubmit">
-      <div class="form-group">
-        <label for="currentPassword">현재 비밀번호</label>
-        <input
-          type="password"
-          v-model="currentPassword"
-          id="currentPassword"
-          required
-        />
-        <button type="button" @click="checkCurrentPassword">확인</button>
-      </div>
-
-      <div v-if="isCurrentPasswordValid">
-        <div class="form-group">
-          <label for="newPassword">새 비밀번호</label>
-          <input
-            type="password"
-            v-model="newPassword"
-            id="newPassword"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="confirmPassword">새 비밀번호 확인</label>
-          <input
-            type="password"
-            v-model="confirmPassword"
-            id="confirmPassword"
-            required
-          />
-        </div>
-
-        <div class="button-group">
-          <button type="submit">확인</button>
-          <button type="button" @click="handleCancel">다음에 변경하기</button>
-        </div>
-      </div>
-    </form>
-  </div>
-
     <!-- mobile -->
+    
+<form @submit.prevent="handleSubmit">
     <div class="mobile">
         <div class="container mobile-login">
             <div class="row">
                 <div class="col">
-                    <img class="back-icon" src="/vue-frontend/src/assets/Union.png" alt="">
+                    <router-link to="/"><img class="back-icon" src="@/assets/Union.png" alt=""></router-link>
                 </div>
             </div>
             <div class="row">
@@ -55,26 +14,30 @@
                     <p class="m-login-title">Change Password</p>
                 </div>
                 <div class="col-12">
-                    <input class="m-enter-pw" type="password" placeholder="Current Password">
-                    <input class="m-enter-pw" type="password" placeholder="New Password">
-                    <input class="m-enter-pw" type="password" placeholder="Confirm New Password">
+                    <input class="m-enter-pw" v-model="currentPassword" :type="isCurrentPasswordVisible ? 'text' : 'password'"  id="currentPassword" placeholder="Current Password" required>
+                    <button type="button" @click="checkCurrentPassword">확인</button>
+                    <div v-if="isCurrentPasswordValid">
+                        <input class="m-enter-pw" v-model="newPassword" :type="isNewPasswordVisible ? 'text' : 'password'"  id="newPassword" placeholder="New Password" required>
+                        <input class="m-enter-pw" v-model="confirmPassword" :type="isConfirmNewPasswordVisible ? 'text' : 'password'"  id="confirmPassword" placeholder="Confirm New Password" required>
+                    </div>
                 </div>
                 <div class="col-12">
-                    <button class="m-login-btn1" type="button">Change password</button>
-                    <button class="m-login-btn2" type="button">Change later</button>
+                    <button class="m-login-btn1" type="submit">Change password</button>
+                    <button class="m-login-btn2"><router-link class="go-signup-text" to="/">Change later</router-link></button>
                 </div>
             </div>
         </div>
      </div>
+</form>
 
     <!-- 웹 -->
+    
+<form @submit.prevent="handleSubmit">
      <div class="web">
         <div class="contaienr web-login">
             <div class="row">
                 <div class="col">
-                    <a href="#">
-                        <img src="/vue-frontend/src/assets/Union.png" alt="">
-                    </a>
+                    <router-link to="/"><img class="back-icon" src="@/assets/Union.png" alt=""></router-link>
                 </div>
             </div>
             <div class="row login-box1">
@@ -90,17 +53,38 @@
                             <p class="login-text1">Change Password</p>
 
                             <div class="row">
-                                <div class="col-12">
-                                    <input class="enter-cp" type="password" placeholder="Current Password">
+                                <div class="col-12 input-with-icon">
+                                    <input class="enter-cp" v-model="currentPassword" :type="isCurrentPasswordVisible ? 'text' : 'password'" id="currentPassword" placeholder="Current Password" required>
+                                    <i
+                                        class="fa"
+                                        :class="isCurrentPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"
+                                        @click="toggleCurrentPasswordVisibility"
+                                    ></i>
+                                    <button class="reset-btn" type="button" @click="checkCurrentPassword">confirm</button>
                                 </div>
-                                <div class="col-12">
-                                    <input class="enter-password" type="password" placeholder="New Password">
+                                <div v-if="isCurrentPasswordValid">
+                                    <div class="col-12 input-with-icon">
+                                        <input class="enter-password" v-model="newPassword" :type="isNewPasswordVisible ? 'text' : 'password'" id="newPassword" placeholder="New Password" required>
+                                    </div>
+                                    <i
+                                        class="fa"
+                                        :class="isNewPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"
+                                        @click="toggleNewPasswordVisibility"
+                                    ></i>
+                                    <div class="col-12 input-with-icon">
+                                        <input class="enter-password" v-model="confirmPassword" :type="isConfirmNewPasswordVisible ? 'text' : 'password'" id="confirmPassword" placeholder="Confirm New Password" required>
+                                    </div>
+                                    <i
+                                        class="fa"
+                                        :class="isConfirmNewPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"
+                                        @click="toggleConfirmNewPasswordVisibility"
+                                    ></i>
+                                    <div class="col-12">
+                                        <button class="reset-btn" type="submit">Reset Password.</button>
+                                    </div>
                                 </div>
-                                <div class="col-12">
-                                    <input class="enter-password" type="password" placeholder="Confirm New Password">
-                                </div>
-                                <div class="col-12">
-                                    <button class="reset-btn">Reset Password.</button>
+                                <div>
+                                    <button class="reset-btn"><router-link to="/">Change later</router-link></button>
                                 </div>
                             </div>
                         </div>
@@ -109,6 +93,7 @@
             </div>
         </div>    
     </div>
+</form>
 </template>
   
   <script>
@@ -119,7 +104,7 @@
   
 
   <!-- css -->
-<style>
+<style scoped>
 
 
 html, body{

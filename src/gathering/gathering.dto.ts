@@ -1,41 +1,72 @@
-import { IsString, IsOptional, IsNumber, IsArray } from 'class-validator';
+import {
+  IsBoolean,
+  IsOptional,
+  IsString,
+  IsArray,
+  IsNumber,
+  IsUUID,
+  IsPositive,
+} from 'class-validator';
 
 export class CreateEventDto {
   @IsString()
-  eventName: string;
-
-  @IsString()
-  eventLocation: string;
-
-  @IsString()
-  eventType: string;
-
-  @IsString()
-  eventDetails: string;
+  name: string;
 
   @IsOptional()
   @IsString()
-  selectionQuestion?: string;
+  description?: string;
+
+  @IsOptional()
+  @IsString()
+  image?: string;
+
+  @IsOptional()
+  @IsString()
+  location?: string;
+
+  @IsOptional()
+  @IsString()
+  date?: string;
+
+  @IsOptional()
+  @IsString()
+  time?: string;
+
+  @IsOptional()
+  @IsString()
+  type?: string;
+
+  @IsOptional()
+  @IsString()
+  question?: string;
 
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   hashtags?: string[];
 
+  @IsOptional()
   @IsNumber()
-  price: number;
+  @IsPositive()
+  price?: number;
 
   @IsOptional()
-  @IsString()
-  priceInfo?: string;
+  @IsNumber()
+  @IsPositive()
+  maxParticipants?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  minParticipants?: number;
 
   @IsString()
   userId: string;
-  
-  @IsArray()
-  @IsString({ each: true }) // 배열의 각 요소가 문자열이어야 함
-  eventImages?: string[]; // 파일 이름 저장
+
+  @IsBoolean()
+  isDraft: boolean; // 임시 저장 여부
 }
+
 
 export class ApplyEventDto {
   @IsString()

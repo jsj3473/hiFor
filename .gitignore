@@ -1,15 +1,28 @@
 # Node.js dependencies
 node_modules/
-
+AppData/
+Contacts/
+Downloads/
+Favorites/
+Links/
+Music/
+OneDrive/
+Saved Games/
+Searches/
+Videos/
+NTUSER.DAT*
+ntuser.*
+*.bmp
+*.ini
 # Build output
 dist/
 trash/
 
-# Environment variables
-.env
 
 # IDE settings
 .vscode/
+.ssh/
+.rest-client/
 
 # Log files
 npm-debug.log*

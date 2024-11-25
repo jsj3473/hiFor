@@ -1,134 +1,155 @@
+
 <template>
-  <!--
-  <div class="sign-in">
-    <h2>로그인</h2>
-    <form @submit.prevent="handleLogin">
-      <div class="form-group">
-        <label for="userId">아이디</label>
-        <input type="text" v-model="form.userId" id="userId" required />
-      </div>
-      <div class="form-group">
-        <label for="password">비밀번호</label>
-        <input type="password" v-model="form.password" id="password" required />
-      </div>
-      <button type="submit">로그인</button>
-    </form>
-    <div class="buttons">
-      <button @click="handleGoogleLogin">구글 계정으로 로그인</button>
-      <button type="button"><router-link to="/findUsername">아이디 찾기</router-link></button>
-      <button type="button"><router-link to="/findPassword">비밀번호 찾기</router-link></button>
-    </div>
-  </div> -->
-  <div class="mobile">
-        <div class="container mobile-login">
-            <div class="row">
-                <div class="col">
-                    <img class="back-icon" src="@/assets/Union.png" alt="">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <p class="m-login-title">Log in</p>
-                </div>
-                <form @submit.prevent="handleLogin">
-                  <div class="col-12">
-                      <label for="userId"></label>
-                      <input class="m-enter-email" type="text" v-model="form.userId" id="userId" placeholder="id" required />
-                      <label for="password"></label>
-                      <input class="m-enter-email" type="password" placeholder="pw" v-model="form.password" id="password" required />
-                      <p class="m-remember"><input type="checkbox">&nbsp;Remember me</p>
-                  </div>
-                  <div class="col-12">
-                      <button class="m-login-btn1" type="submit">Log in</button>
-                  </div>
-                </form>
-            </div>
-            <div class="row m-or-box">
-                <img class="m-or-line" src="@/assets/Line 1.png" alt="">
-                <p class="m-or-text">or</p>
-                <img class="m-or-line" src="@/assets/Line 1.png" alt="">
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <button class="m-login-btn3" type="button" @click="handleGoogleLogin"><img class="m-icon-google" src="@/assets/icon_google.png" alt="">Log in with Google</button>
-                </div>
-            </div>
-            <div class="m-forgot-box">
-                <a class="m-forgot-id" href="#">Forgot id ?</a><br>
-                <a class="m-forgot-pw" href="#">Forgot password ?</a>
-            </div>
-        </div>
-    </div>
-  <div class="web">
-        <div class="contaienr web-login">
-            <div class="row">
-                <div class="col">
-                    <a href="#">
-                        <img src="@/assets/Union.png" alt="">
-                    </a>
-                </div>
-            </div>
-            <div class="row login-box1">
-                <div class="col-8">
-                    <div class="login-box-left">
-                        <p class="login-sub1">Welcome to HiFor</p>
-                        <p class="login-sub2">Ready to Enjoy?</p>
+    <body>
+        <div class="mobile">
+                <div class="container mobile-login">
+                    <div class="row">
+                        <div class="col">
+                            <router-link to="/"><img class="back-icon" src="@/assets/Union.png" alt=""></router-link>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="m-login-title">Log in</p>
+                        </div>
+                        <form @submit.prevent="handleLogin">
+                            <div class="col-12">
+                                <label for="userId"></label>
+                                <input class="m-enter-email" type="text" v-model="form.userId" id="userId" placeholder="id" required />
+                                <label for="password"></label>
+                                <input class="m-enter-email" type="password" placeholder="pw" v-model="form.password" id="password" required />
+                                <p class="m-remember"><input type="checkbox">&nbsp;Remember me</p>
+                            </div>
+                            <div class="col-12">
+                                <button class="m-login-btn1" type="submit">Log in</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="row m-or-box">
+                        <img class="m-or-line" src="@/assets/Line 1.png" alt="">
+                        <p class="m-or-text">or</p>
+                        <img class="m-or-line" src="@/assets/Line 1.png" alt="">
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="m-login-btn3" type="button" @click="handleGoogleLogin"><img class="m-icon-google" src="@/assets/icon_google.png" alt="">Log in with Google</button>
+                        </div>
+                    </div>
+                    <div class="m-forgot-box">
+                        <button class="m-link-btn">
+                            <router-link class="m-forgot-id" to="/findUsername">Forgot id ?</router-link>
+                        </button>
+                        <br>
+                        <button class="m-link-btn">
+                            <router-link class="m-forgot-pw" to="/findPassword">Forgot password ?</router-link>
+                        </button>
                     </div>
                 </div>
-                <div class="col-4">
-                    <div class="login-box-right">
-                        <div class="login-box2">
-                            <p class="login-text1">Login</p>
-                            <p class="login-text2"> Welcome Back!</p>
+            </div>
+        <div class="web">
+                <div class="contaienr web-login">
+                    <div class="row">
+                        <div class="col">
+                            <router-link to="/"><img class="back-icon" src="@/assets/Union.png" alt=""></router-link>
+                        </div>
+                    </div>
+                    <div class="row login-box1">
+                        <div class="col-8">
+                            <div class="login-box-left">
+                                <p class="login-sub1">Welcome to HiFor</p>
+                                <p class="login-sub2">Ready to Enjoy?</p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="login-box-right">
+                                <div class="login-box2">
+                                    <p class="login-text1">Login</p>
+                                    <p class="login-text2"> Welcome Back!</p>
 
-                            <div class="row">
-                                
-                                <form @submit.prevent="handleLogin">
-                                  <div class="col-12">
-                                      <label for="userId">아이디</label>
-                                      <input class="login-id" type="id" v-model="form.userId" id="userId" placeholder="Username" required />
-                                  </div>
-                                  <div class="col-12">
-                                      <label for="password">비밀번호</label>
-                                      <input class="login-password" type="password" v-model="form.password" id="password" placeholder="Password" required />
-                                  </div>
-                                  <div class="col-12">
-                                      <p class="checkbox-text"><input class="cb-remember" type="checkbox">Remember me(미구현)</p>
-                                  </div>
-                                  <div class="col-12">
-                                      <button type="submit" class="login-btn">Login</button>
-                                  </div>
-                                </form>
-                                <div class="col-12 login-icon-box">
-                                    <button class="login-btn" @click="handleGoogleLogin"><img class="login-google-icon" src="@/assets/icon_google.png" alt="">Login with Google</button>
-                                </div>
-                                <div class="col-12 forgot-box">
-                                  <router-link class="forgot-id" to="/findUsername">Forgot ID ?</router-link>
-                                  <router-link class="forgot-pw" to="/findPassword">Forgot password ?</router-link>
-                                </div>
-                                <div class="col-12 go-signup">
-                                  <router-link class="go-signup-text" to="/signUp">Don’t have an account? Signup</router-link>
+                                    <div class="row">
+                                        
+                                        <form @submit.prevent="handleLogin">
+                                        <div class="col-12">
+                                            <div class="login-id">
+                                                <label class="userId-ladel-text" for="userId"></label>
+                                                <input class="enter-id" type="id" v-model="form.userId" id="userId" placeholder="Username" required />
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="userPw-ladel-text" for="password"></label>
+                                            <div class="login-password">
+                                                <input
+                                                    class="enter-password"
+                                                    :type="isPasswordVisible ? 'text' : 'password'" 
+                                                    v-model="form.password"
+                                                    id="password"
+                                                    placeholder="Password"
+                                                    required
+                                                />
+                                                <i
+                                                    class="fa"
+                                                    :class="isPasswordVisible ? 'fa-eye-slash' : 'fa-eye'" 
+                                                    @click="togglePasswordVisibility"
+                                                ></i>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="col-12">
+                                            <p class="checkbox-text"><input class="cb-remember" type="checkbox">Remember me</p>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="login-btn">Login</button>
+                                        </div>
+                                        </form>
+                                        <div class="col-12 login-icon-box">
+                                            <button class="login-btn" @click="handleGoogleLogin"><img class="login-google-icon" src="@/assets/icon_google.png" alt="">Login with Google</button>
+                                        </div>
+                                        <div class="col-12 forgot-box">
+                                            <button class="link-btn">
+                                                <router-link class="forgot-id-text" to="/findUsername">Forgot ID ?</router-link>
+                                            </button>
+                                            <br>
+                                            <button class="link-btn">
+                                                <router-link class="forgot-pw-text" to="/findPassword">Forgot password ?</router-link>
+                                            </button>
+                                        </div>
+                                        <div class="col-12 go-signup">
+                                            <button class="link-btn">
+                                                <router-link class="go-signup-text" to="/signUp">Don’t have an account? Signup</router-link>
+                                            </button>
+                                        
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>    
-  </div>
+                </div>    
+        </div>
+
+    </body>
     
 </template>
 
+
+
 <script>
-import SignIn from '../../js/auth/SignIn.js';
+
+    import SignIn from '../../js/auth/SignIn.js';
   
-  export default SignIn;
+    export default SignIn;
+     
 </script>
 
 <!-- css -->
 <style>
     html, body{
         height: 100%;
+    }
+    form{
+        margin: 0px;
+        padding: 0px;
     }
 
     /* 반응형 모바일 css */
@@ -139,6 +160,7 @@ import SignIn from '../../js/auth/SignIn.js';
         .mobile{
             height: 100%;
             display: block;
+            min-height: 900px;
         }
         .mobile-login{
             margin-top: 60px;
@@ -169,6 +191,11 @@ import SignIn from '../../js/auth/SignIn.js';
             font-size: 15px;
             padding: 15px;
             margin-top: 32px;
+        }
+        .m-inc-text{
+            color: red;
+            margin: 0px;
+            margin-top: 16px;
         }
         .m-remember{
             margin-top: 9px;
@@ -221,11 +248,17 @@ import SignIn from '../../js/auth/SignIn.js';
             text-align: center;
             margin-bottom: 64px;
         }
+        .m-link-btn{
+            background: none;
+            border: none;
+        }
         .m-forgot-id{
             color: #000;
+            text-decoration: underline;
         }
         .m-forgot-pw{
             color: #000;
+            text-decoration: underline;
         }
     }
 
@@ -244,6 +277,7 @@ import SignIn from '../../js/auth/SignIn.js';
             padding: 60px;
             padding-top:30px;
             height: 100%;
+            min-height: 765px;
         }
         .row{
             max-width: 100%;
@@ -301,6 +335,14 @@ import SignIn from '../../js/auth/SignIn.js';
             margin-bottom: 10px;
             padding: 5px;
         }
+        .enter-id{
+            width: 100%;
+            height: 100%;
+            background: none;
+            border: none;
+            border-radius: 10px;
+            color: #FFF;
+        }
         .login-password{
             width: 100%;
             height: 55px;
@@ -310,6 +352,30 @@ import SignIn from '../../js/auth/SignIn.js';
             border-radius: 10px;
             margin-bottom: 10px;
             padding: 5px;
+        }
+        .inc-text{
+            color: red;
+            margin: 0px;
+        }
+        .enter-password{
+            width: 90%;
+            height: 100%;
+            background: none;
+            border: none;
+            border-radius: 10px;
+            color: #FFF;
+        }
+        .forgot-id-text{
+            text-decoration: underline;
+            color: #FFF;
+        }
+        .forgot-pw-text{
+            text-decoration: underline;
+            color: #FFF;
+        }
+        .link-btn{
+            background: none;
+            border: none;
         }
         .checkbox-text{
             margin: 0px;
@@ -354,8 +420,16 @@ import SignIn from '../../js/auth/SignIn.js';
             text-align: center;
         }
         .go-signup-text{
-            color:#FFF;
+            text-decoration: underline;
+            color: #FFF;
         } 
+
+        /* 비번 눈깔 */
+        .fa-eye{
+            cursor:pointer; 
+            color: #FFF;
+        }
     }
     
 </style>
+

@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { GatheringModule } from './gathering/gathering.module';
 import { ConfigModule } from '@nestjs/config';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -26,4 +27,8 @@ import { ConfigModule } from '@nestjs/config';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly dataSource: DataSource) {
+    console.log('Loaded Entities:', this.dataSource.entityMetadatas.map((e) => e.name));
+  }
+}

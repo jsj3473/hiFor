@@ -44,23 +44,6 @@ export class signInGuard implements CanActivate {
   }
 }
 
-
-//세션인증방식이므로 수정작업해야함
-@Injectable()
-export class LocalAuthGuard extends AuthGuard('local') {
-  async canActivate(context: any): Promise<boolean> {
-    console.log('guard before canActivate');
-    const result = (await super.canActivate(context)) as boolean;
-    console.log('result : ' + result);
-    console.log('guard after canActivate');
-    const request = context.switchToHttp().getRequest();
-    console.log(request.session);
-    await super.logIn(request); // 세션 옵션이 있으면 _passport.instance.serializeUser() 를 호출하여 세션을 req._passport.session.user 에 저장
-    console.log(request.session);
-    return result;
-  }
-}
-
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
@@ -82,15 +65,18 @@ export class GoogleAuthGuard extends AuthGuard('google') {
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    console.log('1111')
     const result = (await super.canActivate(context)) as boolean;
+    console.log('Auth Guard Result:', result); 
     const request = context.switchToHttp().getRequest();
-    //console.log('2222')
+    console.log('Request Cookies1:', request.cookies);
+    console.log('2222')
     // 만약 인증이 성공했을 경우, 사용자 정보를 요청 객체에 설정
     if (result) {
       const user = request.user;
       request.user = user;
     }
-    //console.log('22223')
+    console.log('22223')
     return result;
   }
 }

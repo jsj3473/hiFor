@@ -11,6 +11,11 @@ export default {
       userId: '',
       password: ''
     });
+    const isPasswordVisible = ref(false); // 비밀번호 가시성 상태
+
+    const togglePasswordVisibility = () => {
+      isPasswordVisible.value = !isPasswordVisible.value;
+    };
 
   const handleLogin = async () => {
     try {
@@ -25,16 +30,16 @@ export default {
 
 
       if (response.data.passwordChangeRequired) {
-        alert('비밀번호 변경이 필요합니다. 비밀번호 변경 페이지로 이동합니다.');
+        alert('Password change is required. Redirecting to the password change page.');
         router.push('/passwordChange'); // 비밀번호 변경 페이지로 리다이렉트
         return;
       }
 
-      alert('로그인이 완료되었습니다!');
+      alert('Login successed');
       router.push('/'); // 로그인 후 메인 페이지로 이동
     } catch (error) {
       console.error('로그인 오류:', error);
-      alert('Your HiFor ID or Password is incorrect');
+      alert('Your HiFor Username or Password is incorrect');
     }
   };
 
@@ -50,6 +55,8 @@ return {
   handleLogin,
   handleGoogleLogin,
   handleFindUsername,
+  isPasswordVisible,
+  togglePasswordVisibility,
 };
 }
 

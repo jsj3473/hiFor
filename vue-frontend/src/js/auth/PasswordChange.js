@@ -11,6 +11,9 @@ export default {
     const newPassword = ref('');
     const confirmPassword = ref('');
     const isCurrentPasswordValid = ref(false);
+    const isCurrentPasswordVisible = ref(false); // Current password visibility state
+    const isNewPasswordVisible = ref(false); // New password visibility state
+    const isConfirmNewPasswordVisible = ref(false); // Confirm new password visibility state
 
     const checkCurrentPassword = async () => {
       try {
@@ -22,16 +25,22 @@ export default {
         if (response.data.valid) {
           isCurrentPasswordValid.value = true;
         } else {
-          alert('현재 비밀번호가 올바르지 않습니다.');
+          alert('The current password is incorrect.');
         }
       } catch (error) {
-        alert('비밀번호 확인 중 오류가 발생했습니다.');
+        alert('An error occurred while verifying the password.');
       }
     };
 
     const handleSubmit = async () => {
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+      if (!passwordRegex.test(newPassword.value)) {
+        alert('The new password must include uppercase, lowercase, numbers, and special characters, and be at least 8 characters long.');
+        return;
+      }
+
       if (newPassword.value !== confirmPassword.value) {
-        alert('새 비밀번호가 일치하지 않습니다.');
+        alert('The new password does not match.');
         return;
       }
 
@@ -40,25 +49,38 @@ export default {
           userId: userId.value,
           password: newPassword.value,
         });
-        alert('비밀번호가 성공적으로 변경되었습니다.');
+        alert('The password has been successfully updated.');
       } catch {
-        alert('비밀번호 변경 중 오류가 발생했습니다.');
+        alert('An error occurred while changing the password.');
       }
     };
 
     const handleCancel = () => {
-      alert('비밀번호 변경을 취소하셨습니다.');
+      alert('Password change has been canceled.');
     };
 
     onMounted(() => {
-      // 세션 또는 로컬 스토리지에서 사용자 ID 가져오기
+      // Retrieve user ID from session or local storage
       userId.value = sessionStorage.getItem('userId') || localStorage.getItem('userId');
 
       if (!userId.value) {
-        alert('사용자 정보가 없습니다. 다시 로그인해 주세요.');
-        router.push({ name: 'Login' }); // 로그인 페이지로 리다이렉트
+        alert('User information is missing. Please log in again.');
+        router.push({ name: 'Login' }); // Redirect to login page
       }
     });
+
+    const toggleCurrentPasswordVisibility = () => {
+      
+      console.log(isCurrentPasswordVisible.value)
+      isCurrentPasswordVisible.value = !isCurrentPasswordVisible.value; // Toggle password field visibility
+      console.log(isCurrentPasswordVisible.value)
+    };
+    const toggleNewPasswordVisibility = () => {
+      isNewPasswordVisible.value = !isNewPasswordVisible.value; // Toggle new password field visibility
+    };
+    const toggleConfirmNewPasswordVisibility = () => {
+      isConfirmNewPasswordVisible.value = !isConfirmNewPasswordVisible.value; // Toggle confirm new password field visibility
+    };
 
     return {
       userId,
@@ -66,9 +88,15 @@ export default {
       newPassword,
       confirmPassword,
       isCurrentPasswordValid,
+      isCurrentPasswordVisible,
+      isNewPasswordVisible,
+      isConfirmNewPasswordVisible,
       checkCurrentPassword,
       handleSubmit,
       handleCancel,
+      toggleCurrentPasswordVisibility,
+      toggleNewPasswordVisibility,
+      toggleConfirmNewPasswordVisibility,
     };
   },
 };

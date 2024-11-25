@@ -30,9 +30,7 @@
         <div class="contaienr web-login">
             <div class="row">
                 <div class="col">
-                    <a href="#">
-                        <img src="/vue-frontend/src/assets/Union.png" alt="">
-                    </a>
+                    <router-link to="/"><img class="back-icon" src="@/assets/Union.png" alt=""></router-link>
                 </div>
             </div>
             <div class="row login-box1">
@@ -77,7 +75,7 @@ export default FindPassword;
 </script>
 
 <!-- css -->
-<style>
+<style scoped>
 
     html, body{
         height: 100%;

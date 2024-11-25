@@ -3,6 +3,7 @@ import {
     Controller,
     Get,
     Post,
+    Req,
     Patch,
     Param,
     UseGuards,
@@ -10,101 +11,82 @@ import {
     HttpException,
     HttpStatus,
     UseInterceptors,
-    UploadedFiles
+    UploadedFile,
+    NotFoundException
   } from '@nestjs/common';
   import { CreateEventDto, ApplyEventDto } from './gathering.dto';
-  import { diskStorage } from 'multer';
   import { JwtAuthGuard } from '../auth/auth.guard';
   import { GatheringService } from './gathering.service';
-  import { FilesInterceptor } from '@nestjs/platform-express';
-  import { Express } from 'express';
-  import { v4 as uuidv4 } from 'uuid';
 
-  
+  import { FileInterceptor } from '@nestjs/platform-express';
+  import { diskStorage } from 'multer';
+  import { v4 as uuidv4 } from 'uuid';
+  import * as path from 'path';
+
   @Controller('gathering')
   export class GatheringController {
     constructor(private readonly gatheringService: GatheringService) {}
 
-    @Get()
-    async getAllEvents(): Promise<any> {
-      return await this.gatheringService.getAllEvents();
+    @Post('submit')
+    async submitEvent(@Body() createEventDto: CreateEventDto) {
+      try {
+        console.log('CreateEventDto in cont:', createEventDto);
+        const event = await this.gatheringService.createEvent(createEventDto);
+        return { success: true, event };
+      } catch (error) {
+        console.error(error);
+        return { success: false, message: error.message };
+      }
     }
-  
-    @Post('create')
+    
+    @Post('save')
+    async saveEvent(@Body() createEventDto: CreateEventDto) {
+      try {
+        const event = await this.gatheringService.saveEvent(createEventDto);
+        return { success: true, event };
+      } catch (error) {
+        return { success: false, message: error.message };
+      }
+    }
+    @Get()
+    async getAllEvents() {
+      try {
+        const events = await this.gatheringService.getAllEvents();
+        
+        //console.log(events)
+        return events;
+      } catch (error) {
+        throw new Error(`Failed to get events: ${error.message}`);
+      }
+    }  
+    
+    @Post('upload')
     @UseInterceptors(
-      FilesInterceptor('eventImages', 5, {
+      FileInterceptor('file', {
         storage: diskStorage({
-        destination: (req, file, callback) => {
-          console.log('저장 경로: ./uploads'); // 디버깅용 로그 추가
-          callback(null, './uploads');
-        },
-        filename: (req, file, callback) => {
-          const uniqueSuffix = uuidv4();
-          const extension = file.originalname.split('.').pop();
-          const filename = `${uniqueSuffix}.${extension}`;
-          console.log('저장될 파일 이름:', filename); // 디버깅용 로그 추가
-          callback(null, filename);
-        },
-      })
+          destination: './uploads', // 파일 저장 경로
+          filename: (req, file, callback) => {
+            const uniqueName = `${uuidv4()}${path.extname(file.originalname)}`;
+            callback(null, uniqueName); // 파일명을 유니크하게 설정
+          },
+        }),
       }),
     )
-    async createEvent(
-      @UploadedFiles() eventImages: Array<Express.Multer.File>,
-      @Body() body: any,) {
-      try {
-          const createEventDto: CreateEventDto = {
-          eventName: body.eventName,
-          eventLocation: body.eventLocation,
-          eventType: body.eventType,
-          eventDetails: body.eventDetails,
-          selectionQuestion: body.selectionQuestion,
-          hashtags: body.hashtags ? body.hashtags.split(',') : [],
-          price: parseFloat(body.price),
-          priceInfo: body.priceInfo,
-          userId: body.userId,
-        };
-        // 이미지 파일들을 처리하거나 createEventDto와 함께 저장하는 로직 작성
-        const eventData = {
-          ...createEventDto,
-          eventImages: eventImages.map(file => file.filename), // 예시: 파일 이름 저장
-        };
-        return this.gatheringService.createEvent(eventData);
-      } catch (error) {
-        throw new HttpException('이벤트 생성에 실패했습니다.', HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+    uploadFile(@UploadedFile() file: Express.Multer.File) {
+      const fileUrl = `http://localhost:3000/uploads/${file.filename}`; // 저장된 파일의 URL 생성
+      return {
+        success: true,
+        url: fileUrl, // 클라이언트에 반환할 URL
+      };
     }
-  
-    // @Patch('update/:eventId')
-    // @UseGuards(JwtAuthGuard)
-    // async updateEvent(@Param('eventId') eventId: string, @Body() updateEventDto: UpdateEventDto) {
-    //   try {
-    //     return await this.gatheringService.updateEvent(eventId, updateEventDto);
-    //   } catch (error) {
-    //     throw new HttpException('이벤트 수정에 실패했습니다.', HttpStatus.INTERNAL_SERVER_ERROR);
-    //   }
-    // }
-  
-    @Post('apply')
-    @UseGuards(JwtAuthGuard)
-    async applyForEvent(@Body() applyEventDto: ApplyEventDto) {
-      try {
-        return await this.gatheringService.applyForEvent(applyEventDto);
-      } catch (error) {
-        throw new HttpException('이벤트 참가 신청에 실패했습니다.', HttpStatus.INTERNAL_SERVER_ERROR);
+    @Get('events/:eventId')
+    async getEvent(@Param('eventId') eventId: number) {
+      console.log(eventId)
+      const event = await this.gatheringService.getEventById(eventId);
+      if (!event) {
+        throw new NotFoundException(`Event with ID ${eventId} not found`);
       }
+      return event;
     }
-  
-    // @Patch('participant-status/:eventId')
-    // @UseGuards(JwtAuthGuard)
-    // async updateParticipantStatus(
-    //   @Param('eventId') eventId: string,
-    //   @Body() participantStatusDto: ParticipantStatusDto
-    // ) {
-    //   try {
-    //     return await this.gatheringService.updateParticipantStatus(eventId, participantStatusDto);
-    //   } catch (error) {
-    //     throw new HttpException('참여자 권한 부여에 실패했습니다.', HttpStatus.INTERNAL_SERVER_ERROR);
-    //   }
-    // }
   }
   

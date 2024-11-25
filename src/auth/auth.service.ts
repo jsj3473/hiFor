@@ -55,7 +55,35 @@ export class AuthService {
     return {
       access_token: token,
     };
+  }  
+  
+  async googleGenerateJwtToken(user: {
+    id: number;
+    email: string;
+    username: string;
+    dob?: string | null;
+    gender?: string | null;
+    nationality?: string | null;
+  }) {
+    
+    // JWT 페이로드 생성
+    const payload = {
+      id: user.id,
+      email: user.email,
+      name: user.username,
+      dob: user.dob,
+      gender: user.gender,
+      nationality: user.nationality,
+    };
+  
+    // JWT 토큰 생성
+    const token = this.jwtService.sign(payload);
+  
+    return {
+      access_token: token, // 액세스 토큰 반환
+    };
   }
+  
   // 비밀번호 변경이 필요한지 확인하는 함수
   isPasswordChangeRequired(passwordLastChanged: Date, months: number = 6): boolean {
     const now = new Date();

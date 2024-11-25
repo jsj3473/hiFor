@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-google-oauth20';
 import { User } from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';
+import axios from 'axios';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
@@ -11,39 +12,70 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: 'http://localhost:3000/auth/google',
-      scope: ['email', 'profile'],
+      scope: [
+        'email', 
+        'profile',
+        'https://www.googleapis.com/auth/user.birthday.read', // 생일 정보
+        'https://www.googleapis.com/auth/user.gender.read'    // 성별 정보
+        ],
     });
-  } async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    // 디버깅을 위한 로그 추가
-    console.log('Access Token:', accessToken);  // Access Token 확인
-    console.log('Refresh Token:', refreshToken);  // Refresh Token 확인
-    console.log('Profile:', profile);  // 사용자 프로필 정보 확인
-
-    // 이메일과 ID를 로그로 확인
+  } 
+  
+  async validate(accessToken: string, refreshToken: string, profile: Profile) {
+    console.log('Access Token:', accessToken);
+  
     const { id, name, emails } = profile;
-    console.log('Google User ID:', id);
-    console.log('User Email:', emails[0].value);
-
+    const email = emails[0].value;
+    
+    // People API 호출
     try {
-      const providerId = id;
-      const email = emails[0].value;
+      const peopleApiResponse = await axios.get('https://people.googleapis.com/v1/people/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: {
+          personFields: 'birthdays,genders', // 가져올 필드
+        },
+      });
+  
+      // 생일과 성별 정보 추출
+      const birthdays = peopleApiResponse.data.birthdays;
+      const genders = peopleApiResponse.data.genders;
+  
+      const birthdayObj = birthdays?.[0]?.date || null;
+      const gender = genders?.[0]?.value || null;
 
-      // 사용자를 찾거나 새로운 사용자 생성
-      const user: User = await this.userService.findByEmailOrSave(
-        email,
-        email,
-        name.familyName + name.givenName,
-        'google_oauth',
-        providerId,
-      );
+      // 생일 객체를 문자열로 변환 (예: YYYY-MM-DD)
+      const birthday = birthdayObj
+      ? `${birthdayObj.year}-${String(birthdayObj.month).padStart(2, '0')}-${String(birthdayObj.day).padStart(2, '0')}`
+      : null;
+    
+      console.log('User Birthday:', birthday);
+      console.log('User Gender:', gender);
+  
+      let user = await this.userService.findByEmail(email)
+
+      if(!user){
+        
+        // 사용자 생성 또는 업데이트
+        const NewUser: User = await this.userService.signUpToGoogle(
+          id,
+          email,
+          name.familyName + name.givenName,
+          birthday, 
+          gender
+        );
+
+        return NewUser;
+      }
       
+  
       console.log('User successfully found or created:', user);
-
+  
       return user;
     } catch (error) {
-      // 에러가 발생하면 로그로 출력
-      console.error('Error during validation:', error);
-      throw error;  // 에러를 다시 던져서 상위 레이어에서 처리
+      console.error('Error fetching additional user info:', error);
+      throw error;
     }
   }
 }

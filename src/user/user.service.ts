@@ -48,10 +48,23 @@ export class UserService {
     return result;
   }
 
-  // username과 password만 변경 가능
-  updateUser(user) {
-    return this.userRepository.save(user); // await를 추가하여 저장 과정이 완료되기를 기다림
+  async updateUser(user: any) {
+    const { userId, email, ...fieldsToUpdate } = user; // email을 제외하거나 처리
+    if (!userId) throw new Error('User ID is required for update'); // userId가 없으면 에러 발생
+  
+    try {
+      // userId를 기반으로 업데이트
+      await this.userRepository.update({ userId }, fieldsToUpdate);
+  
+      // 반환 없이 종료
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw new Error('Failed to update user');
+    }
   }
+  
+  
 
   async updateUserPassword(userId: string, password: string) {
     const user = await this.getUser(userId);
@@ -64,19 +77,19 @@ export class UserService {
     return this.userRepository.delete({ email });
   } 
 
-  async findByEmailOrSave(email,userId, username, password, providerId): Promise<User> {
+  async signUpToGoogle(userId,email,username, dob,gender): Promise<User> {
     const foundUser = await this.getUser(email);
     if (foundUser) {
       return foundUser;
     }
 
     const newUser = await this.userRepository.save({
-      email,
       userId,
+      email,
       username,
-      password,
-      providerId,
-    });
+      dob,
+      gender
+    })
     return newUser;
   }
 

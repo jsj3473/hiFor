@@ -16,7 +16,11 @@ async function bootstrap() {
     origin: 'http://localhost:8080',  // 프론트엔드 주소
     credentials: true,                // 쿠키를 사용하려면 true로 설정
   });
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: false, // 추가 데이터 무시
+    transform: true, // 요청 데이터를 DTO로 자동 변환
+  }));
   app.use(cookieParser());
   app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
 

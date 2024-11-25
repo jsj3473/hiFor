@@ -16,7 +16,6 @@ import { CreateUserDto, SignInUserDto } from 'src/user/user.dto';
 import {
   AuthenticatedGuard,
   GoogleAuthGuard,
-  LocalAuthGuard,
   signInGuard,
   JwtAuthGuard
 } from './auth.guard';
@@ -31,10 +30,9 @@ export class AuthController {
   ) {} 
 
 
-  @Post('signUp') // ❸ register 주소로 POST로 온 요청을 처리
-  // ❹ class-validator 가 자동으로 유효성검증
+  @Post('signUp') 
   async signUp(@Body() userDto: CreateUserDto) {
-    return await this.authService.signUp(userDto); // ❺ authService를 사용하여 user정보를 저장
+    return await this.authService.signUp(userDto); 
   }
   
   //@UseGuards(signInGuard) 보안사항 생긴다면 가드를 이용하자
@@ -83,23 +81,65 @@ export class AuthController {
   async googleAuthRedirect(@Request() req, @Response() res) {
     const { user } = req;
   
-    // JWT 생성
-    const jwtToken = this.authService.generateJwtToken(user);
+    // 사용자 데이터 확인 (DB에서 다시 조회)
+    const completeUser = await this.userService.findByEmail(user.email);
+  
 
-    //console.log('jwtToken in g controller:',jwtToken)
-      // JWT 토큰을 쿠키에 설정 (HTTP-only 쿠키로 설정하여 클라이언트 측에서는 접근 불가)
-    res.cookie('access_token', (await jwtToken).access_token, {
+  
+    // Google 사용자 정보를 포함한 JWT 생성
+    const jwtToken = await this.authService.googleGenerateJwtToken({
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      dob: user.dob,
+      gender: user.gender,
+      nationality: user.nationality,
+    });
+    
+    // JWT를 쿠키로 설정
+    res.cookie('access_token', jwtToken.access_token, {
       httpOnly: false,
-      secure: process.env.NODE_ENV === 'production', // 배포 환경에서는 secure 옵션 사용
-      maxAge: 3600000, // 1시간 (밀리초)
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 3600000, // 1시간
     });
 
-    //console.log('Cookie set with JWT Token:', jwtToken);
-    //console.log('Cookie set with JWT Token (access_token):', res.getHeader('Set-Cookie'));
+    if (completeUser && completeUser.nationality) {
+      // 회원가입 완료된 경우 홈으로 리다이렉트
+      res.redirect('http://localhost:8080/');
+      return;
+    }
+    // 회원가입 페이지로 리다이렉트
+    res.redirect(`http://localhost:8080/googleSignUp?token=${jwtToken.access_token}`);
+  }  
+  
+  @Post('googleSignUp')
+  async handleGoogleSignUp(@Body() body: any) {
+    const { email, userId, username, dob, gender, nationality } = body;
+
+
+    try {
+      // 서비스 호출
+      const user = await this.userService.findByEmail(email);
+      user.userId = userId;
+      user.username = username;
+      user.dob = dob;
+      user.gender = gender;
+      user.nationality = nationality;
+      await this.userService.updateUser(user);
+      // JWT 토큰 생성
+      const jwtToken = await this.authService.generateJwtToken(user);
     
-    // 프론트엔드로 리다이렉트
-    res.redirect('http://localhost:8080');
+      return {
+        access_token: jwtToken,
+        message: '로그인 성공',
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }    
+    
+    
   }
+  
 
   @Get('profile')
   @UseGuards(JwtAuthGuard) 

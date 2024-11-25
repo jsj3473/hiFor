@@ -1,11 +1,8 @@
 <template>
   
-  <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </head>
   <div id="app">
     <!-- 헤더 영역 -->
-    <header>
+    <header v-if="!$route.meta.hideHeaderFooter">
       <nav>
         <ul>
           <li><router-link to="/">홈</router-link></li>
@@ -14,8 +11,9 @@
           <li v-if="!isLoggedIn"><router-link to="/signIn">로그인</router-link></li>
           <li v-if="isLoggedIn">
             <button @click="logout">로그아웃</button>
+            
+            <router-link to="/createEvent">이벤트 생성</router-link>
           </li>
-          <button @click="requestPayment">결제하기</button>
           <li v-if="isLoggedIn"><router-link to="/myPage">마이페이지</router-link></li>
         </ul>
       </nav>
@@ -25,13 +23,14 @@
     <router-view></router-view>
 
     <!-- 푸터 영역 -->
-    <footer>
+    <footer v-if="!$route.meta.hideHeaderFooter">
       <p>&copy; 2024 Our Application. All rights reserved.</p>
     </footer>
   </div>
 </template>
 
 <script setup>
+import "dropzone/dist/dropzone.css";
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
@@ -54,31 +53,7 @@ const logout = () => {
   router.push('/');
 };
 
-const requestPayment = () => {
-  const IMP = window.IMP;
-  IMP.init("imp00000000"); // test용 가맹점 코드
 
-  IMP.request_pay(
-    {
-      pg: "html5_inicis",
-      pay_method: "card",
-      merchant_uid: `mid_${new Date().getTime()}`,
-      name: "테스트 결제",
-      amount: 1000,
-      buyer_email: "test@example.com",
-      buyer_name: "테스트",
-      buyer_tel: "010-1234-5678",
-    },
-    (rsp) => {
-      if (rsp.success) {
-        alert("결제가 완료되었습니다.");
-        console.log(rsp);
-      } else {
-        alert(`결제에 실패하였습니다. 오류 메시지: ${rsp.error_msg}`);
-      }
-    }
-  );
-};
 
 onMounted(() => {
   // 일반 사용자 로그인 상태 복원 (세션 스토리지에서 JWT 토큰 가져오기)
@@ -86,9 +61,6 @@ onMounted(() => {
   if (token) {
     setToken(token); // Vuex 상태에 토큰 저장 (일반 로그인 사용자)
   }
-
-  // 현재 저장된 모든 쿠키를 콘솔에 출력
-  //console.log('All cookies:', document.cookie);
 
   // Google 로그인 사용자 로그인 상태 확인 (쿠키에 access_token 확인)
   const cookieExists = document.cookie.split('; ').some((cookie) => cookie.startsWith('access_token='));
@@ -102,7 +74,7 @@ onMounted(() => {
       setToken(user.jwtToken);
       sessionStorage.setItem('token', user.jwtToken);
       document.cookie = 'access_token=; Max-Age=0; path=/;';
-      alert('Google 로그인이 완료되었습니다!');
+      //alert('Google 로그인이 완료되었습니다!');
       location.reload();
 
       router.push('/'); // 홈 페이지로 리다이렉트

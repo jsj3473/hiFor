@@ -48,6 +48,27 @@ export class VerificationController {
     // 3. 비밀번호를 임시로 저장하고, 초기화된 비밀번호 플래그 설정
     await this.userService.updatePasswordAndFlag(userId, newPassword);
 
-    return { message: '임시 비밀번호가 이메일로 전송되었습니다. 임시 비밀번호로 로그인 해주세요' };
+    return { pwChangeSuccess: true };
+  }
+
+  @Post('verifyCode')
+  async verifyCode(@Body('email') email: string, @Body('code') code: string) {
+    if (!email || !code) {
+      throw new BadRequestException('Email and code are required.');
+    }
+
+    const verificationKey = `verification_${email}`;
+    const storedCode = await this.cacheService.get(verificationKey);
+
+    if (!storedCode) {
+      throw new BadRequestException('The verification code has expired.');
+    }
+
+    if (storedCode !== code) {
+      throw new BadRequestException('The verification code does not match.');
+    }
+
+    // 인증 성공: 필요한 추가 작업 수행 (예: 계정 활성화)
+    return { message: 'Email verification has been completed.' };
   }
 }
