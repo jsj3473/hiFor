@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, ManyToMany,JoinTable,OneToMany } from 'typeorm';
-import { User } from '../user/user.entity'; // 사용자 엔터티가 있다고 가정
-
+import { User } from '../user/user.entity'; 
 @Entity('hifor_event')
 export class HiforEvent {
   @PrimaryGeneratedColumn()

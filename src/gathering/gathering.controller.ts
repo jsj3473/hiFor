@@ -12,7 +12,8 @@ import {
     HttpStatus,
     UseInterceptors,
     UploadedFile,
-    NotFoundException
+    NotFoundException,
+    ParseIntPipe
   } from '@nestjs/common';
   import { CreateEventDto, ApplyEventDto } from './gathering.dto';
   import { JwtAuthGuard } from '../auth/auth.guard';
@@ -53,7 +54,6 @@ import {
       try {
         const events = await this.gatheringService.getAllEvents();
         
-        //console.log(events)
         return events;
       } catch (error) {
         throw new Error(`Failed to get events: ${error.message}`);
@@ -79,14 +79,18 @@ import {
         url: fileUrl, // 클라이언트에 반환할 URL
       };
     }
-    @Get('events/:eventId')
+    @Get('getEvents/:eventId')
     async getEvent(@Param('eventId') eventId: number) {
-      console.log(eventId)
       const event = await this.gatheringService.getEventById(eventId);
       if (!event) {
         throw new NotFoundException(`Event with ID ${eventId} not found`);
       }
       return event;
+    }
+    @Post(':eventId/like')
+    async toggleLike(@Param('eventId', ParseIntPipe) eventId: number, @Body('userId') userId: string) {
+      const updatedLikes = await this.gatheringService.toggleLike(eventId, userId);
+      return { likesLen: updatedLikes };
     }
   }
   

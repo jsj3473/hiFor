@@ -9,6 +9,7 @@ import CreateEvent from '../components/gathering/CreateEvent.vue';
 import ShowAllEvents from '../components/gathering/ShowAllEvents.vue';
 import GoogleSignUp from '../components/auth/googleSignUp.vue'; 
 import EventDetailJoin from '../components/gathering/eventDetailJoin.vue';
+import JoinEvent from '../components/gathering/JoinStepParent.vue';
 
 const routes = [
   {
@@ -77,6 +78,13 @@ const routes = [
     component: EventDetailJoin,
     meta: { hideHeaderFooter: false },
   },
+  {
+    path: '/joinEvents/:eventId',
+    name: 'JoinEvent',
+    component: JoinEvent,
+    meta: { hideHeaderFooter: false },
+  },
+
 ];
 
 const router = createRouter({

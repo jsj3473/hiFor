@@ -4,7 +4,7 @@
     <div class="container header-space"></div>
 
     <!-- 배너 섹션 -->
-    <div class="container main-banner">
+    <div class="main-banner">
       <div class="row">
         <div class="col-12 banner-text-box1">
           <p class="banner-text1">Welcome to HiFor</p>
@@ -53,7 +53,7 @@
         <p class="cs-title">Hosted by HiFor</p>
       </div>
       <div class="row">
-        <div class="col" v-for="(event, index) in visibleCards" :key="index">
+        <div class="col-4" v-for="(event, index) in visibleCards" :key="index">
           <router-link :to="`/events/${event.id}`">
             <div class="card">
               <img :src="event.image" class="card-img-top card-img" alt="..." />
@@ -109,44 +109,148 @@
         </div>
       </div>
       <div class="row text-center">
-        <!-- Show More 버튼 -->
-        <p class="d-inline-flex gap-1">
-          <button
-            class="showall-btn"
-            type="button"
-            @click="toggleShowAll"
-          >
-            {{ showAll ? 'Show Less' : 'Show More' }}
-          </button>
-        </p>
+        <div class="col">
+          <div class="text-center">
+            <p class="d-inline-flex gap-1">
+              <button
+                class="showall-btn"
+                type="button"
+                @click="toggleShowAll"
+              >
+                {{ showAll ? 'Show Less' : 'Show More' }}
+              </button>
+            </p>
+          </div>
+       </div>
       </div>
     </div>
 
+    <!-- Host Cards -->
+    <div class="container cards-section">
+      <div class="row">
+        <p class="cs-title">Hot events</p>
+      </div>
+      <div class="row">
+        <div class="col-4" v-for="(event, index) in visibleCards" :key="index">
+          <router-link :to="`/events/${event.id}`">
+            <div class="card">
+              <img :src="event.image" class="card-img-top card-img" alt="..." />
+              <div class="card-body">
+                <p class="card-title">{{ event.name }}</p>
+                <div class="row hashtag-row"></div>
+                <div class="row">
+                  <div class="col-6">
+                    <p class="card-info-text">
+                      <img class="card-info-icon" src="@/assets/icons/Date_icon.png" alt="" />
+                      {{ event.date }}
+                    </p>
+                  </div>
+                  <div class="col-6">
+                    <p class="card-info-text">
+                      <img class="card-info-icon" src="@/assets/icons/MapPin_icon.png" alt="" />
+                      {{ event.location }}
+                    </p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <p class="card-info-text">
+                      <img class="card-info-icon" src="@/assets/icons/User_icon.png" alt="" />
+                      <span>{{ event.participants.current }}</span>/<span>{{ event.participants.max }}</span>
+                    </p>
+                  </div>
+                  <div class="col-6">
+                    <p class="card-info-text">
+                      <img class="card-info-icon" src="@/assets/icons/Heart.png" alt="" />
+                      <span>{{ event.likes }}</span>
+                    </p>
+                  </div>
+                </div>
+                <div class="row">
+                  <!--
+                  <router-link>
+                    <p class="card-host">
+                      <img class="host-icon" :src="event.hostImage" alt="" />
+                      {{ event.createdBy }}
+                    </p>
+                  </router-link>
+                  -->
+                  <router-link :to="`/hosts/${event.hostId}`">
+                    <p class="card-host">
+                      {{ event.host }}
+                    </p>
+                  </router-link>
+                </div>
+              </div>
+            </div>
+          </router-link>
+        </div>
+      </div>
+      <div class="row">
+          <div class="col">
+            <div class="text-center">
+              <router-link to="/showAllEvents">
+                <button class="showall-btn btn btn-outline-success" type="button">
+                  Show All
+                </button>
+              </router-link>
+            </div>
+          </div>
+        </div>
+    </div>
     
 
     <!-- Space -->
     <div class="space"></div>
 
-    <!-- How it works Section -->
-    <div class="ex-con">
-      <div class="row">
-        <div class="col ex-text1">
-          <p>How it works</p>
+      <!-- explain section -->
+      <div class="contaienr ex-con">
+        <div class="row">
+          <div class="col ex-text1">
+            <p>How it works</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col ex-title">
+            <h2>Learn how the experience works</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1"></div>
+          <div class="col ex-box">
+            <img class="ex-icon1" src="@/assets/images/Group 1000005008.png" alt=""><br>
+            <img class="ex-num1" src="@/assets/images/MapPin (1).png" alt=""><br>
+            <p class="ex-text2">
+              Search for events<br>
+              interests you 
+            </p>
+            <p class="ex-text3">
+              Search for a topic you're interested in and<br> find a event you want!
+            </p>
+          </div>
+          <div class="col ex-box">
+            <img class="ex-icon2" src="@/assets/images/Group 1000005011.png" alt=""><br>
+            <img class="ex-num2" src="@/assets/images/MapPin (2).png" alt=""><br>
+            <p class="ex-text2">
+              Create any events<br>you want! 
+            </p>
+            <p class="ex-text3">
+              If you don't like anything or have a good idea,<br>make your own event!
+            </p>
+          </div>
+          <div class="col ex-box">
+            <img class="ex-icon3" src="@/assets/images/co_.svg" alt=""><br>
+            <img class="ex-num3" src="@/assets/images/MapPin (3).png" alt=""><br>
+            <p class="ex-text2">
+              Enjoy an event and<br> connect with people
+            </p>
+            <p class="ex-text3">
+              Enjoy the event and have a new meeting with<br> new people at HiFor!
+            </p>
+          </div>
+          <div class="col-1"></div>
         </div>
       </div>
-      <div class="row">
-        <div class="col ex-title">
-          <h2>Learn how the experience works</h2>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col" v-for="(step, index) in steps" :key="index">
-          <img class="ex-icon1" :src="step.icon" alt="" />
-          <p class="ex-text2">{{ step.title }}</p>
-          <p class="ex-text3">{{ step.description }}</p>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -178,24 +282,6 @@ export default {
     const toggleShowAll = () => {
       showAll.value = !showAll.value;
     };
-    const steps = ref([
-      {
-        icon: "@/assets/images/step1.png",
-        title: "Search for events",
-        description: "Search for a topic you're interested in and find a event you want!",
-      },
-      {
-        icon: "@/assets/images/step2.png",
-        title: "Create any events",
-        description: "If you don't like anything or have a good idea, make your own event!",
-      },
-      {
-        icon: "@/assets/images/step3.png",
-        title: "Enjoy an event",
-        description: "Enjoy the event and have a new meeting with new people at HiFor!",
-      },
-    ]);
-
     // 이벤트 데이터 가져오기
     const fetchEvents = async () => {
       try {
@@ -210,7 +296,7 @@ export default {
             current: event.participants.length, // 현재 참가자 수
             max: event.maxParticipants, // 최대 참가자 수
           },
-          likes: event.likes.length, // 좋아요 수
+          likes: event.likes, // 좋아요 수
           host: event.createdBy.name, // 이벤트 생성자 이름
           // hostImage: event.createdBy.profileImage || "@/assets/images/default-host.png", // 생성자 이미지
         }));
@@ -228,7 +314,6 @@ export default {
       isLoggedIn,
       token,
       events,
-      steps,
       showAll,
       visibleCards,
       toggleShowAll,

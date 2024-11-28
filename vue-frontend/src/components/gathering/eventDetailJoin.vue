@@ -19,9 +19,9 @@
   
             <!-- Hashtag section -->
             <div class="hashtag-box">
-              <router-link v-for="hashtag in event.hashtags" :key="hashtag.id">
+              <div v-for="hashtag in event.hashtags" :key="hashtag.id">
                 <button class="hashtag">#{{ hashtag.name }}</button>
-              </router-link>
+              </div>
             </div>
   
             <!-- Map section -->
@@ -83,7 +83,13 @@
                   </div>
                   <div class="col-1 p-0">
                     <p class="s-card-text4">
-                      <img class="s-card-icon2" src="@/assets/icons/Share.png" alt="" />
+                      <img 
+                        class="s-card-icon2" 
+                        src="@/assets/icons/Share.png" 
+                        alt="Share" 
+                        @click="copyLinkToClipboard" 
+                        title="Copy link to clipboard"
+                      />
                     </p>
                   </div>
                 </div>
@@ -94,9 +100,11 @@
                       {{ event.createdBy.username }}
                     </p>
                   </router-link>
-                  <router-link class="p-0">
-                    <button class="join-btn">Join Now!</button>
-                  </router-link>
+                  <div class="p-0">
+                    <router-link :to="`/joinEvents/${event.id}`">
+                      <button class="join-btn">Join Now!</button>
+                    </router-link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -131,7 +139,7 @@
   
       const fetchEvent = async (eventId) => {
         try {
-          const response = await axios.get(`http://localhost:3000/gathering/events/${eventId}`);
+          const response = await axios.get(`http://localhost:3000/gathering/getEvents/${eventId}`);
           const eventData = response.data;
               // 데이터 매핑 및 변환
           event.value = {
@@ -146,7 +154,7 @@
               current: eventData.participants?.length || 0,
               max: eventData.maxParticipants,
             },
-            likes: eventData.likes?.length || 0,
+            likes: eventData.likes.length || 0,
             createdBy: {
               id: eventData.createdBy?.userId || 0,
               name: eventData.createdBy?.username || "Unknown",
@@ -154,30 +162,51 @@
             },
             price: eventData.price,
           };  
+          const userId = sessionStorage.getItem('userId')
+          isLiked.value = eventData.likes.some((like) => like.user.userId === userId);
         } catch (error) {
           console.error("Error fetching event data:", error);
         }
       };
   
-      const toggleLike = () => {
+      const toggleLike = async () => {
         isLiked.value = !isLiked.value;
-        if (isLiked.value) {
-          event.value.likes += 1;
-        } else {
-          event.value.likes -= 1;
+
+        try {
+          // 좋아요 상태를 백엔드에 반영
+          const response = await axios.post(`http://localhost:3000/gathering/${event.value.id}/like`, {
+            userId: sessionStorage.getItem('userId'), // 사용자 ID 전달
+          });
+
+          // 백엔드로부터 최신 좋아요 상태를 반영
+          event.value.likes = response.data.likesLen;
+        } catch (error) {
+          console.error('Failed to toggle like:', error);
+          // 상태 복원
+          isLiked.value = !isLiked.value;
         }
       };
-  
+
       onMounted(() => {
         const eventId = parseInt(window.location.pathname.split('/').pop()); // Extract event ID from URL
         fetchEvent(eventId);
-      });
+      });    
+      
+      const copyLinkToClipboard = () => {
+        const url = window.location.href; // 현재 페이지 URL
+        navigator.clipboard.writeText(url).then(() => {
+          alert('Link copied to clipboard!');
+        }).catch((error) => {
+          console.error('Failed to copy link:', error);
+        });
+      };
   
       return {
         event,
         isLiked,
         toggleLike,
         formattedDate,
+        copyLinkToClipboard,
       };
     },
   };
