@@ -76,37 +76,52 @@ export class GatheringService {
   async getAllEvents() {
     try {
       const events = await this.eventRepository.find({
-        relations: ['createdBy', 'participants', 'likes'], // 관계를 로드
+        relations: ['createdBy', 'hashtags', 'participants', 'likes'], // 관계를 로드
       });
-
-      // 필요 시 추가 가공
-      return events.map(event => ({
-        id: event.id,
-        name: event.name,
-        description: event.description,
-        image: event.image,
-        location: event.location,
-        date: event.date,
-        time: event.time,
-        type: event.type,
-        price: event.price,
-        maxParticipants: event.maxParticipants,
-        minParticipants: event.minParticipants,
-        isDraft: event.isDraft,
-        publishedAt: event.publishedAt,
-        createdBy: {
-          name: event.createdBy?.username,
-          //profileImage: event.createdBy?.profileImage,
-        },
-        participants: event.participants.length,
-        likes: event.likes.length,
-        createdAt: event.createdAt,
-        updatedAt: event.updatedAt,
-      }));
+  
+      // 각 이벤트에 대해 승인된 참가자 수 계산
+      const eventsWithApprovedCount = await Promise.all(
+        events.map(async (event) => {
+          const approvedParticipantsCount = await this.participantRepository.count({
+            where: {
+              event: { id: event.id },
+              status: 'Approved',
+            },
+          });
+  
+          return {
+            id: event.id,
+            name: event.name,
+            description: event.description,
+            image: event.image,
+            location: event.location,
+            date: event.date,
+            time: event.time,
+            type: event.type,
+            price: event.price,
+            maxParticipants: event.maxParticipants,
+            minParticipants: event.minParticipants,
+            isDraft: event.isDraft,
+            publishedAt: event.publishedAt,
+            createdBy: {
+              name: event.createdBy?.username,
+              //profileImage: event.createdBy?.profileImage,
+            },
+            participants: approvedParticipantsCount, // 승인된 참가자 수
+            likes: event.likes.length,
+            createdAt: event.createdAt,
+            updatedAt: event.updatedAt,
+            hashtags: event.hashtags.map(hashtag => hashtag.name),
+          };
+        })
+      );
+  
+      return eventsWithApprovedCount;
     } catch (error) {
       throw new Error(`Failed to fetch events: ${error.message}`);
     }
   }
+  
   async getEventById(eventId: number): Promise<HiforEvent> {
     const event = await this.eventRepository.findOne({
       where: { id: eventId },
@@ -153,5 +168,34 @@ export class GatheringService {
     
     console.log("변경후:",event.likes)
     return event.likes.length;
+  }
+  async createParticipant(eventId: number, _userId: string, answer: string): Promise<Participant> {
+    const event = await this.eventRepository.findOne({ where: { id: eventId } });
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    const user = await this.userRepository.findOne({ where: { userId: _userId } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const participant = this.participantRepository.create({
+      event,
+      user,
+      status: 'Pending',
+      answer,
+    });
+
+    return await this.participantRepository.save(participant);
+  }
+
+  async getApprovedParticipantsCount(eventId: number): Promise<number> {
+    return await this.participantRepository.count({
+      where: {
+        event: { id: eventId },
+        status: 'Approved',
+      },
+    });
   }
 }

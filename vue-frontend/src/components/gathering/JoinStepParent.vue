@@ -18,7 +18,8 @@
 </template>
 
 <script>
-import { reactive, computed } from "vue";
+import { useRoute } from 'vue-router';
+import { reactive, onMounted, computed } from "vue";
 import Step1 from "./JoinStep1.vue";
 import Step2 from "./JoinStep2.vue";
 import Step3 from "./JoinStep3.vue";
@@ -26,21 +27,34 @@ import Step3 from "./JoinStep3.vue";
 export default {
   components: { Step1, Step2, Step3},
   setup() {
+    const route = useRoute(); // 현재 경로 정보를 가져오기 위한 Vue Router 훅
     const currentStep = reactive({ value: 1 });
 
     const formData = reactive({
+      eventId: 0,
       name: "",
       description: "",
       image: "",
       location: "",
       date: "",
       time: "",
+      answer: "",
       //type: "",
       question: "",
       price: 0,
       //maxParticipants: 0,
       //minParticipants: 0,
       //hashtags: [],
+    });
+
+    // 컴포넌트가 마운트될 때 URL에서 eventId를 가져와서 설정
+    onMounted(() => {
+      const eventId = parseInt(route.params.eventId, 10);
+      if (!isNaN(eventId)) {
+        formData.eventId = eventId;
+      } else {
+        console.error("Invalid event ID in URL");
+      }
     });
 
     const steps = [

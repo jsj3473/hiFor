@@ -1,11 +1,29 @@
 
-<template>
+<head>
+    <!-- bootstrap 적용 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!-- icon style sheet -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous">
+
+    <!--  -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+
+    <!-- 반응형 레이아웃 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+
+<html>
     <body>
         <div class="mobile">
                 <div class="container mobile-login">
                     <div class="row">
                         <div class="col">
-                            <router-link to="/"><img class="back-icon" src="@/assets/Union.png" alt=""></router-link>
+                            <img class="back-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Union.png" alt="">
                         </div>
                     </div>
                     <div class="row">
@@ -18,6 +36,7 @@
                                 <input class="m-enter-email" type="text" v-model="form.userId" id="userId" placeholder="id" required />
                                 <label for="password"></label>
                                 <input class="m-enter-email" type="password" placeholder="pw" v-model="form.password" id="password" required />
+                                <p class="m-inc-text">Your Hifor ID or password is incorrect.</p>
                                 <p class="m-remember"><input type="checkbox">&nbsp;Remember me</p>
                             </div>
                             <div class="col-12">
@@ -26,22 +45,22 @@
                         </form>
                     </div>
                     <div class="row m-or-box">
-                        <img class="m-or-line" src="@/assets/Line 1.png" alt="">
+                        <img class="m-or-line" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Line 1.png" alt="">
                         <p class="m-or-text">or</p>
-                        <img class="m-or-line" src="@/assets/Line 1.png" alt="">
+                        <img class="m-or-line" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Line 1.png" alt="">
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button class="m-login-btn3" type="button" @click="handleGoogleLogin"><img class="m-icon-google" src="@/assets/icon_google.png" alt="">Log in with Google</button>
+                            <button class="m-login-btn3" type="button" @click="handleGoogleLogin"><img class="m-icon-google" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/icon_google.png" alt="">Log in with Google</button>
                         </div>
                     </div>
                     <div class="m-forgot-box">
                         <button class="m-link-btn">
-                            <router-link class="m-forgot-id" to="/findUsername">Forgot id ?</router-link>
+                            <router-link class="m-forgot-id" href="#">Forgot id ?</router-link>
                         </button>
                         <br>
                         <button class="m-link-btn">
-                            <router-link class="m-forgot-pw" to="/findPassword">Forgot password ?</router-link>
+                            <router-link class="m-forgot-pw" href="#">Forgot password ?</router-link>
                         </button>
                     </div>
                 </div>
@@ -50,7 +69,9 @@
                 <div class="contaienr web-login">
                     <div class="row">
                         <div class="col">
-                            <router-link to="/"><img class="back-icon" src="@/assets/Union.png" alt=""></router-link>
+                            <a href="#">
+                                <img src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Union.png" alt="">
+                            </a>
                         </div>
                     </div>
                     <div class="row login-box1">
@@ -79,43 +100,35 @@
                                         <div class="col-12">
                                             <label class="userPw-ladel-text" for="password"></label>
                                             <div class="login-password">
-                                                <input
-                                                    class="enter-password"
-                                                    :type="isPasswordVisible ? 'text' : 'password'" 
-                                                    v-model="form.password"
-                                                    id="password"
-                                                    placeholder="Password"
-                                                    required
-                                                />
-                                                <i
-                                                    class="fa"
-                                                    :class="isPasswordVisible ? 'fa-eye-slash' : 'fa-eye'" 
-                                                    @click="togglePasswordVisibility"
-                                                ></i>
+                                                <input class="enter-password" type="password" v-model="form.password" id="password" placeholder="Password" required />
+                                                <i class="fa fa-eye"></i>
                                             </div>
                                             
                                         </div>
                                         <div class="col-12">
-                                            <p class="checkbox-text"><input class="cb-remember" type="checkbox">Remember me</p>
+                                            <p class="inc-text">Your Hifor ID or password is incorrect.</p>
+                                        </div>
+                                        <div class="col-12">
+                                            <p class="checkbox-text"><input class="cb-remember" type="checkbox">Remember me(미구현)</p>
                                         </div>
                                         <div class="col-12">
                                             <button type="submit" class="login-btn">Login</button>
                                         </div>
                                         </form>
                                         <div class="col-12 login-icon-box">
-                                            <button class="login-btn" @click="handleGoogleLogin"><img class="login-google-icon" src="@/assets/icon_google.png" alt="">Login with Google</button>
+                                            <button class="login-btn" @click="handleGoogleLogin"><img class="login-google-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/icon_google.png" alt="">Login with Google</button>
                                         </div>
                                         <div class="col-12 forgot-box">
-                                            <button class="link-btn">
+                                            <button class="link-btn" @click="#">
                                                 <router-link class="forgot-id-text" to="/findUsername">Forgot ID ?</router-link>
                                             </button>
                                             <br>
-                                            <button class="link-btn">
+                                            <button class="link-btn" @click="#">
                                                 <router-link class="forgot-pw-text" to="/findPassword">Forgot password ?</router-link>
                                             </button>
                                         </div>
                                         <div class="col-12 go-signup">
-                                            <button class="link-btn">
+                                            <button class="link-btn" @click="#">
                                                 <router-link class="go-signup-text" to="/signUp">Don’t have an account? Signup</router-link>
                                             </button>
                                         
@@ -130,20 +143,37 @@
 
     </body>
     
-</template>
+</html>
 
 
 
 <script>
 
-    import SignIn from '../../js/auth/SignIn.js';
+//     // css적용
+// import SignIn from '../../js/auth/SignIn.js';
   
-    export default SignIn;
+//   export default SignIn;s
+
+    //  비번 눈깔
+    document.addEventListener("DOMContentLoaded", function () {
+    // 모든 비밀번호 토글 아이콘 선택
+    const input = document.querySelector(".fa-eye").previousElementSibling;
+    if (input.type === "password") {
+        input.type = "text";
+        //icon.classList.remove("fa-eye");
+        //icon.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        //icon.classList.remove("fa-eye-slash");
+        //icon.classList.add("fa-eye");
+    }
+});
+
      
 </script>
 
 <!-- css -->
-<style scoped>
+<style>
     html, body{
         height: 100%;
     }
@@ -356,6 +386,7 @@
         .inc-text{
             color: red;
             margin: 0px;
+            display: none;
         }
         .enter-password{
             width: 90%;
@@ -394,10 +425,12 @@
         .login-btn{
             height: 50px;
             width: 100%;
-            background: honeydew;
+            background: #37C00E;
             border: none;
             border-radius: 12px;
             margin-top: 12px;
+            color: #FFF;
+            font-weight: 600;
         }
         .forgot-box{
             text-align: center;

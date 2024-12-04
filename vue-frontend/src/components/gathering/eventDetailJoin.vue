@@ -101,10 +101,33 @@
                     </p>
                   </router-link>
                   <div class="p-0">
-                    <router-link :to="`/joinEvents/${event.id}`">
-                      <button class="join-btn">Join Now!</button>
+                    <router-link
+                      v-if="!(event.participants.current >= event.participants.max)"
+                      :to="event.createdBy.id === userId ? `/manage/${event.id}` : `/joinEvents/${event.id}`"
+                    >
+                      <button class="join-btn">
+                        {{
+                          event.createdBy.id === userId
+                            ? 'Manage'
+                            : event.participants.current >= event.participants.max
+                            ? 'Closed'
+                            : event.type === 'First come'
+                            ? 'Join Now!'
+                            : 'Register'
+                        }}
+                      </button>
                     </router-link>
+                    <button
+                      v-else
+                      class="closed-join-btn"
+                      @click="handleClosedClick"
+                    >
+                      Closed
+                    </button>
                   </div>
+
+
+
                 </div>
               </div>
             </div>
@@ -117,15 +140,20 @@
   <script>
   import { ref, computed, onMounted } from 'vue';
   import axios from 'axios';
+  import { useStore } from 'vuex';
   
   export default {
     name: 'EventDetails',
     setup() {
+      
+      const store = useStore();
+      const userId = computed(() => store.getters.userId);
       const event = ref({
             description: '', // 빈 문자열로 초기화
             name: '',
             date: '',
             location: '',
+            type: '',
             hashtags: [],
             participants: { current: 0, max: 0 },
             likes: 0,
@@ -161,6 +189,7 @@
               //profileImage: eventData.createdBy?.profileImage || "@/assets/images/default-host.png",
             },
             price: eventData.price,
+            type: eventData.type
           };  
           const userId = sessionStorage.getItem('userId')
           isLiked.value = eventData.likes.some((like) => like.user.userId === userId);
@@ -200,20 +229,26 @@
           console.error('Failed to copy link:', error);
         });
       };
-  
+
       return {
         event,
         isLiked,
         toggleLike,
         formattedDate,
         copyLinkToClipboard,
+        userId
       };
+    },
+    methods: {
+        handleClosedClick() {
+          alert('This event is closed and cannot be joined.');
+        },
     },
   };
   </script>
   
   
-  <style>
+  <style scoped>
 
   .row{
     width:100%;
@@ -389,6 +424,17 @@
     padding-left: 100px;
     padding-right: 100px;
     background-color: #12CF51;
+    border: none;
+    border-radius: 96px;
+    color: #ffffff;
+  }
+  .closed-join-btn{
+    width: 280px;
+    margin: 32px;
+    padding: 20px;
+    padding-left: 100px;
+    padding-right: 100px;
+    background-color:gray;
     border: none;
     border-radius: 96px;
     color: #ffffff;

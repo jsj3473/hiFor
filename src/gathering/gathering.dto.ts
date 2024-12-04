@@ -6,6 +6,7 @@ import {
   IsNumber,
   IsUUID,
   IsPositive,
+  IsNotEmpty
 } from 'class-validator';
 
 export class CreateEventDto {
@@ -73,9 +74,21 @@ export class ApplyEventDto {
   userId: string;
 
   @IsString()
-  eventId: string;
+  eventId: number;
 
   @IsOptional()
   @IsString()
   answer?: string;
+}
+
+export class CreateParticipantDto {
+  @IsNotEmpty()
+  @IsNumber()
+  eventId: number;
+
+  @IsNotEmpty()
+  userId: string;
+
+  @IsString()
+  answer: string;
 }

@@ -58,8 +58,14 @@
             <div class="card">
               <img :src="event.image" class="card-img-top card-img" alt="..." />
               <div class="card-body">
-                <p class="card-title">{{ event.name }}</p>
-                <div class="row hashtag-row"></div>
+                <p class="card-title">{{ event.title }}</p>
+                <div class="row hashtag-row">
+                  <div class="hashtag-box">
+                    <button v-for="hashtag in event.hashtags" :key="hashtag" class="hashtag">
+                      #{{ hashtag }}
+                    </button>
+                  </div>
+                </div>
                 <div class="row">
                   <div class="col-6">
                     <p class="card-info-text">
@@ -285,7 +291,7 @@ export default {
     // 이벤트 데이터 가져오기
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/gathering"); 
+        const response = await axios.get("http://localhost:3000/gathering/getAllEvents"); 
         events.value = response.data.map(event => ({
           id: event.id,
           image: event.image,
@@ -293,11 +299,12 @@ export default {
           date: event.date,
           location: event.location,
           participants: {
-            current: event.participants.length, // 현재 참가자 수
+            current: event.participants, // 현재 참가자 수
             max: event.maxParticipants, // 최대 참가자 수
           },
           likes: event.likes, // 좋아요 수
           host: event.createdBy.name, // 이벤트 생성자 이름
+          hashtags: event.hashtags, //해시태그 배열
           // hostImage: event.createdBy.profileImage || "@/assets/images/default-host.png", // 생성자 이미지
         }));
       } catch (error) {
@@ -625,6 +632,15 @@ export default {
     text-align: center;
     text-underline-position: from-font;
     text-decoration-skip-ink: none;
+  }
+  .hashtag{
+    background-color: #12CF51;
+    color: #ffffff;
+    padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: none;
+    border-radius: 24px;
   }
 
 </style>

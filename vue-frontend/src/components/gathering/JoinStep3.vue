@@ -1,7 +1,6 @@
 <template>
     <div class="contaienr">
 
-
         <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
           <div class="progress-bar" style="width: 100%"></div>
         </div>
@@ -15,11 +14,13 @@
             </button>
           </div>
         </div>
-        <!-- body -->
+        
+        <!-- Body -->
         <div class="row">
             <div class="col body-box">
                 <p class="title">Payment</p>
-                <!-- card -->
+                
+                <!-- Card -->
                 <div class="col">
                     <div class="row join-card">
                         <div class="col-5 join-card-img-box">
@@ -47,6 +48,7 @@
                         </div>
                     </div>
                 </div>
+                
                 <!-- Refund Policy -->
                 <div class="col">
                     <div class="policy-box">
@@ -70,7 +72,7 @@
                         <div class="checkbox-wrapper-15">
                             <span>"I have read the payment details, refund policy, and terms of use, and I agree to them."
                             </span>
-                            <input class="inp-cbx" id="cbx-15" type="checkbox" style="display: none;"/>
+                            <input class="inp-cbx" id="cbx-15" type="checkbox" style="display: none;" v-model="isAgreed"/>
                             <label class="cbx" for="cbx-15">
                             <span>
                                 <svg width="12px" height="9px" viewbox="0 0 12 9">
@@ -87,7 +89,7 @@
         <!-- Next Button -->
         <div class="row">
             <div class="next-btn-box">
-                <router-link class="next-btn" to="#">
+                <router-link class="next-btn" to="#" :class="{ 'disabled-link': !isAgreed }" :disabled="!isAgreed" @click="payNow">
                     Pay Now
                 </router-link>
             </div>
@@ -98,6 +100,8 @@
 
 <script>
 import { ref } from "vue";
+import axios from 'axios';
+import { useStore } from 'vuex';
 
 export default {
   props: {
@@ -106,7 +110,9 @@ export default {
   emits: ["update-form-data", "next", "previous"],
   setup(props, { emit }) {
     const eventName = ref(props.formData?.name || "");
-
+    const isAgreed = ref(false); // 동의 체크박스 상태
+    const store = useStore();
+    const userId = store.getters.userId;
     const saveProgress = () => {
       emit("update-form-data", { name: eventName.value });
       alert("Progress saved!");
@@ -125,16 +131,43 @@ export default {
       emit("previous");
     };
 
+    // 결제하기
+    const payNow =  async ()  => {
+      if (!isAgreed.value) {
+        alert("You must agree to the terms before proceeding.");
+        return;
+      } 
+      console.log(props.formData.eventId)
+      console.log(userId)
+      console.log(props.formData.answer)
+       try {
+                const response = await axios.post('http://localhost:3000/gathering/createParticipant', {
+                eventId: props.formData.eventId,
+                userId: userId,
+                answer: props.formData.answer,
+            });
+
+            if (response.status === 201) {
+            alert('Registration successful!');
+            }
+        } catch (error) {
+            console.error('Error during registration:', error);
+            alert('Failed to register for the event. Please try again.');
+        }
+    };
+
     return {
       saveProgress,
       nextStep,
       goBack,
+      isAgreed,
+      payNow,
     };
   },
 };
 </script>
 
-<style>
+<style scoped>
 .row{
     justify-self: center;
 }

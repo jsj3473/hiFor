@@ -15,7 +15,7 @@ import {
     NotFoundException,
     ParseIntPipe
   } from '@nestjs/common';
-  import { CreateEventDto, ApplyEventDto } from './gathering.dto';
+  import { CreateEventDto, ApplyEventDto, CreateParticipantDto } from './gathering.dto';
   import { JwtAuthGuard } from '../auth/auth.guard';
   import { GatheringService } from './gathering.service';
 
@@ -49,7 +49,7 @@ import {
         return { success: false, message: error.message };
       }
     }
-    @Get()
+    @Get('getAllEvents')
     async getAllEvents() {
       try {
         const events = await this.gatheringService.getAllEvents();
@@ -91,6 +91,11 @@ import {
     async toggleLike(@Param('eventId', ParseIntPipe) eventId: number, @Body('userId') userId: string) {
       const updatedLikes = await this.gatheringService.toggleLike(eventId, userId);
       return { likesLen: updatedLikes };
+    }
+    @Post('createParticipant')
+    async createParticipant(@Body() createParticipantDto: CreateParticipantDto) {
+      const { eventId, userId, answer } = createParticipantDto;
+      return await this.gatheringService.createParticipant(eventId, userId, answer);
     }
   }
   

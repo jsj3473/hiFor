@@ -10,6 +10,7 @@ import ShowAllEvents from '../components/gathering/ShowAllEvents.vue';
 import GoogleSignUp from '../components/auth/googleSignUp.vue'; 
 import EventDetailJoin from '../components/gathering/eventDetailJoin.vue';
 import JoinEvent from '../components/gathering/JoinStepParent.vue';
+import GatheringApprove from '../components/gathering/GatheringApprove.vue';
 
 const routes = [
   {
@@ -82,6 +83,12 @@ const routes = [
     path: '/joinEvents/:eventId',
     name: 'JoinEvent',
     component: JoinEvent,
+    meta: { hideHeaderFooter: false },
+  },
+  {
+    path: '/manage/:eventId',
+    name: 'GatheringApprove',
+    component: GatheringApprove,
     meta: { hideHeaderFooter: false },
   },
 

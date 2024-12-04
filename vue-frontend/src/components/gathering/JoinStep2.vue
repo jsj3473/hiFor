@@ -44,7 +44,7 @@
                     <div class="ghest-box">
                         <p class="ghest-name"><img class="ghest-icon" src="@/assets/images/ex5.jpeg" alt="">MinSoo Kim</p>
                     </div>
-                    <input class="Answer-text" type="text" placeholder="Answer host's Question">
+                    <input class="Answer-text" type="text" placeholder="Answer host's Question" v-model="userAnswer">
                 </div>
             </div>
          </div>
@@ -99,7 +99,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 .row{
     justify-self: center;
 }
