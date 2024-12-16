@@ -1,51 +1,470 @@
 <template>
-    <div>
-      <h1>이벤트 목록</h1>
-      <div v-for="event in events" :key="event.id" class="event-card">
-        <img v-if="event.eventImages && event.eventImages.length > 0" :src="`http://localhost:3000/uploads/${event.eventImages[0]}`" :alt="event.eventName" />
-        <h2>{{ event.eventName }}</h2>
-        <p>날짜: {{ event.date }}</p>
-        <p>장소: {{ event.eventLocation }}</p>
-        <p>인원: {{ event.participants || "구현 중" }}</p>
-        <p>좋아요 수: {{ event.likes || "구현 중" }}</p>
-        <button @click="shareEvent(event.id)">공유하기</button>
-      </div>
+
+<!-- banner -->
+<div class="contaienr main-banner">
+  <div class="row">
+    <div class="col-12 banner-text-box1">
+      <p class="banner-text1">Events</p>
     </div>
-  </template>
+    <div class="col-12 banner-text-box2">
+      <p class="banner-title">Browse all the events</p>
+    </div>
+    <div class="col-12 banner-text-box3">
+      <p class="banner-text3">Find the event you want!</p>
+    </div>
+  </div>
+</div>
+
+<!-- 검색 -->
+ <div class="container">
+  <table class="search-table">
+    <thead>
+    <tr>
+      <th>
+        <form class="search-form" action="">
+          <input class="search-text" type="search" placeholder="Search for events">
+          <button class="submit-btn" type="submit">
+            <img class="submit-btn-img" src="@/assets/Search-icon.png" alt="">
+          </button>
+        </form>
+      </th>
+      <th>
+        <input type="date">
+      </th>
+      <th>
+        <select name="" id="">
+          <option value="">Location</option>
+          <option value="">Jongno-gu</option>
+          <option value="">Jung-gu</option>
+          <option value="">Yongsan-gu</option>
+          <option value="">Seongdong-gu</option>
+          <option value="">Gwangjin-gu</option>
+          <option value="">Dongdaemun-gu</option>
+          <option value="">Jungnang-gu</option>
+          <option value="">Seongbuk-gu</option>
+          <option value="">Gangbuk-gu</option>
+          <option value="">Dobong-gu</option>
+          <option value="">Nowon-gu</option>
+          <option value="">Eunpyeong-gu</option>
+          <option value="">Seodaemun-gu</option>
+          <option value="">Mapo-gu</option>
+          <option value="">Yangcheon-gu</option>
+          <option value="">Gangseo-gu</option>
+          <option value="">Guro-gu</option>
+          <option value="">Geumcheon-gu</option>
+          <option value="">Yeongdeungpo-gu</option>
+          <option value="">Dongjak-gu</option>
+          <option value="">Gwanak-gu</option>
+          <option value="">Seocho-gu</option>
+          <option value="">Gangnam-gu</option>
+          <option value="">Songpa-gu</option>
+          <option value="">Gangdong-gu</option>
+          <option value="">etc</option>
+        </select>
+      </th>
+      <th>
+        <select name="" id="">
+          <option value="">Recruitment Type</option>
+          <option value="">First come</option>
+          <option value="">Register</option>
+        </select>
+      </th>
+    </tr>
+  </thead>
+  </table>
   
-  <script>
-  import { ref, onMounted } from 'vue';
-  import axios from 'axios';
+  <div class="row title-box">
+    <div class="col-6">
+      <p class="title-op1">All events</p>
+    </div>
+    <div class="col-6 text-right">
+      <img src="@/assets/icons/Graph.png" alt="">
+      <select class="" name="" id="">
+        <option value="">All</option>
+        <option value="">Hot</option>
+        <option value="">Name</option>
+        <option value="">Date</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row card-section">
+    <div class="col-4" v-for="(event, index) in paginatedEvents" :key="index">
+      <router-link :to="`/events/${event.id}`">
+        <div class="card">
+          <img :src="event.image" class="card-img-top card-img" alt="..." />
+          <div class="card-body">
+            <p class="card-title">{{ event.name }}</p>
+            <div class="row hashtag-row"></div>
+            <div class="row">
+              <div class="col-6">
+                <p class="card-info-text">
+                  <img class="card-info-icon" src="@/assets/icons/Date_icon.png" alt="" />
+                  {{ event.date }}
+                </p>
+              </div>
+              <div class="col-6">
+                <p class="card-info-text">
+                  <img class="card-info-icon" src="@/assets/icons/MapPin_icon.png" alt="" />
+                  {{ event.location }}
+                </p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <p class="card-info-text">
+                  <img class="card-info-icon" src="@/assets/icons/User_icon.png" alt="" />
+                  <span>{{ event.participants.current }}</span>/<span>{{ event.participants.max }}</span>
+                </p>
+              </div>
+              <div class="col-6">
+                <p class="card-info-text">
+                  <img class="card-info-icon" src="@/assets/icons/Heart.png" alt="" />
+                  <span>{{ event.likes }}</span>
+                </p>
+              </div>
+            </div>
+            <div class="row">
+              <!--
+              <router-link>
+                <p class="card-host">
+                  <img class="host-icon" :src="event.hostImage" alt="" />
+                  {{ event.createdBy }}
+                </p>
+              </router-link>
+              -->
+              <router-link :to="`/hosts/${event.hostId}`">
+                <p class="card-host">
+                  {{ event.host }}
+                </p>
+              </router-link>
+            </div>
+          </div>
+        </div>
+      </router-link>
+    </div>
+  </div>
   
-  export default {
-    setup() {
-      const events = ref([]);
-  
-      const fetchEvents = async () => {
-        try {
-          const response = await axios.get('http://localhost:3000/gathering');
-          events.value = response.data;
-        } catch (error) {
-          console.error('이벤트 데이터를 불러오는 중 오류 발생:', error);
-        }
-      };
-  
-      const shareEvent = (eventId) => {
-        const url = `${window.location.origin}/events/${eventId}`;
-        navigator.clipboard.writeText(url).then(() => {
-          alert("이벤트 링크가 복사되었습니다!");
-        });
-      };
-  
-      onMounted(() => {
-        fetchEvents();
-      });
-  
-      return {
-        events,
-        shareEvent
-      };
-    }
-  };
-  </script>
-  
+</div>
+<!-- 페이지네이션 버튼 -->
+<div class="pagination">
+  <button @click="goToPage(1)" :disabled="currentPage === 1">&laquo;</button> <!-- << -->
+  <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">&lt;</button> <!-- < -->
+
+  <button
+    v-for="page in visiblePages"
+    :key="page"
+    @click="goToPage(page)"
+    :class="{ active: currentPage === page }"
+  >
+    {{ page }}
+  </button>
+
+  <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">&gt;</button> <!-- > -->
+  <button @click="goToPage(totalPages)" :disabled="currentPage === totalPages">&raquo;</button> <!-- >> -->
+</div>
+
+
+</template>
+
+<script>
+import { ref, computed, onMounted } from 'vue';
+import { useStore } from 'vuex';
+import axios from 'axios';
+
+export default {
+  name: 'HomePage',
+  setup() {
+    const store = useStore();
+
+    // Vuex 상태 및 getter 사용
+    const isLoggedIn = computed(() => store.getters.isLoggedIn);
+    const token = computed(() => store.getters.token);
+
+    // 로컬 상태 관리
+    const events = ref([]); // 이벤트 데이터
+
+
+    
+    const currentPage = ref(1); // 현재 페이지
+    const eventsPerPage = 12; // 한 페이지당 이벤트 수
+
+    const totalPages = computed(() => {
+      return events.value.length > 0
+        ? Math.ceil(events.value.length / eventsPerPage)
+        : 1; // 데이터가 없을 때 최소 1페이지 유지
+    });
+
+    // 현재 페이지에 표시될 이벤트
+    const paginatedEvents = computed(() => {
+      const start = (currentPage.value - 1) * eventsPerPage;
+      const end = start + eventsPerPage;
+      return events.value.slice(start, end);
+    });
+    // 최대 10개의 페이지 버튼 표시
+    const visiblePages = computed(() => {
+      const maxPagesToShow = 10;
+      const half = Math.floor(maxPagesToShow / 2);
+
+      let startPage = currentPage.value - half;
+      let endPage = currentPage.value + half;
+
+      if (startPage < 1) {
+        startPage = 1;
+        endPage = Math.min(totalPages.value, maxPagesToShow);
+      }
+      if (endPage > totalPages.value) {
+        endPage = totalPages.value;
+        startPage = Math.max(1, totalPages.value - maxPagesToShow + 1);
+      }
+
+      const pages = [];
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+      return pages;
+    });
+    // 페이지 변경 함수
+    const goToPage = (page) => {
+      if (page >= 1 && page <= totalPages.value) {
+        currentPage.value = page;
+      }
+    };
+
+    // 이벤트 데이터 가져오기
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/gathering/getAllEvents"); 
+        events.value = response.data.map(event => ({
+          id: event.id,
+          image: event.image,
+          title: event.name,
+          date: event.date,
+          location: event.location,
+          participants: {
+            current: event.participants, // 현재 참가자 수
+            max: event.maxParticipants, // 최대 참가자 수
+          },
+          likes: event.likes, // 좋아요 수
+          host: event.createdBy.name, // 이벤트 생성자 이름
+          hashtags: event.hashtags, //해시태그 배열
+          // hostImage: event.createdBy.profileImage || "@/assets/images/default-host.png", // 생성자 이미지
+        }));
+      } catch (error) {
+        console.error("Failed to fetch events:", error);
+      }
+    };
+
+    // 컴포넌트 마운트 시 이벤트 데이터 가져오기
+    onMounted(() => {
+      fetchEvents();
+    });
+
+    return {
+      isLoggedIn,
+      token,
+      events,
+      goToPage,
+      paginatedEvents,
+      currentPage,
+      totalPages,
+      visiblePages
+    };
+  },
+};
+</script>
+
+<style scoped>
+.text-right{
+text-align: right;
+}
+.text-left{
+text-align: left;
+}
+.row{
+width: 100%;
+}
+/* 반응형 모바일 css */
+@media screen and (max-width:768px){}
+
+/* 웹 */
+@media screen and (min-width:769px){
+/* banner */
+.main-banner{
+  height: 280px;
+  background-position: center;
+}
+.banner-text-box1{
+  padding-top: 72px;
+}
+.banner-text-box3{
+  padding-top: 0px;
+}
+.banner-text1{
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+  color: #0CA835;
+  text-align: center;
+  text-decoration-skip-ink: none;
+}
+.banner-text3{
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-decoration-skip-ink: none;
+}
+.banner-text-box2{
+  margin-bottom: 12px;
+}
+.banner-title{
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 64px;
+  text-align: center;
+}
+
+/* Search */
+.search-table{
+  width: 100%;
+  height: 50px;
+  border-bottom: 1px solid #CBD7EA;
+}
+.search-table th{
+  text-align: center;
+  padding-right: 10px;
+  border-right: 1px solid #CBD7EA;
+}
+.search-table input{
+  height: 40px;
+  border: none;
+}
+.search-table select{
+  height: 40px;
+  border: none;
+}
+table{
+  border-collapse: separate;
+  border-spacing: 10px 10px;
+}
+.search-form{
+  text-align: center;
+}
+.search-text{
+  max-width: 88%;
+  height: 40px;
+  border: none;
+}
+.submit-btn{
+  padding: 0px;
+  border: none;
+  float: right;
+}
+.submit-btn-img{
+  width: 40px;
+  height: 40px;
+}
+.title-box select{
+  text-align: center;
+  border: none;
+}
+.title-box img{
+  height: 21px;
+}
+
+/* card list section */
+.card-section{
+  margin-bottom: 33px;
+}
+.title-box{
+  margin-top: 66px;
+}
+.title-op1{
+  font-size: 36px;
+  font-weight: bold;
+  margin: 0px;
+}
+.text-op1{
+  font-size: 20px;
+  margin: 0px;
+  align-self: bottom;
+}
+.card:hover{
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+.card-title{
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: left;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.card{
+  border-radius:30px !important;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+.card-img{
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius:30px !important;
+}
+.card-info-icon{
+  width: 16px;
+  height: 16px;
+}
+.card-info-text{
+  align-content: center;
+  text-align: left;
+}
+.card-host{
+  margin: 0px;
+  cursor: pointer;
+  text-align: left;
+}
+.host-icon{
+  width: 32px;
+  height: 32px;
+  border-radius: 100%;
+}
+.hashtag{
+  background-color: #12CF51;
+  color: #ffffff;
+  padding: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: none;
+  border-radius: 24px;
+  margin-bottom: 15px;
+  width: min-content;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+}
+</style>

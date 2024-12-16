@@ -97,5 +97,32 @@ import {
       const { eventId, userId, answer } = createParticipantDto;
       return await this.gatheringService.createParticipant(eventId, userId, answer);
     }
+
+    @Patch(':id/status')
+    async updateParticipantStatus(
+      @Param('id') participantId: number,
+      @Body('status') status: string
+    ) {
+      if (!['Approved', 'Rejected'].includes(status)) {
+        throw new HttpException('Invalid status value', HttpStatus.BAD_REQUEST);
+      }
+  
+      return await this.gatheringService.updateStatus(participantId, status);
+    }
+
+    @Get('getEventsByHostId/:userId')
+    async getEventsByHostId(@Param('userId') hostId: string){
+      return await this.gatheringService.getEventsByHostId(hostId)
+    }
+
+    @Get('getParticipatedEvent/:userId')
+    async getParticipatedEvent(@Param('userId') participatedId: string) {
+      return await this.gatheringService.getParticipatedEvent(participatedId);
+    }    
+    
+    @Get('getLikedEvent/:userId')
+    async getLikedEvent(@Param('userId') likedId: string) {
+      return await this.gatheringService.getLikedEvents(likedId);
+    }
   }
   

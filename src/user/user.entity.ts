@@ -29,7 +29,11 @@ export class User {
   dob: Date;  // 생년월일
 
   @Column({ nullable: true })
-  gender: string;  // 성별 (예: 남성, 여성, 기타)
+  gender: string;  // 성별 (예: 남성, 여성, 기타)  
+
+
+  @Column({ nullable: true })
+  university: string;
   
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   passwordLastChanged: Date;

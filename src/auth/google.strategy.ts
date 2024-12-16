@@ -22,8 +22,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   } 
   
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    console.log('Access Token:', accessToken);
-  
     const { id, name, emails } = profile;
     const email = emails[0].value;
     
@@ -49,9 +47,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       const birthday = birthdayObj
       ? `${birthdayObj.year}-${String(birthdayObj.month).padStart(2, '0')}-${String(birthdayObj.day).padStart(2, '0')}`
       : null;
-    
-      console.log('User Birthday:', birthday);
-      console.log('User Gender:', gender);
   
       let user = await this.userService.findByEmail(email)
 
@@ -70,7 +65,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       }
       
   
-      console.log('User successfully found or created:', user);
   
       return user;
     } catch (error) {

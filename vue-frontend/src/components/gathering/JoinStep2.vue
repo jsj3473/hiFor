@@ -25,10 +25,10 @@
                     Question
                 </div>
                 <div class="host-box">
-                    <p class="host-name"><img class="host-icon" src="@/assets/images/ex7.jpeg" alt="">Min Kim</p>
+                    <p class="host-name"><img class="host-icon" src="@/assets/images/ex7.jpeg" alt="">{{ hostName }}</p>
                 </div>
                 <div class="Q-text-box">
-                    <p class="Q-text">What your name?</p>
+                    <p class="Q-text">{{ question }}</p>
                 </div>
             </div>
 
@@ -42,7 +42,7 @@
                 </div>
                 <div class="Answer-text-box">
                     <div class="ghest-box">
-                        <p class="ghest-name"><img class="ghest-icon" src="@/assets/images/ex5.jpeg" alt="">MinSoo Kim</p>
+                        <p class="ghest-name"><img class="ghest-icon" src="@/assets/images/ex5.jpeg" alt="">{{ participantName }}</p>
                     </div>
                     <input class="Answer-text" type="text" placeholder="Answer host's Question" v-model="userAnswer">
                 </div>
@@ -62,7 +62,9 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import axios from "axios";
+
 
 export default {
   props: {
@@ -72,6 +74,29 @@ export default {
   setup(props, { emit }) {
     // 사용자의 답변 상태를 관리
     const userAnswer = ref(props.formData?.answer || "");
+    const question = ref(""); // 질문 텍스트
+    const hostName = ref(""); // 호스트 이름
+    const participantName = ref(""); // 참가자 이름
+        
+    // API 호출로 질문 데이터를 로드
+    const loadQuestion = async () => {
+      try {
+        const eventId = props.formData.eventId; 
+        const response = await axios.get(`http://localhost:3000/gathering/getEvents/${eventId}`);
+        question.value = response.data.question; // 이벤트의 질문 데이터
+        hostName.value = response.data.createdBy.username; // 호스트 이름
+        const userId = sessionStorage.getItem("userId");
+        const response1 = await axios.get(`http://localhost:3000/user/getUser/${userId}`);
+        participantName.value = response1.data.username
+      } catch (error) {
+        console.error("Error loading question:", error);
+      }
+    };
+
+    // 컴포넌트 마운트 시 질문 로드
+    onMounted(() => {
+      loadQuestion();
+    });
 
     // 다음 스텝으로 이동
     const nextStep = () => {
@@ -93,6 +118,9 @@ export default {
       userAnswer,
       nextStep,
       goBack,
+      question,
+      hostName,
+      participantName,
     };
   },
 };

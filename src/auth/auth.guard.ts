@@ -69,14 +69,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const result = (await super.canActivate(context)) as boolean;
     console.log('Auth Guard Result:', result); 
     const request = context.switchToHttp().getRequest();
-    console.log('Request Cookies1:', request.cookies);
-    console.log('2222')
     // 만약 인증이 성공했을 경우, 사용자 정보를 요청 객체에 설정
     if (result) {
       const user = request.user;
       request.user = user;
     }
-    console.log('22223')
     return result;
   }
 }

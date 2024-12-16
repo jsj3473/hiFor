@@ -12,6 +12,9 @@ export class HiforEvent {
   description: string; // 이벤트 설명 (선택)
 
   @Column({ type: 'text', nullable: true })
+  question: string
+
+  @Column({ type: 'text', nullable: true })
   image: string; // 이벤트 썸네일 이미지 경로 (선택)
 
   @Column({ length: 255, nullable: true })

@@ -9,7 +9,7 @@
     <div class="P-box">
         <p class="p-count-title">
             Participants <img class="p-icon" src="" alt="">
-            <span class="p-count"><span>9</span> / <span>15</span></span>
+            <span class="p-count">{{ currentCount }} / {{ maxParticipants  }}</span>
         </p>
 
         <p class="p-icon-box">
@@ -26,40 +26,32 @@
             <p class="host-name"><img class="host-icon" src="@/assets/images/ex7.jpeg" alt="">Min Kim</p>
         </div>
         <div class="Q-text-box">
-            <p class="Q-text">What your name?</p>
+            <p class="Q-text">{{ eventQuestion  }}</p>
         </div>
     </div>
     <!-- Line -->
     <div class="line"></div>
     <!-- Answer -->
-    <div class="Answer-box">
+    <div class="Answer-box" v-for="participant in pendingParticipants" :key="participant.id">
         <div class="Answer-title">
-            Ghest's Answer
+            Guest's Answer
         </div>
-        <!-- 답변 -->
         <div class="ghest-box">
-            <p class="host-name"><img class="host-icon" src="@/assets/images/ex7.jpeg" alt="">MinSoo Kim</p>
-        </div>
-        <div class="Q-text-box">
-            <p class="Q-text">My name is MinSoo Kim. Nice to meet you!</p>
-        </div>
-        <div class="approve-box">
-            <button class="accept-btn">Accept</button>
-            <button class="reject-btn">Reject</button>
-        </div>
-
-        <div class="ghest-box">
-            <p class="host-name"><img class="host-icon" src="@/assets/images/ex7.jpeg" alt="">MinSoo Kim</p>
-        </div>
-        <div class="Q-text-box">
-            <p class="Q-text">
-                My name is MinSoo Kim. Nice to meet you! <br>
-                asdasdasdasdasdlaksjdvbasdlkjvbnsalkjvnaslkvjbnsadlkvjbsndalkvjbsadlkvjsadblvkjsdbavlkjsdabvlkjsadbvlksajvb lsakjvdb dslkjvb sdlakjvbsaldkvjbnsadlkvjbsaldkvjabs dlkvj sdlkvjsad lvkjsa dvlkasjd vlkasjv alskdj 
+            <p class="host-name">
+                <!--<img class="host-icon" :src="participant.avatar || '@/assets/images/default-avatar.png'" alt="">     마이페이지 개발후 개발예정-->
+                {{ participant.user.username }}
             </p>
         </div>
+        <div class="Q-text-box">
+            <p class="Q-text">{{ participant.answer }}</p>
+        </div>
         <div class="approve-box">
-            <button class="accept-btn">Accept</button>
-            <button class="reject-btn">Reject</button>
+            <button class="accept-btn" @click="updateParticipantStatus(participant.id, 'Approved')">
+            Accept
+            </button>
+            <button class="reject-btn" @click="updateParticipantStatus(participant.id, 'Rejected')">
+            Reject
+            </button>
         </div>
     </div>
     <!-- Next Button -->
@@ -73,7 +65,75 @@
     
 </template>
 
-<script></script>
+<script>
+import { ref, onMounted, computed } from "vue";
+import axios from "axios";
+import { useRoute } from "vue-router";
+
+export default {
+  setup() {
+    const route = useRoute();
+    const eventId = route.params.eventId;
+
+    // 데이터 상태
+    const event = ref({});
+    const participants = ref([]);
+    const currentCount = ref(0);
+    const maxParticipants = ref(0);
+    const eventQuestion = ref("");
+
+    // 상태가 Pending인 참가자 필터링
+    const pendingParticipants = computed(() => {
+      return participants.value.filter((participant) => participant.status === "Pending");
+    });
+    // API 호출 함수
+    const loadEventDetails = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/gathering/getEvents/${eventId}`);
+        event.value = response.data;
+        maxParticipants.value = event.value.maxParticipants || 0;
+        currentCount.value = event.value.participants?.filter(
+          (p) => p.status === "Approved"
+        ).length || 0;
+        eventQuestion.value = event.value.question; // 질문 데이터 (설명 필드 사용)
+        participants.value = event.value.participants;
+      } catch (error) {
+        console.error("Error loading event details:", error);
+      }
+    };
+
+    const updateParticipantStatus = async (participantId, status) => {
+      try {
+        console.log(participantId, status)
+        await axios.patch(`http://localhost:3000/gathering/${participantId}/status`, { status });
+        await loadEventDetails(); // 업데이트 후 다시 로드
+        currentCount.value = participants.value.filter(
+          (p) => p.status === "Approved"
+        ).length;
+      } catch (error) {
+        console.error("Error updating participant status:", error);
+      }
+    };
+
+    // 컴포넌트 로드시 데이터 로드
+    onMounted(async () => {
+      await loadEventDetails();
+    });
+
+    return {
+      event,
+      participants,
+      currentCount,
+      maxParticipants,
+      eventQuestion,
+      updateParticipantStatus,
+      pendingParticipants,
+    };
+  },
+};
+</script>
+
+
 
 <style scoped>
 .row{

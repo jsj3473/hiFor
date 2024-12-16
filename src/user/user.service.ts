@@ -37,9 +37,16 @@ export class UserService {
     const result = await this.userRepository.findOne({
       where: { userId },
     });
-    //console.log(result)
-    return result;
+  
+    // 새로운 객체를 만들어 age 추가
+    const userWithAge = {
+      ...result, // 기존 user 필드 복사
+      age: this.calculateAge(result.dob), // 나이 계산 후 추가
+    };
+  
+    return userWithAge;
   }
+  
 
   async findByEmail(email: string) {
     const result = await this.userRepository.findOne({
@@ -117,4 +124,27 @@ export class UserService {
     
     console.log('Updated User:', updatedUser);
   }
+
+  private calculateAge(dob: string | Date): number {
+    // dob가 Date 객체가 아니면 Date로 변환
+    const birthDate = dob instanceof Date ? dob : new Date(dob);
+  
+    // 유효하지 않은 날짜인 경우 에러 처리
+    if (isNaN(birthDate.getTime())) {
+      throw new Error('Invalid date format');
+    }
+  
+    const today = new Date();
+  
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+  
+    // 생일이 아직 지나지 않은 경우
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+  
+    return age;
+  }
+  
 }
