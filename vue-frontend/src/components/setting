@@ -1,0 +1,10 @@
+<template>
+</template>
+
+<!-- css -->
+<style scoped>
+    /* 반응형 모바일 css */
+    @media screen and (max-width:768px){}
+    /* 웹 */
+    @media screen and (min-width:769px){}
+</style>

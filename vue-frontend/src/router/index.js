@@ -3,6 +3,7 @@ import SignUp from '../components/auth/SignUp.vue';
 import SignIn from '../components/auth/SignIn.vue';
 import PasswordChange from '../components/auth/PasswordChange.vue';
 import MyPage from '../components/MyPage.vue'
+import MyPageEdit from '../components/MyPageEdit.vue'
 import FindUsername from '../components/auth/FindUsername.vue';
 import FindPassword from '../components/auth/FindPassword.vue';
 import CreateEvent from '../components/gathering/CreateEvent.vue';
@@ -11,6 +12,12 @@ import GoogleSignUp from '../components/auth/googleSignUp.vue';
 import EventDetailJoin from '../components/gathering/eventDetailJoin.vue';
 import JoinEvent from '../components/gathering/JoinStepParent.vue';
 import GatheringApprove from '../components/gathering/GatheringApprove.vue';
+import OurCompany from '@/components/about/OurCompany.vue';
+import OurService from '@/components/about/OurService.vue';
+//import Notice from '@/components/help/Notice.vue';
+import ServiceGuide from '@/components/help/ServiceGuide.vue';
+//import Support from '@/components/help/Support.vue';
+import UseClause from '@/components/help/UseClause.vue';
 
 const routes = [
   {
@@ -35,6 +42,12 @@ const routes = [
     path: '/myPage',
     name: 'MyPage',
     component: MyPage,
+    meta: { hideHeaderFooter: false },
+  },
+  {
+    path: '/myPageEdit',
+    name: 'MyPageEdit',
+    component: MyPageEdit,
     meta: { hideHeaderFooter: false },
   },
   {
@@ -89,6 +102,30 @@ const routes = [
     path: '/manage/:eventId',
     name: 'GatheringApprove',
     component: GatheringApprove,
+    meta: { hideHeaderFooter: false },
+  },
+  {
+    path: '/ourCompany',
+    name: 'OurCompany',
+    component: OurCompany,
+    meta: { hideHeaderFooter: false },
+  },
+  {
+    path: '/ourService',
+    name: 'OurService',
+    component: OurService,
+    meta: { hideHeaderFooter: false },
+  },
+  {
+    path: '/serviceGuide',
+    name: 'ServiceGuide',
+    component: ServiceGuide,
+    meta: { hideHeaderFooter: false },
+  },
+  {
+    path: '/useClause',
+    name: 'UseClause',
+    component: UseClause,
     meta: { hideHeaderFooter: false },
   },
 

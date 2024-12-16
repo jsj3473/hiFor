@@ -3,20 +3,89 @@
   <div id="app">
     <!-- 헤더 영역 -->
     <header v-if="!$route.meta.hideHeaderFooter">
-      <nav>
-        <ul>
-          <li><router-link to="/">홈</router-link></li>
-          <li v-if="isLoggedIn"> - {{ userId }}님 환영합니다 - </li>
-          <li v-if="!isLoggedIn"><router-link to="/signUp">회원가입</router-link></li>
-          <li v-if="!isLoggedIn"><router-link to="/signIn">로그인</router-link></li>
+      <table class="header">
+        <thead class="nav">
+          <tr class="nav-bar">
+            <td class="logo"><router-link to="/">HiFor.</router-link></td>
+            <td class="nav-list"><router-link to="/">Home</router-link></td>
+            <td class="nav-list"><router-link to="/ShowAllEvents">All Events</router-link></td>
+            <td class="nav-list">
+              <div class="dropdown">
+                <div class="dropbtn">
+                  <router-link to="/">About <span class="dropdown-icon">∨</span></router-link>
+                </div>
+                <div class="dropdown-content">
+                  <router-link class="nav-sub-list" to="/">Company</router-link>
+                  <router-link class="nav-sub-list" to="/">Service</router-link>
+                </div>
+              </div>
+            </td>
+            <td class="nav-list">
+              <div class="dropdown">
+                <div class="dropbtn">
+                  <router-link to="/">Help <span class="dropdown-icon">∨</span></router-link>
+                </div>
+                <div class="dropdown-content">
+                  <router-link class="nav-sub-list" to="/">Guide</router-link>
+                  <router-link class="nav-sub-list" to="/">Notice</router-link>
+                  <router-link class="nav-sub-list" to="/">F&Q</router-link>
+                  <router-link class="nav-sub-list" to="/">아용약관</router-link>
+                  <router-link class="nav-sub-list" to="/">고객문의</router-link>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr class="nav-btn">
+            <!-- Before SignIn -->
+            <td v-if="!isLoggedIn" class="btn-op1">
+              <router-link class="signup-btn" to="/signUp">Sign Up</router-link>
+            </td>
+            <td v-if="!isLoggedIn" class="btn-op1">
+              <router-link class="signup-btn" to="/signIn">Sign In</router-link>
+            </td>
+            <!-- After SignIn -->
+            <td v-if="isLoggedIn" class="btn-op2">
+              <router-link class="signup-btn" to="/createEvent">Create Events</router-link>
+            </td>
+            <td v-if="isLoggedIn" class="btn-op3">
+              <div class="dropdown">
+                <div class="dropbtn">
+                  <router-link class="mp-btn" to="/myPage">
+                    <img class="mp-img" src="@/assets/c-img4.png" alt=""> {{ userId }} <span class="dropdown-icon">∨</span>
+                  </router-link>
+                </div>
+                <div class="dropdown-content mp-dropmenu">
+                  <router-link class="nav-sub-list" to="/"><button @click="logout">로그아웃</button></router-link>
+                  <router-link class="nav-sub-list" to="/">Notice2</router-link>
+                  <router-link class="nav-sub-list" to="/">Notice3</router-link>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </thead>
+      </table>
+      <!-- <nav>
+        <ul class="lz">
+          <li><router-link to="/">Home</router-link></li>
+          <li><router-link to="/">All Events</router-link></li>
+          <li><router-link to="/">About</router-link></li>
+          <li><router-link to="/">Notice</router-link></li>
+        </ul>
+        <ul class="rz">
+          <li v-if="!isLoggedIn">
+            <router-link to="/signUp">회원가입</router-link>
+          </li>
+          <li v-if="!isLoggedIn">
+            <router-link to="/signIn">로그인</router-link>
+          </li>
           <li v-if="isLoggedIn">
             <button @click="logout">로그아웃</button>
-            
             <router-link to="/createEvent">이벤트 생성</router-link>
           </li>
+          <li v-if="isLoggedIn"> - {{ userId }}님 환영합니다 - </li>
           <li v-if="isLoggedIn"><router-link to="/myPage">마이페이지</router-link></li>
         </ul>
-      </nav>
+      </nav> -->
     </header>
 
     <!-- 라우터 뷰 -->
@@ -87,3 +156,130 @@ onMounted(() => {
 });
 </script>
 
+<style scoped>
+@import url(https://fonts.googleapis.com/css?family=Lato:400,300,700,900);
+body * {
+  font-family: Lato !important;
+}
+a{
+  color: unset !important;
+  text-decoration: unset !important;
+}
+  /* 반응형 모바일 css */
+  @media screen and (max-width:768px){}
+
+  /* 웹 */
+  @media screen and (min-width:769px){
+    .header{
+      width: 100%;
+      height: 54px;
+    }
+    .nav{
+      width: 100%;
+      height: 54px;
+    }
+    .nav-bar{
+      width: 60%;
+      height: 54px;
+      align-content: center;
+    }
+    .nav-btn{
+      justify-items: end;
+      width: 40%;
+      height: 54px;
+      align-content: center;
+    }
+    .dropdown{
+      position : relative;
+      display : inline-block;
+    }
+
+    .dropdown-content{
+      display : none;
+      position : absolute;
+      z-index : 1; /*다른 요소들보다 앞에 배치*/
+      padding-top: 10px;
+      background-color: #fff;
+    }
+
+    .dropdown-content a{
+      display : block;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-icon{
+      font-size: 12px;
+    }
+    .logo{
+      font-size: 36px;
+      font-weight: bold;
+      color: #12CF51;
+      padding: 0px 20px;
+    }
+    .nav-list{
+      padding: 0px 20px;
+    }
+    .nav-sub-list{
+      padding: 10px 0px;
+      text-align: left
+    }
+    .btn-op1{
+      text-align: center;
+      color: #12CF51;
+    }
+    .signup-btn{
+      border: 1px solid #12CF51;
+      border-radius: 24px;
+      padding: 10px 20px;
+      margin-right: 15px;
+    }
+    .btn-op1:hover{
+      text-align: center;
+      color: #fff;
+    }
+    .signup-btn:hover{
+      border: 1px solid #12CF51;
+      background-color: #12CF51;
+      border-radius: 24px;
+      padding: 10px 20px;
+      margin-right: 15px;
+    }
+    .btn-op2{
+      width: 150px;
+      text-align: center;
+      color: #12CF51;
+    }
+    .btn-op2:hover{
+      width: 150px;
+      text-align: center;
+      color: #fff;
+    }
+    .btn-op3{
+      text-align: center;
+      color: #fff;
+      width: 147px;
+    }
+    .mp-btn{
+      text-align: center;
+      color: #fff;
+      border: 1px solid #12CF51;
+      background-color: #12CF51;
+      border-radius: 24px;
+      padding-top: 9px;
+      padding-bottom: 11px;
+      padding-left: 5px;
+      padding-right: 5px;
+      z-index: 10;
+    }
+    .mp-btn:hover{
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    }
+    .mp-img{
+      border-radius: 100%;
+      width: 33px;
+      height: 33px;
+    }
+  }
+</style>
