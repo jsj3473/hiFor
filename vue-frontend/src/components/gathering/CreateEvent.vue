@@ -21,12 +21,21 @@
 import { toRaw } from "vue";
 import axios from "axios";
 import { reactive, computed } from "vue";
+<<<<<<< HEAD
 import Step1 from "./ceStep1.vue";
 import Step2 from "./ceStep2.vue";
 import Step3 from "./ceStep3.vue";
 import Step4 from "./ceStep4.vue";
 import Step5 from "./ceStep5.vue";
 import Step6 from "./ceStep6.vue";
+=======
+import Step1 from "./createEvent/ceStep1.vue";
+import Step2 from "./createEvent/ceStep2.vue";
+import Step3 from "./createEvent/ceStep3.vue";
+import Step4 from "./createEvent/ceStep4.vue";
+import Step5 from "./createEvent/ceStep5.vue";
+import Step6 from "./createEvent/ceStep6.vue";
+>>>>>>> 44a0bdf (250101)
 
 export default {
   components: { Step1, Step2, Step3, Step4, Step5, Step6 },

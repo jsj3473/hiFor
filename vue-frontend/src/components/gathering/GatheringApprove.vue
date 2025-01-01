@@ -89,7 +89,11 @@ export default {
     // API 호출 함수
     const loadEventDetails = async () => {
       try {
+<<<<<<< HEAD
         const response = await axios.get(`http://localhost:3000/gathering/getEvents/${eventId}`);
+=======
+        const response = await axios.get(`http://localhost:3000/gathering/getEventForPending/${eventId}`);
+>>>>>>> 44a0bdf (250101)
         event.value = response.data;
         maxParticipants.value = event.value.maxParticipants || 0;
         currentCount.value = event.value.participants?.filter(

@@ -142,8 +142,19 @@
             <div class="card">
               <img :src="event.image" class="card-img-top card-img" alt="..." />
               <div class="card-body">
+<<<<<<< HEAD
                 <p class="card-title">{{ event.name }}</p>
                 <div class="row hashtag-row"></div>
+=======
+                <p class="card-title">{{ event.title }}</p>
+                <div class="row hashtag-row">
+                  <div class="hashtag-box">
+                    <button v-for="hashtag in event.hashtags" :key="hashtag" class="hashtag">
+                      #{{ hashtag }}
+                    </button>
+                  </div>
+                </div>
+>>>>>>> 44a0bdf (250101)
                 <div class="row">
                   <div class="col-6">
                     <p class="card-info-text">

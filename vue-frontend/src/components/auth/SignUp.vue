@@ -147,6 +147,15 @@
                 <input class="input-box-type1" type="text" v-model="user.nationality" id="nationality" />
               </div>
             </div>
+<<<<<<< HEAD
+=======
+            <div class="col-6">
+              <div class="form-group">
+                <label class="label-text-type1" for="university">university</label>
+                <input class="input-box-type1" type="text" v-model="user.university" id="university" />
+              </div>
+            </div>
+>>>>>>> 44a0bdf (250101)
           </div>
 
           <!-- 동의 section -->

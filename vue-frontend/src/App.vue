@@ -64,6 +64,7 @@
           </tr>
         </thead>
       </table>
+<<<<<<< HEAD
       <!-- <nav>
         <ul class="lz">
           <li><router-link to="/">Home</router-link></li>
@@ -86,6 +87,8 @@
           <li v-if="isLoggedIn"><router-link to="/myPage">마이페이지</router-link></li>
         </ul>
       </nav> -->
+=======
+>>>>>>> 44a0bdf (250101)
     </header>
 
     <!-- 라우터 뷰 -->

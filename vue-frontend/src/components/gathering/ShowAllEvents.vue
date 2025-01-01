@@ -17,10 +17,15 @@
 
 <!-- 검색 -->
  <div class="container">
+<<<<<<< HEAD
+=======
+  <form class="search-form" @submit.prevent="searchEvents">
+>>>>>>> 44a0bdf (250101)
   <table class="search-table">
     <thead>
     <tr>
       <th>
+<<<<<<< HEAD
         <form class="search-form" action="">
           <input class="search-text" type="search" placeholder="Search for events">
           <button class="submit-btn" type="submit">
@@ -67,11 +72,61 @@
           <option value="">Recruitment Type</option>
           <option value="">First come</option>
           <option value="">Register</option>
+=======
+        <input class="search-text"  v-model="searchQuery" type="search" placeholder="Search for events">
+        <button class="submit-btn" type="submit">
+          <img class="submit-btn-img" src="@/assets/Search-icon.png" alt="">
+        </button>
+      </th>
+      <th>
+        <input type="date" v-model="searchDate">
+      </th>
+      <th>
+        <select v-model="searchLocation">
+          <option disabled>Select Location</option>
+          <option value="Jongno-gu">Jongno-gu</option>
+          <option value="Jung-gu">Jung-gu</option>
+          <option value="Yongsan-gu">Yongsan-gu</option>
+          <option value="Seongdong-gu">Seongdong-gu</option>
+          <option value="Gwangjin-gu">Gwangjin-gu</option>
+          <option value="Dongdaemun-gu">Dongdaemun-gu</option>
+          <option value="Jungnang-gu">Jungnang-gu</option>
+          <option value="Seongbuk-gu">Seongbuk-gu</option>
+          <option value="Gangbuk-gu">Gangbuk-gu</option>
+          <option value="Dobong-gu">Dobong-gu</option>
+          <option value="Nowon-gu">Nowon-gu</option>
+          <option value="Eunpyeong-gu">Eunpyeong-gu</option>
+          <option value="Seodaemun-gu">Seodaemun-gu</option>
+          <option value="Mapo-gu">Mapo-gu</option>
+          <option value="Yangcheon-gu">Yangcheon-gu</option>
+          <option value="Gangseo-gu">Gangseo-gu</option>
+          <option value="Guro-gu">Guro-gu</option>
+          <option value="Geumcheon-gu">Geumcheon-gu</option>
+          <option value="Yeongdeungpo-gu">Yeongdeungpo-gu</option>
+          <option value="Dongjak-gu">Dongjak-gu</option>
+          <option value="Gwanak-gu">Gwanak-gu</option>
+          <option value="Seocho-gu">Seocho-gu</option>
+          <option value="Gangnam-gu">Gangnam-gu</option>
+          <option value="Songpa-gu">Songpa-gu</option>
+          <option value="Gangdong-gu">Gangdong-gu</option>
+          <option value="etc">etc</option>
+        </select>
+      </th>
+      <th>
+        <select v-model="searchType">
+          <option disabled>Recruitment Type</option>
+          <option value="First come">First come</option>
+          <option value="Register">Register</option>
+>>>>>>> 44a0bdf (250101)
         </select>
       </th>
     </tr>
   </thead>
   </table>
+<<<<<<< HEAD
+=======
+  </form>
+>>>>>>> 44a0bdf (250101)
   
   <div class="row title-box">
     <div class="col-6">
@@ -79,6 +134,7 @@
     </div>
     <div class="col-6 text-right">
       <img src="@/assets/icons/Graph.png" alt="">
+<<<<<<< HEAD
       <select class="" name="" id="">
         <option value="">All</option>
         <option value="">Hot</option>
@@ -143,6 +199,18 @@
         </div>
       </router-link>
     </div>
+=======
+      <select v-model="sortOption" @change="fetchSortedEvents">
+        <option value="all">All</option>
+        <option value="hot">Hot</option>
+        <option value="date">Date</option>
+      </select>
+    </div>
+
+  </div>  
+  <div class="row card-section">
+    <EventCard v-for="event in paginatedEvents" :key="event.id" :event="event"  class="col-4 card-box"/>
+>>>>>>> 44a0bdf (250101)
   </div>
   
 </div>
@@ -168,12 +236,20 @@
 </template>
 
 <script>
+<<<<<<< HEAD
+=======
+import EventCard from "./EventCard.vue";
+>>>>>>> 44a0bdf (250101)
 import { ref, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
 
 export default {
   name: 'HomePage',
+<<<<<<< HEAD
+=======
+  components: {EventCard},
+>>>>>>> 44a0bdf (250101)
   setup() {
     const store = useStore();
 
@@ -183,12 +259,86 @@ export default {
 
     // 로컬 상태 관리
     const events = ref([]); // 이벤트 데이터
+<<<<<<< HEAD
 
 
     
     const currentPage = ref(1); // 현재 페이지
     const eventsPerPage = 12; // 한 페이지당 이벤트 수
 
+=======
+    const currentPage = ref(1); // 현재 페이지
+    const eventsPerPage = 12; // 한 페이지당 이벤트 수
+
+    //검색
+    const searchQuery = ref(''); // 제목 검색어
+    const searchDate = ref(''); // 날짜
+    const searchLocation = ref(''); // 위치
+    const searchType = ref(''); // 모집 유형
+
+    //정렬
+    const sortOption = ref('all'); // 기본 정렬 옵션
+
+    // 정렬된 이벤트 가져오기
+    const fetchSortedEvents = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/gathering/sorted', {
+          params: { sortBy: sortOption.value },
+        });      
+        events.value = response.data.map(event => ({
+          id: event.id,
+          image: event.image,
+          title: event.name,
+          date: event.date,
+          location: event.location,
+          participants: {
+            current: event.participants, // 현재 참가자 수
+            max: event.maxParticipants, // 최대 참가자 수
+          },
+          likes: event.likes, // 좋아요 수
+          host: event.createdBy.name, // 이벤트 생성자 이름
+          hashtags: event.hashtags, //해시태그 배열
+          // hostImage: event.createdBy.profileImage || "@/assets/images/default-host.png", // 생성자 이미지
+        }));
+        console.log('Mapped events:', events.value);
+      } catch (error) {
+        console.error('Error fetching sorted events:', error);
+      }
+    };
+
+    // 검색 API 호출
+    const searchEvents = async () => {
+    try {
+      const params = {
+        query: searchQuery.value || undefined,
+        date: searchDate.value || undefined,
+        location: searchLocation.value || undefined,
+        type: searchType.value || undefined,
+      };
+
+      const response = await axios.get('http://localhost:3000/gathering/searchEvent', { params });        
+      events.value = response.data.map(event => ({
+          id: event.id,
+          image: event.image,
+          title: event.name,
+          date: event.date,
+          location: event.location,
+          participants: {
+            current: event.participants, // 현재 참가자 수
+            max: event.maxParticipants, // 최대 참가자 수
+          },
+          likes: event.likes, // 좋아요 수
+          host: event.createdBy.name, // 이벤트 생성자 이름
+          hashtags: event.hashtags, //해시태그 배열
+          // hostImage: event.createdBy.profileImage || "@/assets/images/default-host.png", // 생성자 이미지
+        }));
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
+
+  //페이지네이션
+>>>>>>> 44a0bdf (250101)
     const totalPages = computed(() => {
       return events.value.length > 0
         ? Math.ceil(events.value.length / eventsPerPage)
@@ -268,7 +418,18 @@ export default {
       paginatedEvents,
       currentPage,
       totalPages,
+<<<<<<< HEAD
       visiblePages
+=======
+      visiblePages,
+      searchQuery,
+      searchDate,
+      searchLocation,
+      searchType,
+      searchEvents,
+      sortOption,
+      fetchSortedEvents,
+>>>>>>> 44a0bdf (250101)
     };
   },
 };

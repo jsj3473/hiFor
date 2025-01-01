@@ -13,9 +13,17 @@ import {
     UseInterceptors,
     UploadedFile,
     NotFoundException,
+<<<<<<< HEAD
     ParseIntPipe
   } from '@nestjs/common';
   import { CreateEventDto, ApplyEventDto, CreateParticipantDto } from './gathering.dto';
+=======
+    ParseIntPipe,
+    Query,
+    ValidationPipe,
+  } from '@nestjs/common';
+  import { CreateEventDto, ApplyEventDto, CreateParticipantDto, SearchEventDto } from './gathering.dto';
+>>>>>>> 44a0bdf (250101)
   import { JwtAuthGuard } from '../auth/auth.guard';
   import { GatheringService } from './gathering.service';
 
@@ -87,6 +95,17 @@ import {
       }
       return event;
     }
+<<<<<<< HEAD
+=======
+    @Get('getEventForPending/:eventId')
+    async getEventByIdForPending(@Param('eventId') eventId: number) {
+      const event = await this.gatheringService.getEventByIdForPending(eventId);
+      if (!event) {
+        throw new NotFoundException(`Event with ID ${eventId} not found`);
+      }
+      return event;
+    }
+>>>>>>> 44a0bdf (250101)
     @Post(':eventId/like')
     async toggleLike(@Param('eventId', ParseIntPipe) eventId: number, @Body('userId') userId: string) {
       const updatedLikes = await this.gatheringService.toggleLike(eventId, userId);
@@ -124,5 +143,27 @@ import {
     async getLikedEvent(@Param('userId') likedId: string) {
       return await this.gatheringService.getLikedEvents(likedId);
     }
+<<<<<<< HEAD
+=======
+
+    @Get('searchEvent')
+    async searchEvent(@Query(new ValidationPipe({ transform: true })) searchEventDto: SearchEventDto) {
+      return await this.gatheringService.searchEvent(searchEventDto)
+    }
+
+    @Get('sorted')
+    async getSortedEvents(@Query('sortBy') sortBy: string) {
+      return await this.gatheringService.getSortedEvents(sortBy);
+    }
+    @Get('checkParticipation')
+    async checkParticipation(
+      @Query('eventId') eventId: number,
+      @Query('userId') userId: string
+    ): Promise<{ isParticipating: boolean }> {
+      console.log(userId,eventId)
+      const isParticipating = await this.gatheringService.checkParticipation(eventId, userId);
+      return { isParticipating };
+    }
+>>>>>>> 44a0bdf (250101)
   }
   

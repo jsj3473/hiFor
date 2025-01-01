@@ -80,9 +80,17 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+<<<<<<< HEAD
   deleteUser(email: any) {
     return this.userRepository.delete({ email });
   } 
+=======
+  async deleteUser(userId: string) {
+    await this.userRepository.delete({ userId });
+
+    return { message: 'User deleted successfully.' };
+  }
+>>>>>>> 44a0bdf (250101)
 
   async signUpToGoogle(userId,email,username, dob,gender): Promise<User> {
     const foundUser = await this.getUser(email);
