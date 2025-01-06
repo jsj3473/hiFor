@@ -17,62 +17,11 @@
 
 <!-- 검색 -->
  <div class="container">
-<<<<<<< HEAD
-=======
   <form class="search-form" @submit.prevent="searchEvents">
->>>>>>> 44a0bdf (250101)
   <table class="search-table">
     <thead>
     <tr>
       <th>
-<<<<<<< HEAD
-        <form class="search-form" action="">
-          <input class="search-text" type="search" placeholder="Search for events">
-          <button class="submit-btn" type="submit">
-            <img class="submit-btn-img" src="@/assets/Search-icon.png" alt="">
-          </button>
-        </form>
-      </th>
-      <th>
-        <input type="date">
-      </th>
-      <th>
-        <select name="" id="">
-          <option value="">Location</option>
-          <option value="">Jongno-gu</option>
-          <option value="">Jung-gu</option>
-          <option value="">Yongsan-gu</option>
-          <option value="">Seongdong-gu</option>
-          <option value="">Gwangjin-gu</option>
-          <option value="">Dongdaemun-gu</option>
-          <option value="">Jungnang-gu</option>
-          <option value="">Seongbuk-gu</option>
-          <option value="">Gangbuk-gu</option>
-          <option value="">Dobong-gu</option>
-          <option value="">Nowon-gu</option>
-          <option value="">Eunpyeong-gu</option>
-          <option value="">Seodaemun-gu</option>
-          <option value="">Mapo-gu</option>
-          <option value="">Yangcheon-gu</option>
-          <option value="">Gangseo-gu</option>
-          <option value="">Guro-gu</option>
-          <option value="">Geumcheon-gu</option>
-          <option value="">Yeongdeungpo-gu</option>
-          <option value="">Dongjak-gu</option>
-          <option value="">Gwanak-gu</option>
-          <option value="">Seocho-gu</option>
-          <option value="">Gangnam-gu</option>
-          <option value="">Songpa-gu</option>
-          <option value="">Gangdong-gu</option>
-          <option value="">etc</option>
-        </select>
-      </th>
-      <th>
-        <select name="" id="">
-          <option value="">Recruitment Type</option>
-          <option value="">First come</option>
-          <option value="">Register</option>
-=======
         <input class="search-text"  v-model="searchQuery" type="search" placeholder="Search for events">
         <button class="submit-btn" type="submit">
           <img class="submit-btn-img" src="@/assets/Search-icon.png" alt="">
@@ -117,16 +66,12 @@
           <option disabled>Recruitment Type</option>
           <option value="First come">First come</option>
           <option value="Register">Register</option>
->>>>>>> 44a0bdf (250101)
         </select>
       </th>
     </tr>
   </thead>
   </table>
-<<<<<<< HEAD
-=======
   </form>
->>>>>>> 44a0bdf (250101)
   
   <div class="row title-box">
     <div class="col-6">
@@ -134,72 +79,6 @@
     </div>
     <div class="col-6 text-right">
       <img src="@/assets/icons/Graph.png" alt="">
-<<<<<<< HEAD
-      <select class="" name="" id="">
-        <option value="">All</option>
-        <option value="">Hot</option>
-        <option value="">Name</option>
-        <option value="">Date</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="row card-section">
-    <div class="col-4" v-for="(event, index) in paginatedEvents" :key="index">
-      <router-link :to="`/events/${event.id}`">
-        <div class="card">
-          <img :src="event.image" class="card-img-top card-img" alt="..." />
-          <div class="card-body">
-            <p class="card-title">{{ event.name }}</p>
-            <div class="row hashtag-row"></div>
-            <div class="row">
-              <div class="col-6">
-                <p class="card-info-text">
-                  <img class="card-info-icon" src="@/assets/icons/Date_icon.png" alt="" />
-                  {{ event.date }}
-                </p>
-              </div>
-              <div class="col-6">
-                <p class="card-info-text">
-                  <img class="card-info-icon" src="@/assets/icons/MapPin_icon.png" alt="" />
-                  {{ event.location }}
-                </p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <p class="card-info-text">
-                  <img class="card-info-icon" src="@/assets/icons/User_icon.png" alt="" />
-                  <span>{{ event.participants.current }}</span>/<span>{{ event.participants.max }}</span>
-                </p>
-              </div>
-              <div class="col-6">
-                <p class="card-info-text">
-                  <img class="card-info-icon" src="@/assets/icons/Heart.png" alt="" />
-                  <span>{{ event.likes }}</span>
-                </p>
-              </div>
-            </div>
-            <div class="row">
-              <!--
-              <router-link>
-                <p class="card-host">
-                  <img class="host-icon" :src="event.hostImage" alt="" />
-                  {{ event.createdBy }}
-                </p>
-              </router-link>
-              -->
-              <router-link :to="`/hosts/${event.hostId}`">
-                <p class="card-host">
-                  {{ event.host }}
-                </p>
-              </router-link>
-            </div>
-          </div>
-        </div>
-      </router-link>
-    </div>
-=======
       <select v-model="sortOption" @change="fetchSortedEvents">
         <option value="all">All</option>
         <option value="hot">Hot</option>
@@ -210,7 +89,6 @@
   </div>  
   <div class="row card-section">
     <EventCard v-for="event in paginatedEvents" :key="event.id" :event="event"  class="col-4 card-box"/>
->>>>>>> 44a0bdf (250101)
   </div>
   
 </div>
@@ -236,20 +114,14 @@
 </template>
 
 <script>
-<<<<<<< HEAD
-=======
 import EventCard from "./EventCard.vue";
->>>>>>> 44a0bdf (250101)
 import { ref, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
 
 export default {
   name: 'HomePage',
-<<<<<<< HEAD
-=======
   components: {EventCard},
->>>>>>> 44a0bdf (250101)
   setup() {
     const store = useStore();
 
@@ -259,14 +131,6 @@ export default {
 
     // 로컬 상태 관리
     const events = ref([]); // 이벤트 데이터
-<<<<<<< HEAD
-
-
-    
-    const currentPage = ref(1); // 현재 페이지
-    const eventsPerPage = 12; // 한 페이지당 이벤트 수
-
-=======
     const currentPage = ref(1); // 현재 페이지
     const eventsPerPage = 12; // 한 페이지당 이벤트 수
 
@@ -338,7 +202,6 @@ export default {
   };
 
   //페이지네이션
->>>>>>> 44a0bdf (250101)
     const totalPages = computed(() => {
       return events.value.length > 0
         ? Math.ceil(events.value.length / eventsPerPage)
@@ -418,9 +281,6 @@ export default {
       paginatedEvents,
       currentPage,
       totalPages,
-<<<<<<< HEAD
-      visiblePages
-=======
       visiblePages,
       searchQuery,
       searchDate,
@@ -429,7 +289,6 @@ export default {
       searchEvents,
       sortOption,
       fetchSortedEvents,
->>>>>>> 44a0bdf (250101)
     };
   },
 };

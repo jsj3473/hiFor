@@ -6,12 +6,8 @@ import {
   IsNumber,
   IsUUID,
   IsPositive,
-<<<<<<< HEAD
-  IsNotEmpty
-=======
   IsNotEmpty,
   IsDateString,
->>>>>>> 44a0bdf (250101)
 } from 'class-validator';
 
 export class CreateEventDto {
@@ -96,8 +92,6 @@ export class CreateParticipantDto {
 
   @IsString()
   answer: string;
-<<<<<<< HEAD
-=======
 }
 
 export class SearchEventDto {
@@ -116,5 +110,4 @@ export class SearchEventDto {
   @IsOptional()
   @IsString()
   type?: string;
->>>>>>> 44a0bdf (250101)
 }

@@ -51,19 +51,11 @@ export class UserController {
   }
   
 
-<<<<<<< HEAD
-  @Delete('/delete/:email')
-  deleteUser(@Param('email') email: string) {
-    return this.userService.deleteUser(email);
-  }
-  
-=======
   @Delete('/delete/:id')
   async deleteUser(@Param('id') id: string) {
     return this.userService.deleteUser(id);
   }
 
->>>>>>> 44a0bdf (250101)
   @Post('findUsername')
   async findUsername(@Body('email') email: string) {
     if (!email) {

@@ -16,12 +16,8 @@ export default {
       confirmPassword: '',
       phoneNumber: '',
       nationality: '',
-<<<<<<< HEAD
-      identityStatus: ''
-=======
       identityStatus: '',
       university: '',
->>>>>>> 44a0bdf (250101)
     });
 
     const userIdAvailable = ref(true);

@@ -32,12 +32,10 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   identityStatus?: string; // 신분 - 선택 사항
-<<<<<<< HEAD
-=======
 
   @IsString()
+  @IsOptional()
   university: string;
->>>>>>> 44a0bdf (250101)
 }
 
 

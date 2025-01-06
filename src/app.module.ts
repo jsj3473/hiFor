@@ -16,11 +16,7 @@ import { DataSource } from 'typeorm';
       database: 'auth-test.sqlite',
       autoLoadEntities: true, // for data source
       synchronize: true,
-<<<<<<< HEAD
       logging: false,
-=======
-      logging: true,
->>>>>>> 44a0bdf (250101)
     }),
     UserModule,
     AuthModule,

@@ -1,16 +1,9 @@
 import { Injectable, HttpException, HttpStatus,NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-<<<<<<< HEAD
-import { Repository } from 'typeorm';
-import { HiforEvent,Participant,Hashtag,Like } from './gathering.entity';
-import { User } from '../user/user.entity';
-import { CreateEventDto, ApplyEventDto } from './gathering.dto';
-=======
 import { MoreThanOrEqual, Repository } from 'typeorm';
 import { HiforEvent,Participant,Hashtag,Like } from './gathering.entity';
 import { User } from '../user/user.entity';
 import { CreateEventDto, ApplyEventDto, SearchEventDto } from './gathering.dto';
->>>>>>> 44a0bdf (250101)
 
 @Injectable()
 export class GatheringService {
@@ -84,13 +77,8 @@ export class GatheringService {
     try {
       const events = await this.eventRepository.find({
         relations: ['createdBy', 'hashtags', 'participants', 'likes'], // 관계를 로드
+        order: { createdAt: 'DESC' }, // 최신순 정렬
       });
-<<<<<<< HEAD
-  
-      // 각 이벤트에 대해 승인된 참가자 수 계산
-      const eventsWithApprovedCount = await Promise.all(
-        events.map(async (event) => {
-=======
 
       // 현재 날짜 및 시간 가져오기
       const now = new Date();
@@ -105,18 +93,12 @@ export class GatheringService {
             return null;
           }
 
->>>>>>> 44a0bdf (250101)
           const approvedParticipantsCount = await this.participantRepository.count({
             where: {
               event: { id: event.id },
               status: 'Approved',
             },
           });
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> 44a0bdf (250101)
           return {
             id: event.id,
             name: event.name,
@@ -143,37 +125,20 @@ export class GatheringService {
           };
         })
       );
-<<<<<<< HEAD
-  
-      return eventsWithApprovedCount;
-=======
 
       // null 값을 제거하고 결과 반환
       return eventsWithApprovedCount.filter(event => event !== null);
->>>>>>> 44a0bdf (250101)
     } catch (error) {
       throw new Error(`Failed to fetch events: ${error.message}`);
     }
   }
-<<<<<<< HEAD
-=======
 
->>>>>>> 44a0bdf (250101)
+
+  
   
   async getEventById(eventId: number): Promise<HiforEvent> {
     const event = await this.eventRepository.findOne({
       where: { id: eventId },
-<<<<<<< HEAD
-      relations: ['createdBy', 'hashtags', 'participants','participants.user', 'likes','likes.user'],
-    });
-
-    if (!event) {
-      throw new NotFoundException(`Event with ID ${eventId} not found`);
-    }
-
-    return event;
-  }
-=======
       relations: ['createdBy', 'hashtags', 'participants', 'participants.user', 'likes', 'likes.user'],
     });
   
@@ -211,7 +176,6 @@ export class GatheringService {
   
   
 
->>>>>>> 44a0bdf (250101)
   async toggleLike(eventId: number, _userId: string) {
     const event = await this.eventRepository.findOne({
       where: { id: eventId },
@@ -373,8 +337,6 @@ export class GatheringService {
       throw new Error(`Failed to fetch liked events: ${error.message}`);
     }
   }
-<<<<<<< HEAD
-=======
   async searchEvent(searchEventDto: SearchEventDto) {
     const { query, date, location, type } = searchEventDto;
   
@@ -517,6 +479,5 @@ export class GatheringService {
     return !!participation; // 값이 존재하면 true, 없으면 false
   }
   
->>>>>>> 44a0bdf (250101)
   
 }

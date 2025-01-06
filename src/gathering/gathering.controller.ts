@@ -13,17 +13,11 @@ import {
     UseInterceptors,
     UploadedFile,
     NotFoundException,
-<<<<<<< HEAD
-    ParseIntPipe
-  } from '@nestjs/common';
-  import { CreateEventDto, ApplyEventDto, CreateParticipantDto } from './gathering.dto';
-=======
     ParseIntPipe,
     Query,
     ValidationPipe,
   } from '@nestjs/common';
   import { CreateEventDto, ApplyEventDto, CreateParticipantDto, SearchEventDto } from './gathering.dto';
->>>>>>> 44a0bdf (250101)
   import { JwtAuthGuard } from '../auth/auth.guard';
   import { GatheringService } from './gathering.service';
 
@@ -67,6 +61,8 @@ import {
         throw new Error(`Failed to get events: ${error.message}`);
       }
     }  
+
+
     
     @Post('upload')
     @UseInterceptors(
@@ -95,8 +91,6 @@ import {
       }
       return event;
     }
-<<<<<<< HEAD
-=======
     @Get('getEventForPending/:eventId')
     async getEventByIdForPending(@Param('eventId') eventId: number) {
       const event = await this.gatheringService.getEventByIdForPending(eventId);
@@ -105,7 +99,6 @@ import {
       }
       return event;
     }
->>>>>>> 44a0bdf (250101)
     @Post(':eventId/like')
     async toggleLike(@Param('eventId', ParseIntPipe) eventId: number, @Body('userId') userId: string) {
       const updatedLikes = await this.gatheringService.toggleLike(eventId, userId);
@@ -143,8 +136,6 @@ import {
     async getLikedEvent(@Param('userId') likedId: string) {
       return await this.gatheringService.getLikedEvents(likedId);
     }
-<<<<<<< HEAD
-=======
 
     @Get('searchEvent')
     async searchEvent(@Query(new ValidationPipe({ transform: true })) searchEventDto: SearchEventDto) {
@@ -164,6 +155,5 @@ import {
       const isParticipating = await this.gatheringService.checkParticipation(eventId, userId);
       return { isParticipating };
     }
->>>>>>> 44a0bdf (250101)
   }
   

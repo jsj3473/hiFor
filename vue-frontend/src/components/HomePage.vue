@@ -53,7 +53,7 @@
         <p class="cs-title">Hosted by HiFor</p>
       </div>
       <div class="row">
-        <div class="col-4" v-for="(event, index) in visibleCards" :key="index">
+        <div class="col-4" v-for="(event, index) in hiforCards" :key="index">
           <router-link :to="`/events/${event.id}`">
             <div class="card">
               <img :src="event.image" class="card-img-top card-img" alt="..." />
@@ -142,19 +142,8 @@
             <div class="card">
               <img :src="event.image" class="card-img-top card-img" alt="..." />
               <div class="card-body">
-<<<<<<< HEAD
                 <p class="card-title">{{ event.name }}</p>
                 <div class="row hashtag-row"></div>
-=======
-                <p class="card-title">{{ event.title }}</p>
-                <div class="row hashtag-row">
-                  <div class="hashtag-box">
-                    <button v-for="hashtag in event.hashtags" :key="hashtag" class="hashtag">
-                      #{{ hashtag }}
-                    </button>
-                  </div>
-                </div>
->>>>>>> 44a0bdf (250101)
                 <div class="row">
                   <div class="col-6">
                     <p class="card-info-text">
@@ -290,9 +279,14 @@ export default {
     // "Show More" 상태
     const showAll = ref(false);
 
+    const hiforCards = computed(() => {
+      return events.value.filter(event => event.host === 'hifor'); // host에 'hifor'인 이벤트만 필터링
+    });
+
+
     // 표시할 카드 계산
     const visibleCards = computed(() => {
-      return showAll.value ? events.value : events.value.slice(0, 3);
+      return events.value.slice(0, 3);
     });
 
     // "Show More" 버튼 클릭 시 상태 변경
@@ -335,6 +329,7 @@ export default {
       showAll,
       visibleCards,
       toggleShowAll,
+      hiforCards,
     };
   },
 };

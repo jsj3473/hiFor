@@ -65,15 +65,12 @@
                   <input class="input-box-type1" type="text" v-model="user.nationality" id="nationality" required/>
                 </div>
               </div>
-<<<<<<< HEAD
-=======
               <div class="col-6">
                 <div class="form-group">
                   <label class="label-text-type1" for="university">university</label>
                   <input class="input-box-type1" type="text" v-model="user.university" id="university" />
                 </div>
               </div>
->>>>>>> 44a0bdf (250101)
             </div>
   
             <!-- 동의 section -->
@@ -135,10 +132,7 @@
         gender: '',
         userId: '',
         nationality: '',
-<<<<<<< HEAD
-=======
         university: '',
->>>>>>> 44a0bdf (250101)
       });
   
       const userIdAvailable = ref(true);
@@ -173,10 +167,7 @@
             user.dob = decodedToken.dob || '';
             user.gender = decodedToken.gender || '';
             user.nationality = decodedToken.nationality || '';
-<<<<<<< HEAD
-=======
             user.university = decodedToken.university || '';
->>>>>>> 44a0bdf (250101)
             console.log('Decoded JWT:', decodedToken);
           } catch (error) {
             console.error('Invalid token:', error);

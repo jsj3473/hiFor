@@ -20,15 +20,9 @@
 <script>
 import { useRoute } from 'vue-router';
 import { reactive, onMounted, computed } from "vue";
-<<<<<<< HEAD
-import Step1 from "./JoinStep1.vue";
-import Step2 from "./JoinStep2.vue";
-import Step3 from "./JoinStep3.vue";
-=======
 import Step1 from "./joinEvent/JoinStep1.vue";
 import Step2 from "./joinEvent/JoinStep2.vue";
 import Step3 from "./joinEvent/JoinStep3.vue";
->>>>>>> 44a0bdf (250101)
 
 export default {
   components: { Step1, Step2, Step3},

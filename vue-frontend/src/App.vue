@@ -64,31 +64,6 @@
           </tr>
         </thead>
       </table>
-<<<<<<< HEAD
-      <!-- <nav>
-        <ul class="lz">
-          <li><router-link to="/">Home</router-link></li>
-          <li><router-link to="/">All Events</router-link></li>
-          <li><router-link to="/">About</router-link></li>
-          <li><router-link to="/">Notice</router-link></li>
-        </ul>
-        <ul class="rz">
-          <li v-if="!isLoggedIn">
-            <router-link to="/signUp">회원가입</router-link>
-          </li>
-          <li v-if="!isLoggedIn">
-            <router-link to="/signIn">로그인</router-link>
-          </li>
-          <li v-if="isLoggedIn">
-            <button @click="logout">로그아웃</button>
-            <router-link to="/createEvent">이벤트 생성</router-link>
-          </li>
-          <li v-if="isLoggedIn"> - {{ userId }}님 환영합니다 - </li>
-          <li v-if="isLoggedIn"><router-link to="/myPage">마이페이지</router-link></li>
-        </ul>
-      </nav> -->
-=======
->>>>>>> 44a0bdf (250101)
     </header>
 
     <!-- 라우터 뷰 -->

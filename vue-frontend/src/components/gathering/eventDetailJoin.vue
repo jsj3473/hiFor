@@ -102,22 +102,13 @@
                   </router-link>
                   <div class="p-0">
                     <router-link
-<<<<<<< HEAD
-                      v-if="!(event.participants.current >= event.participants.max)"
-=======
                       v-if="!isParticipating && !(event.participants.current >= event.participants.max)"
->>>>>>> 44a0bdf (250101)
                       :to="event.createdBy.id === userId ? `/manage/${event.id}` : `/joinEvents/${event.id}`"
                     >
                       <button class="join-btn">
                         {{
                           event.createdBy.id === userId
                             ? 'Manage'
-<<<<<<< HEAD
-                            : event.participants.current >= event.participants.max
-                            ? 'Closed'
-=======
->>>>>>> 44a0bdf (250101)
                             : event.type === 'First come'
                             ? 'Join Now!'
                             : 'Register'
@@ -129,10 +120,6 @@
                       class="closed-join-btn"
                       @click="handleClosedClick"
                     >
-<<<<<<< HEAD
-                      Closed
-                    </button>
-=======
                       {{
                         isParticipating
                           ? 'Participated'
@@ -140,7 +127,6 @@
                       }}
                     </button>
 
->>>>>>> 44a0bdf (250101)
                   </div>
 
 
@@ -176,10 +162,7 @@
             likes: 0,
             createdBy: { name: 'Unknown', id: 0, profileImage: '' },});
       const isLiked = ref(false);
-<<<<<<< HEAD
-=======
       const isParticipating = ref(false); // 사용자 참여 여부 상태
->>>>>>> 44a0bdf (250101)
       const formattedDate = computed(() => {
         if (!event.value.date) return '';
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -236,8 +219,6 @@
           isLiked.value = !isLiked.value;
         }
       };
-<<<<<<< HEAD
-=======
       // 사용자 참여 여부 확인 함수
       const checkUserParticipation = async (eventId, userId) => {
         try {
@@ -252,16 +233,12 @@
           isParticipating.value = false;
         }
       };
->>>>>>> 44a0bdf (250101)
 
       onMounted(() => {
         const eventId = parseInt(window.location.pathname.split('/').pop()); // Extract event ID from URL
         fetchEvent(eventId);
-<<<<<<< HEAD
-=======
         const userId = sessionStorage.getItem('userId');
         checkUserParticipation(eventId, userId); // 사용자 참여 여부 확인
->>>>>>> 44a0bdf (250101)
       });    
       
       const copyLinkToClipboard = () => {
@@ -279,12 +256,8 @@
         toggleLike,
         formattedDate,
         copyLinkToClipboard,
-<<<<<<< HEAD
-        userId
-=======
         userId,
         isParticipating
->>>>>>> 44a0bdf (250101)
       };
     },
     methods: {

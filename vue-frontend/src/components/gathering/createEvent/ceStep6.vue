@@ -73,6 +73,7 @@
   
   <script>
   import { ref } from "vue";
+  import { useRouter } from "vue-router";
   
   export default {
     props: {
@@ -80,6 +81,7 @@
     },
     emits: ["update-form-data", "next", "previous", "submit"],
     setup(props, { emit }) {
+      const router = useRouter(); // Vue Router 사용
       const tags = ref(props.formData?.hashtags || []); // 해시태그 목록
       const newTag = ref("");
   
@@ -126,6 +128,10 @@
           return;
         }
         emit("submit");
+        router.push({
+          path: '/showAllEvents',
+          name: 'ShowAllEvents',
+        }); // 폼 제출 후 이동
       };
   
       return {
