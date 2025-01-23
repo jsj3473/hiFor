@@ -1,8 +1,18 @@
-import { Controller, Post, Body, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  BadRequestException,
+  NotFoundException,
+  UseInterceptors,
+  UploadedFile, HttpException, HttpStatus,
+} from '@nestjs/common';
 import { EmailService } from './mail.service'; // 이메일 전송을 담당하는 서비스
 import { CacheService } from './cache.service'; // 인증번호 저장을 담당하는 서비스 (예: Redis)
 import { UserService } from '../user/user.service';
 import { FindPasswordDto } from 'src/user/user.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ContactDto } from './mail.dto';
 
 @Controller('mail')
 export class VerificationController {
@@ -71,4 +81,25 @@ export class VerificationController {
     // 인증 성공: 필요한 추가 작업 수행 (예: 계정 활성화)
     return { message: 'Email verification has been completed.' };
   }
+
+  @Post('contactUs')
+  @UseInterceptors(FileInterceptor('file'))
+  async sendMessage(
+    @Body() contactDto: ContactDto,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<{ message: string }> {
+    try {
+      // DTO 필드 추출 및 서비스 호출
+      const { title, phone, email, message } = contactDto;
+      await this.emailService.sendContactEmail(title, phone, email, message, file);
+
+      return { message: 'Your message has been sent successfully!' };
+    } catch (error) {
+      throw new HttpException(
+        'Failed to send your message. Please try again.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
 }

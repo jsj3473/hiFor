@@ -9,7 +9,7 @@
         <div class="row">
           <div class="col bar-left">
             <button class="back-btn" @click="goBack">
-              <img class="back-btn-icon" src="@/assets/icons/Back_icon.png" alt="Back" />
+              <img class="back-btn-icon" src="../../vue-frontend/src/assets/icons/Back_icon.png" alt="Back" />
               3 of 3
             </button>
           </div>
@@ -24,7 +24,7 @@
                 <div class="col">
                     <div class="row join-card">
                         <div class="col-5 join-card-img-box">
-                            <img class="join-card-img" src="@/assets/images/ex2.png" alt="">
+                            <img class="join-card-img" src="../../vue-frontend/src/assets/images/ex2.png" alt="">
                         </div>
                         <div class="col-7 join-card-info-box">
                             <div class="row">
@@ -33,12 +33,12 @@
                                 </div>
                                 <div class="col-6">
                                     <p class="join-card-info-text">
-                                        <img class="join-card-info-icon" src="@/assets/icons/Date_icon.png" alt="">Nov 26, 2024
+                                        <img class="join-card-info-icon" src="../../vue-frontend/src/assets/icons/Date_icon.png" alt="">Nov 26, 2024
                                     </p>
                                 </div>
                                 <div class="col-6">
                                     <p class="join-card-info-text">
-                                        <img class="join-card-info-icon" src="@/assets/icons/MapPin_icon.png" alt="">Hongdae, Seoul
+                                        <img class="join-card-info-icon" src="../../vue-frontend/src/assets/icons/MapPin_icon.png" alt="">Hongdae, Seoul
                                     </p>
                                 </div>
                                 <div class="col-12">

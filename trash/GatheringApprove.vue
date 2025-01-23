@@ -13,7 +13,7 @@
         </p>
 
         <p class="p-icon-box">
-            <img class="p-icon1" src="@/assets/c-img1.png" alt=""><img class="p-icon2" src="@/assets/c-img2.png" alt=""><img class="p-icon3" src="@/assets/c-img3.png" alt=""> +<span>6</span>
+            <img class="p-icon1" src="../vue-frontend/src/assets/c-img1.png" alt=""><img class="p-icon2" src="../vue-frontend/src/assets/c-img2.png" alt=""><img class="p-icon3" src="../vue-frontend/src/assets/c-img3.png" alt=""> +<span>6</span>
         </p>
     </div>
      
@@ -23,7 +23,7 @@
             Host's Question
         </div>
         <div class="host-box">
-            <p class="host-name"><img class="host-icon" src="@/assets/images/ex7.jpeg" alt="">Min Kim</p>
+            <p class="host-name"><img class="host-icon" src="../vue-frontend/src/assets/images/ex7.jpeg" alt="">Min Kim</p>
         </div>
         <div class="Q-text-box">
             <p class="Q-text">{{ eventQuestion  }}</p>
@@ -38,7 +38,7 @@
         </div>
         <div class="ghest-box">
             <p class="host-name">
-                <!--<img class="host-icon" :src="participant.avatar || '@/assets/images/default-avatar.png'" alt="">     마이페이지 개발후 개발예정-->
+                <!-<img class="host-icon" :src="participant.avatar || '@/assets/images/default-avatar.png'" alt="">     마이페이지 개발후 개발예정-->
                 {{ participant.user.username }}
             </p>
         </div>
@@ -145,7 +145,7 @@ export default {
 /* 웹 */
 @media screen and (min-width:769px){
     .main-banner{
-        background-image: url('@/assets/images/image1.png');
+        background-image: url('../vue-frontend/src/assets/images/image1.png');
         background-size: cover;
         height: 360px;
         background-position: center;

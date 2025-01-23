@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+import * as fs from 'fs';
 
 @Injectable()
 export class EmailService {
@@ -60,6 +61,41 @@ export class EmailService {
     } catch (error) {
       console.error('이메일 전송 실패:', error);
       throw new Error('이메일 전송에 실패했습니다.');
+    }
+  }
+  async sendContactEmail(
+    title: string,
+    phone: string,
+    email: string,
+    message: string,
+    file?: Express.Multer.File,
+  ): Promise<void> {
+    const mailOptions: nodemailer.SendMailOptions = {
+      ...this.mailOptions,
+      from: process.env.EMAIL_USER, // 발신자 이메일
+      to: process.env.EMAIL_USER, // 수신자 이메일 (자기 자신에게 보냄)
+      subject: `문의: ${title}`,
+      text: `문의 내용:\n\n
+      제목: ${title}\n
+      휴대전화: ${phone}\n
+      이메일: ${email}\n
+      메시지:\n${message}\n
+      `,
+      attachments: file
+        ? [
+          {
+            filename: file.originalname,
+            content: Buffer.isBuffer(file.buffer) ? file.buffer : Buffer.from(file.buffer), // Buffer 변환
+          },
+        ]
+        : [],
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.error('문의 이메일 전송 실패:', error);
+      throw new Error('문의 이메일 전송에 실패했습니다.');
     }
   }
 }

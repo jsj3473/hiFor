@@ -14,7 +14,7 @@
           <table>
             <tr class="search-text">
               <button type="submit">
-                <img src="@/assets/img/icons_search.png" alt="">
+                <img src="../../assets/img/icons_search.png" alt="">
               </button>
               <input type="text" class="search-text-box" v-model="searchQuery">
             </tr>
@@ -128,8 +128,8 @@
       </div>
       <div class="row">
         <div class="col ex-box">
-          <img class="ex-icon1" src="@/assets/img/icon_HowTo1.png" alt=""><br>
-          <img class="ex-num1" src="@/assets/img/icon_Num1.png" alt=""><br>
+          <img class="ex-icon1" src="../../assets/img/icon_HowTo1.png" alt=""><br>
+          <img class="ex-num1" src="../../assets/img/icon_Num1.png" alt=""><br>
           <p class="ex-text2">
             Search for events<br>
             interests you
@@ -139,8 +139,8 @@
           </p>
         </div>
         <div class="col ex-box">
-          <img class="ex-icon2" src="@/assets/img/icon_HowTo2.png" alt=""><br>
-          <img class="ex-num2" src="@/assets/img/icon_Num2.png" alt=""><br>
+          <img class="ex-icon2" src="../../assets/img/icon_HowTo2.png" alt=""><br>
+          <img class="ex-num2" src="../../assets/img/icon_Num2.png" alt=""><br>
           <p class="ex-text2">
             Create any events<br>you want!
           </p>
@@ -149,8 +149,8 @@
           </p>
         </div>
         <div class="col ex-box">
-          <img class="ex-icon3" src="@/assets/img/icon_HowTo3.svg" alt=""><br>
-          <img class="ex-num3" src="@/assets/img/icon_Num3.png" alt=""><br>
+          <img class="ex-icon3" src="../../assets/img/icon_HowTo3.svg" alt=""><br>
+          <img class="ex-num3" src="../../assets/img/icon_Num3.png" alt=""><br>
           <p class="ex-text2">
             Enjoy an event and<br> connect with people
           </p>
@@ -165,7 +165,7 @@
     <div class="container why-con">
       <div class="row">
         <div class="col-6 why-box">
-          <img src="@/assets/img/img_MeetUp.png" alt="">
+          <img src="../../assets/img/img_MeetUp.png" alt="">
         </div>
         <div class="col-6 why-box">
           <p class="wc-text1">Why HiFor</p>
@@ -192,42 +192,42 @@
       </p>
       <div class="col-4">
         <div class="value-card">
-          <img src="@/assets/img/icon_OurValue1.png" alt="">
+          <img src="../../assets/img/icon_OurValue1.png" alt="">
           <p class="value-title">Inclusivity</p>
           <p class="value-text">HiFor welcomes everyone,<br>fostering a sense of belonging.</p>
         </div>
       </div>
       <div class="col-4">
         <div class="value-card">
-          <img src="@/assets/img/icon_OurValue2.png" alt="">
+          <img src="../../assets/img/icon_OurValue2.png" alt="">
           <p class="value-title">Growth</p>
           <p class="value-text">Guided by feedback and data,<br>we improve to support growth.</p>
         </div>
       </div>
       <div class="col-4">
         <div class="value-card">
-          <img src="@/assets/img/icon_OurValue3.png" alt="">
+          <img src="../../assets/img/icon_OurValue3.png" alt="">
           <p class="value-title">Innovation</p>
           <p class="value-text">AI-driven services transform<br>experiences with personalization.</p>
         </div>
       </div>
       <div class="col-4">
         <div class="value-card">
-          <img src="@/assets/img/icon_OurValue4.png" alt="">
+          <img src="../../assets/img/icon_OurValue4.png" alt="">
           <p class="value-title">Connection</p>
           <p class="value-text">HiFor connects people through <br>shared interests and events.</p>
         </div>
       </div>
       <div class="col-4">
         <div class="value-card">
-          <img src="@/assets/img/icon_OurValue5.png" alt="">
+          <img src="../../assets/img/icon_OurValue5.png" alt="">
           <p class="value-title">Support</p>
           <p class="value-text">We empower individuals with <br>language learning and networking.</p>
         </div>
       </div>
       <div class="col-4">
         <div class="value-card">
-          <img src="@/assets/img/icon_OurValue6.png" alt="">
+          <img src="../../assets/img/icon_OurValue6.png" alt="">
           <p class="value-title">Accessibility</p>
           <p class="value-text">Affordable services ensure <br>easy participation for all.</p>
         </div>
@@ -387,12 +387,12 @@
         <div class="col-6">
           <div class="row c-img-box">
             <div class="col-6 c-img-box1">
-              <img class="c-img1" src="@/assets/c-img1.png" alt="">
-              <img class="c-img2" src="@/assets/c-img2.png" alt="">
+              <img class="c-img1" src="../../assets/c-img1.png" alt="">
+              <img class="c-img2" src="../../assets/c-img2.png" alt="">
             </div>
             <div class="col-6 c-img-box2">
-              <img class="c-img3" src="@/assets/c-img3.png" alt="">
-              <img class="c-img4" src="@/assets/c-img4.png" alt="">
+              <img class="c-img3" src="../../assets/c-img3.png" alt="">
+              <img class="c-img4" src="../../assets/c-img4.png" alt="">
             </div>
           </div>
         </div>
@@ -415,7 +415,7 @@
 import { ref, computed, onMounted, nextTick } from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
-import EventCard from '../gathering/EventCard.vue'; // EventCard 컴포넌트 가져오기
+import EventCard from './EventCard.vue'; // EventCard 컴포넌트 가져오기
 
 export default {
 

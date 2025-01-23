@@ -10,7 +10,7 @@
         <div class="row">
           <div class="col bar-left">
             <button class="back-btn" @click="goBack">
-              <img class="back-btn-icon" src="@/assets/icons/Back_icon.png" alt="Back" />
+              <img class="back-btn-icon" src="../../vue-frontend/src/assets/icons/Back_icon.png" alt="Back" />
               2 of 3
             </button>
           </div>
@@ -25,7 +25,7 @@
                     Question
                 </div>
                 <div class="host-box">
-                    <p class="host-name"><img class="host-icon" src="@/assets/images/ex7.jpeg" alt="">{{ hostName }}</p>
+                    <p class="host-name"><img class="host-icon" src="../../vue-frontend/src/assets/images/ex7.jpeg" alt="">{{ hostName }}</p>
                 </div>
                 <div class="Q-text-box">
                     <p class="Q-text">{{ question }}</p>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="Answer-text-box">
                     <div class="ghest-box">
-                        <p class="ghest-name"><img class="ghest-icon" src="@/assets/images/ex5.jpeg" alt="">{{ participantName }}</p>
+                        <p class="ghest-name"><img class="ghest-icon" src="../../vue-frontend/src/assets/images/ex5.jpeg" alt="">{{ participantName }}</p>
                     </div>
                     <input class="Answer-text" type="text" placeholder="Answer host's Question" v-model="userAnswer">
                 </div>

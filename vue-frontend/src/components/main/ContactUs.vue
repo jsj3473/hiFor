@@ -1,82 +1,110 @@
 <template>
-  <!-- 헤더 -->
-  <div class="row header-space">
-    <div class="header-logo">
-      <img class="logo-hifor" src="@/assets/img/logo_HiFor.png" alt="">
-    </div>
-    <div class="header-nav">
-      <router-link class="header-nav-text" to="/HomeIndex">Home</router-link>
-      <router-link class="header-nav-text" to="/HomeIndex">All Events</router-link>
-      <router-link class="header-nav-text" to="/HomeIndex">F&Q</router-link>
-      <router-link class="header-nav-text" to="/HomeIndex">Notice</router-link>
-      <router-link class="header-nav-btn" to="/HomeIndex">SignIn/SignUp</router-link>
-    </div>
-  </div>
-
-  <!-- contact us -->
   <div class="login-container">
-
-    <!-- left -->
     <div class="create-image">
       <div class="banner">
         <p class="banner-text1">Contact us</p>
         <p class="banner-title">Get in touch</p>
         <p class="banner-text2">
-          If you have any questions or concerns about issues <br>please feel free to reach out anytime!
+          If you have any questions or concerns about issues <br />please feel free to reach out anytime!
         </p>
       </div>
     </div>
 
-    <!-- right -->
     <div class="create-form">
-      <form>
+      <form @submit.prevent="sendMessage">
 
         <div class="form-group">
-          <label for="details">Title</label>
-          <input type="text" id="" placeholder="" required />
+          <label for="title">Title</label>
+          <input type="text" id="title" v-model="form.title" required />
         </div>
 
         <div class="form-group">
           <div class="row half-input-row">
             <div class="col-6">
-              <label for="">Phone number</label>
-              <input type="phone" id="" required />
+              <label for="phone">Phone number</label>
+              <input type="tel" id="phone" v-model="form.phone" required />
             </div>
             <div class="col-6">
-              <label for="">Email address</label>
-              <input type="email" id="" required />
+              <label for="email">Email address</label>
+              <input type="email" id="email" v-model="form.email" required />
             </div>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="">File</label>
-          <input type="file" placeholder="Choose File">
+          <label for="file">File</label>
+          <input type="file" id="file" @change="handleFileUpload" />
         </div>
 
         <div class="form-group">
-          <label for="details">Message</label>
-          <textarea class="ipnut-question" placeholder="Write your message here..." name="" id=""></textarea>
+          <label for="message">Message</label>
+          <textarea
+            id="message"
+            v-model="form.message"
+            placeholder="Write your message here..."
+            required
+          ></textarea>
         </div>
 
         <div class="agreement-container">
           <label class="agreement-label">
-            We will reply to you through the email <br> address you are using for HiFor.
+            We will reply to you through the email <br /> address you are using for HiFor.
           </label>
-          <!-- Join Now 버튼 -->
-          <button class="join-now-button">Send message</button>
+          <button class="join-now-button" type="submit">Send message</button>
         </div>
-
       </form>
     </div>
-
   </div>
-
 </template>
 
-
 <script setup>
+import { ref } from "vue";
+import axios from "axios";
+
+// 폼 데이터 초기화
+const form = ref({
+  title: "",
+  phone: "",
+  email: "",
+  message: "",
+  file: null,
+});
+
+// 파일 업로드 처리
+const handleFileUpload = (event) => {
+  form.value.file = event.target.files[0];
+};
+
+// 메시지 전송
+const sendMessage = async () => {
+  try {
+    // 폼 데이터 객체 생성
+    const formData = new FormData();
+    formData.append("title", form.value.title);
+    formData.append("phone", form.value.phone);
+    formData.append("email", form.value.email);
+    formData.append("message", form.value.message);
+    if (form.value.file) {
+      formData.append("file", form.value.file);
+    }
+
+    // 백엔드로 요청 보내기
+    const response = await axios.post("http://localhost:3000/mail/contactUs", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    // 성공 처리
+    alert("Your message has been sent successfully!");
+    console.log(response.data);
+  } catch (error) {
+    console.error("Error sending message:", error);
+    alert("Failed to send your message. Please try again.");
+  }
+};
 </script>
+
 
 
 <!-- css -->

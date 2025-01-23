@@ -19,7 +19,8 @@ ntuser.*
 *.ini
 # Build output
 dist/
-trash/
+
+auth-test.sqlite
 
 
 # IDE settings

@@ -16,7 +16,7 @@
     <div class="row">
       <div class="col bar-left">
         <button class="back-btn" @click="goBack">
-          <img class="back-btn-icon" src="@/assets/icons/Back_icon.png" alt="Back" />
+          <img class="back-btn-icon" src="../../vue-frontend/src/assets/icons/Back_icon.png" alt="Back" />
           1 of 3
         </button>
       </div>

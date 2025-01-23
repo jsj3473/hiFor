@@ -9,14 +9,14 @@ import FindUsername from '../components/auth/FindUsername.vue';
 import FindPassword from '../components/auth/FindPassword.vue';
 import GoogleSignUp from '../components/auth/googleSignUp.vue'; 
 import EventDetailJoin from '../components/gathering/eventDetailJoin.vue';
-import JoinEvent from '../components/gathering/JoinStepParent.vue';
-import GatheringApprove from '../components/gathering/GatheringApprove.vue';
+import JoinEvent from '../../../trash/joinEvent/JoinStepParent.vue';
+import EventApprove from '../components/gathering/EventApprove.vue';
 import OurCompany from '@/components/about/OurCompany.vue';
 import OurService from '@/components/about/OurService.vue';
 import ServiceGuide from '@/components/help/ServiceGuide.vue';
 import UseClause from '@/components/help/UseClause.vue';
 import HomeIndex from '@/components/HomeIndex.vue';
-import AllEvents from '@/components/main/AllEvents.vue';
+import AllEvents from '@/components/gathering/AllEvents.vue';
 import PostEvent from '@/components/gathering/PostEvent.vue';
 import EnterEvent from '@/components/gathering/EnterEvent.vue';
 import ContactUs from '@/components/main/ContactUs.vue';
@@ -98,8 +98,8 @@ const routes = [
   },
   {
     path: '/manage/:eventId',
-    name: 'GatheringApprove',
-    component: GatheringApprove,
+    name: 'EventApprove',
+    component: EventApprove,
     meta: { hideHeaderFooter: false },
   },
   {

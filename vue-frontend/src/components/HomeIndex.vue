@@ -3,7 +3,7 @@
         <div class="home-banner">
             <!-- 메인 -->
             <p class="banner-title">
-              <router-link to="/allEvents">rggdrffs</router-link>
+              <router-link to="/contactUs">contactUs</router-link>
                 Start real Korean Life <br>
                 from the <span style="color: #58C3FF;">HiFor.</span>
             </p>
