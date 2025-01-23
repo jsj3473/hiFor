@@ -21,7 +21,7 @@
           <div class="row form-table">
             <div class="col-6">
               <div class="form-group">
-                <label class="label-text-type1" for="username">Full name</label>
+                <label class="label-text-type1" for="username">username</label>
                 <input class="input-box-type1" type="text" v-model="user.username" id="username" required placeholder="Hifor"/>
               </div>
             </div>

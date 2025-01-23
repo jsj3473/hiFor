@@ -1,15 +1,14 @@
 <template>
     <div class="web-body">
-      <!-- Header -->
-      <div class="container header-space"></div>
-  
-      <!-- Main banner -->
-      <div class="container banner-img-box" :style="{ backgroundImage: `url(${event.image})` }"></div>
   
       <!-- Title-text -->
       <div class="container">
         <div class="row">
           <div class="col-8">
+            <!-- Main banner -->
+            <div class="container banner-img-box" :style="{ backgroundImage: `url(${event.image})` }"></div>
+            
+            <!-- text section -->
             <div class="gathering-box">
               <p class="gatheing-title">{{ event.name }}</p>
               <div class="gathering-text-box">
@@ -17,16 +16,11 @@
               </div>
             </div>
   
-            <!-- Hashtag section -->
-            <div class="hashtag-box">
-              <div v-for="hashtag in event.hashtags" :key="hashtag.id">
-                <button class="hashtag">#{{ hashtag.name }}</button>
-              </div>
-            </div>
-  
             <!-- Map section -->
             <div class="map-box">
-              <p class="map-title">Location</p>
+              <p class="map-title">
+                <img src="" alt="">Location
+              </p>
               <p class="map-text">{{ event.location }}</p>
               <iframe
                 :src="`https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${event.location}`"
@@ -52,44 +46,29 @@
               <div class="card-body">
                 <button class="btn_like" :class="{ on: isLiked }" @click="toggleLike">like</button>
                 <div class="row">
-                  <div class="col-2 card-date-icon">
-                  </div>
+                  <div class="col-2 card-date-icon">08</div>
                   <div class="col-10">
-                    <p class="s-card-text1">Event date</p>
+                    <p class="s-card-text1">Event Date</p>
                     <p class="s-card-text2">{{ formattedDate }}</p>
                   </div>
                 </div>
                 <div class="row">
-                  <p class="s-card-text3">{{ event.description.slice(0, 100) }}...</p>
-                </div>
-                <div class="row">
                   <div class="col-12 p-0">
                     <p class="s-card-text4">
-                      <img class="s-card-icon1" src="@/assets/icons/MapPin_icon.png" alt="" />
+                      <img class="s-card-icon1" src="@/assets/img/icon_Location.png" alt="" />
                       {{ event.location }}
                     </p>
                   </div>
-                  <div class="col-5 p-0">
+                  <div class="col-12 p-0">
                     <p class="s-card-text4">
-                      <img class="s-card-icon1" src="@/assets/icons/User_icon.png" alt="" />
+                      <img class="s-card-icon1" src="@/assets/img/icon_User.png" alt="" />
                       {{ event.participants.current }}/{{ event.participants.max }}
                     </p>
                   </div>
-                  <div class="col-5 p-0">
+                  <div class="col-12 p-0">
                     <p class="s-card-text4">
-                      <img class="s-card-icon1" src="@/assets/icons/Heart.png" alt="" />
+                      <img class="s-card-icon1" src="@/assets/img/icon_Heart.png" alt="" />
                       {{ event.likes }}
-                    </p>
-                  </div>
-                  <div class="col-1 p-0">
-                    <p class="s-card-text4">
-                      <img 
-                        class="s-card-icon2" 
-                        src="@/assets/icons/Share.png" 
-                        alt="Share" 
-                        @click="copyLinkToClipboard" 
-                        title="Copy link to clipboard"
-                      />
                     </p>
                   </div>
                 </div>
@@ -308,19 +287,6 @@
     margin-bottom: 33px;
     font-weight: 600;
   }
-  .hashtag-box{
-    margin-top: 33px;
-    margin-bottom: 66px;
-  }
-  .hashtag{
-    background-color: #12CF51;
-    color: #ffffff;
-    padding: 3px;
-    padding-left: 10px;
-    padding-right: 10px;
-    border: none;
-    border-radius: 24px;
-  }
   .map-box{
     margin-top: 33px;
     margin-bottom: 66px;
@@ -352,7 +318,7 @@
     position: sticky;
     top: 66px;
     margin-top: -200px;
-    height: 426px;
+    height: 320px;
     margin-bottom: 30px;
     border-radius: 24px;
     padding: 15px;
@@ -361,10 +327,11 @@
   }
   .btn_like {
     position: absolute;
-    right: 15;
+    right: 25px;
+    top: 45px;
     width: 50px; 
     height: 50px;
-    background: url("@/assets/icons/card_heart(1).png") no-repeat center / 40px; 
+    background: url("@/assets/img/icon_Heart.png") no-repeat center / 40px; 
     cursor: pointer; 
     border:0; 
     font-size:0; 
@@ -373,7 +340,7 @@
     margin-right: -0px;
   }
   .btn_like.on {
-    background: url("@/assets/icons/card_heart(2).png") no-repeat center / 40px; 
+    background: url("@/assets/img/icon_HeartFilled.png") no-repeat center / 40px; 
     animation: beating .5s 1 alternate;
   }
   @keyframes beating {
@@ -384,21 +351,19 @@
   }
 
   .card-date-icon{
-    background-image: url("@/assets/icons/Card_Date.png");
+    background-image: url("@/assets/img/icon_DateDetail.png");
     width: 50px;
     height: 50px;
     background-size: cover;
     align-content: center;
     text-align: center;
-  }
-  .card-date{
-    margin: 0px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #07722B;
+    font-weight: 600;
+    color: #4457FF;
   }
   .s-card-icon1{
     margin-bottom: 3px;
+    width: 17px;
+    height: 17px;
   }
   .s-card-icon2{
     width: 15px;
@@ -427,6 +392,8 @@
     padding: 0px;
     color: #5F687A;
     font-size: 16px;
+    margin: 0px;
+    padding: 5px 0px;
   }
   .card-host{
     margin: 0px;
@@ -440,14 +407,16 @@
   }
   .join-btn{
     width: 280px;
-    margin: 32px;
+    margin: 12px 32px;
     padding: 20px;
     padding-left: 100px;
     padding-right: 100px;
-    background-color: #12CF51;
+    background-color: #4457FF;
     border: none;
     border-radius: 96px;
     color: #ffffff;
+    font-size: 18px;
+    font-weight: 300;
   }
   .closed-join-btn{
     width: 280px;

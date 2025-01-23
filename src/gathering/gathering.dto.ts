@@ -11,21 +11,29 @@ import {
 } from 'class-validator';
 
 export class CreateEventDto {
+
+  @IsString()
+  userId: string;
+
+  @IsOptional()
+  @IsString()
+  category?: string;
+
+  @IsOptional()
+  @IsString()
+  type?: string;
+
   @IsString()
   name: string;
 
   @IsOptional()
   @IsString()
-  description?: string;
-
-  @IsOptional()
-  @IsString()
-  image?: string;
-
-  @IsOptional()
-  @IsString()
   location?: string;
 
+  @IsOptional()
+  @IsString()
+  locationDetail?: string;
+  
   @IsOptional()
   @IsString()
   date?: string;
@@ -36,21 +44,16 @@ export class CreateEventDto {
 
   @IsOptional()
   @IsString()
-  type?: string;
+  description?: string;
 
   @IsOptional()
   @IsString()
-  question?: string;
+  mainImage?: string;
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  hashtags?: string[];
-
-  @IsOptional()
-  @IsNumber()
-  @IsPositive()
-  price?: number;
+  @IsString({ each: true }) // 배열의 각 항목이 문자열인지 검사
+  images: string[]; // 이미지 URL 배열
 
   @IsOptional()
   @IsNumber()
@@ -62,11 +65,14 @@ export class CreateEventDto {
   @IsPositive()
   minParticipants?: number;
 
-  @IsString()
-  userId: string;
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  price?: number;
 
-  @IsBoolean()
-  isDraft: boolean; // 임시 저장 여부
+  @IsOptional()
+  @IsString()
+  question?: string;
 }
 
 
@@ -100,7 +106,7 @@ export class SearchEventDto {
   query?: string;
 
   @IsOptional()
-  @IsDateString()
+  @IsString()
   date?: string;
 
   @IsOptional()

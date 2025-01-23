@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import SignUp from '../components/auth/SignUp.vue'; 
 import SignIn from '../components/auth/SignIn.vue';
+import CreateAccount from '../components/auth/CreateAccount.vue';
 import PasswordChange from '../components/auth/PasswordChange.vue';
 import MyPage from '../components/MyPage.vue'
 import MyPageEdit from '../components/MyPageEdit.vue'
@@ -16,15 +17,21 @@ import OurCompany from '@/components/about/OurCompany.vue';
 import OurService from '@/components/about/OurService.vue';
 //import Notice from '@/components/help/Notice.vue';
 import ServiceGuide from '@/components/help/ServiceGuide.vue';
-//import Support from '@/components/help/Support.vue';
 import UseClause from '@/components/help/UseClause.vue';
+import HomeIndex from '@/components/HomeIndex.vue';
+import AllEvents from '@/components/main/AllEvents.vue';
+import PostEvent from '@/components/main/PostEvent.vue';
+import EnterEvent from '@/components/main/EnterEvent.vue';
+import ContactUs from '@/components/main/ContactUs.vue';
+import LogIn from '@/components/auth/LogIn.vue';
 
 const routes = [
+
   {
     path: '/',
-    name: 'HomePage',
-    component: () => import('../components/HomePage.vue'), // 홈 컴포넌트 경로
-    meta: { hideHeaderFooter: false },
+    name: 'HomeIndex',
+    component: HomeIndex,
+    meta: { hideHeaderFooter: false , mainHeader: true},
   },
   {
     path: '/signUp',
@@ -36,6 +43,12 @@ const routes = [
     path: '/signIn',
     name: 'SignIn',
     component: SignIn, 
+    meta: { hideHeaderFooter: true },
+  },
+  {
+    path: '/createAccount',
+    name: 'CreateAccount',
+    component: CreateAccount, 
     meta: { hideHeaderFooter: true },
   },
   {
@@ -128,12 +141,50 @@ const routes = [
     component: UseClause,
     meta: { hideHeaderFooter: false },
   },
+  {
+    path: '/allEvents',
+    name: 'AllEvents',
+    component: AllEvents,
+    meta: { hideHeaderFooter: false, mainHeader: true },
+  },
+  {
+    path: '/postEvent',
+    name: 'PostEvent',
+    component: PostEvent,
+    meta: { hideHeaderFooter: true },
+  },
+  {
+    path: '/enterEvent',
+    name: 'EnterEvent',
+    component: EnterEvent,
+    meta: { hideHeaderFooter: true },
+  },
+  {
+    path: '/contactUs',
+    name: 'ContactUs',
+    component: ContactUs,
+    meta: { hideHeaderFooter: true },
+  },
+  {
+    path: '/logIn',
+    name: 'LogIn',
+    component: LogIn,
+    meta: { hideHeaderFooter: true },
+  },
 
 ];
-
+// 라우터 객체 생성
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+// 전역 가드 추가 (createRouter 이후)
+router.beforeEach((to, from, next) => {
+  if (to.meta.mainHeader === undefined) {
+    to.meta.mainHeader = false; // 기본값 설정
+  }
+  next();
 });
 
 export default router;

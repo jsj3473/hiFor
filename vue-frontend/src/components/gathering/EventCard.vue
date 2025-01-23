@@ -1,51 +1,48 @@
 <!-- EventCard.vue -->
 <template>
-    <router-link :to="`/events/${event.id}`">
-      <div class="card">
-        <img class="card-img" :src="event.image" alt="" />
-        <div class="card-body">
-          <div class="card-title">{{ event.title }}</div>
-          <div class="row hashtag-row">
-            <div class="hashtag-box">
-              <button v-for="hashtag in event.hashtags" :key="hashtag" class="hashtag">
-                #{{ hashtag }}
-              </button>
+  <router-link :to="`/events/${event.id}`">
+    <!-- 카드 1 -->
+    <div class="event-card col-4">
+      <div class="event-content">
+        <div class="card">
+          <div class="card-img">
+            <div class="row">
+              <div class="col-9">
+                <div class="icon_tema">
+                  {{ event.category }}
+                </div>
+                <div class="icon_type">
+                  {{ event.type }}
+                </div>
+                <div class="participants">
+                  <img class="card-info-icon" src="@/assets/img/icon_User.png" alt="" />
+                  <span>{{ event.participants.current }}</span>/<span>{{ event.participants.max }}</span>
+                </div>
+              </div>
+              <div class="col-3">
+                <img class="card-icon-heart" src="@/assets/img/icon_Heart.png" alt="" />
+              </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-6">
-              <p class="card-info-text">
-                <img class="card-info-icon" src="@/assets/icons/Date_icon.png" alt="" />{{ event.date }}
-              </p>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6">
+                <p class="card-info-text">
+                  <img class="card-info-icon" src="@/assets/img/icon_Date.png" alt="" /> {{ event.date }}
+                </p>
+              </div>
+              <div class="col-6">
+                <p class="card-info-text">
+                  <img class="card-info-icon" src="@/assets/img/icon_Location.png" alt="" /> {{event.location}}
+                </p>
+              </div>
             </div>
-            <div class="col-6">
-              <p class="card-info-text">
-                <img class="card-info-icon" src="@/assets/icons/MapPin_icon.png" alt="" />{{ event.location }}
-              </p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-6">
-              <p class="card-info-text">
-                <img class="card-info-icon" src="@/assets/icons/User_icon.png" alt="" />
-                <span>{{ event.participants.current }}</span>/<span>{{ event.participants.max }}</span>
-              </p>
-            </div>
-            <div class="col-6">
-              <p class="card-info-text">
-                <img class="card-info-icon" src="@/assets/icons/Heart.png" alt="" />
-                <span>{{ event.likes }}</span>
-              </p>
-            </div>
-          </div>
-          <div class="row">
-            <p class="card-host">
-              <img class="host-icon" src="@/assets/ex.banner.jpeg" alt="" /> {{ event.host }}
-            </p>
+            <p class="card-title">{{event.title}}</p>
           </div>
         </div>
       </div>
-    </router-link>
+    </div>
+  </router-link>
   </template>
   
   <script>
@@ -61,55 +58,120 @@
 
   <style scoped>
   /* card */
-  .card:hover{
-    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  /* all events */
+  .card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    flex-shrink: 0;
+    text-align: center;
+    --bs-card-border-width: none;
+    transition: all 0.3s ease;
   }
+
+  .card:hover {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    flex-shrink: 0;
+    text-align: center;
+    --bs-card-border-width: none;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-body .col-6{
+    padding: 0px;
+  }
+
   .card-title{
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 20px;
+    font-size: 1.75rem;
+    font-weight: 500;
     text-align: left;
-    padding-top: 15px;
-    padding-bottom: 15px;
-  }
-  .card{
-    border-radius:30px !important;
-    margin-bottom: 15px;
-    margin-top: 15px;
-  }
-  .card-img{
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    border-radius:30px !important;
-  }
-  .card-info-icon{
-    width: 16px;
-    height: 16px;
-  }
-  .card-info-text{
-    align-content: center;
-    text-align: left;
-  }
-  .card-host{
     margin: 0px;
-    cursor: pointer;
+  }
+
+  .card-detail{
     text-align: left;
+    font-size: 15px;
+    font-weight: 300;
   }
-  .host-icon{
-    width: 32px;
-    height: 32px;
-    border-radius: 100%;
-  }
-  .hashtag{
-    background-color: #12CF51;
-    color: #ffffff;
-    padding: 3px;
-    padding-left: 10px;
-    padding-right: 10px;
-    border: none;
-    border-radius: 24px;
-    margin-bottom: 15px;
+
+  .icon_type{
     width: min-content;
-  }  
+    background-color: #58C3FF;
+    color: #FFFFFF;
+    padding: 5px 15px;
+    border-radius: 24px;
+    margin: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-img {
+    background-image: url('@/assets/img/img_LogInBanner1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 210px;
+    border-radius: 8px;
+  }
+
+  .card-info-text{
+    padding: 0px 5px;
+  }
+
+  .icon_tema{
+    width: min-content;
+    background-color: #5870FF;
+    color: #FFFFFF;
+    padding: 5px 15px;
+    border-radius: 24px;
+    margin: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  .participants{
+    width: max-content;
+    background-color: #FFFFFF;
+    color: #5870FF;
+    padding: 5px 15px;
+    border-radius: 24px;
+    margin: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  .card-icon-heart{
+    margin: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-info-text{
+    text-align: left;
+    font-weight: 300;
+  }
+
+  .card-info-icon{
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .event-card{
+    width: 100%;
+    padding: 15px;
+  }
+  .events-container .card-img{
+    height: 240px;
+  }
+  .event-content .card{
+    width: 100%;
+    height: 420px;
+  }
+  .event-content .card-body{
+    padding: 1rem;
+  }
+  .event-content .card-info-text{
+    padding: 1rem;
+    margin: 0px;
+  }
 </style>

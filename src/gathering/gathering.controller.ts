@@ -1,39 +1,38 @@
 import {
-    Body,
-    Controller,
-    Get,
-    Post,
-    Req,
-    Patch,
-    Param,
-    UseGuards,
-    Request,
-    HttpException,
-    HttpStatus,
-    UseInterceptors,
-    UploadedFile,
-    NotFoundException,
-    ParseIntPipe,
-    Query,
-    ValidationPipe,
-  } from '@nestjs/common';
-  import { CreateEventDto, ApplyEventDto, CreateParticipantDto, SearchEventDto } from './gathering.dto';
-  import { JwtAuthGuard } from '../auth/auth.guard';
-  import { GatheringService } from './gathering.service';
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+  ValidationPipe,
+} from '@nestjs/common';
+import {
+  CreateEventDto,
+  CreateParticipantDto,
+  SearchEventDto,
+} from './gathering.dto';
+import { GatheringService } from './gathering.service';
 
-  import { FileInterceptor } from '@nestjs/platform-express';
-  import { diskStorage } from 'multer';
-  import { v4 as uuidv4 } from 'uuid';
-  import * as path from 'path';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+import * as path from 'path';
 
-  @Controller('gathering')
+@Controller('gathering')
   export class GatheringController {
     constructor(private readonly gatheringService: GatheringService) {}
 
     @Post('submit')
-    async submitEvent(@Body() createEventDto: CreateEventDto) {
+    async createEvent(@Body() createEventDto: CreateEventDto) {
       try {
-        console.log('CreateEventDto in cont:', createEventDto);
         const event = await this.gatheringService.createEvent(createEventDto);
         return { success: true, event };
       } catch (error) {
@@ -41,30 +40,34 @@ import {
         return { success: false, message: error.message };
       }
     }
-    
-    @Post('save')
-    async saveEvent(@Body() createEventDto: CreateEventDto) {
-      try {
-        const event = await this.gatheringService.saveEvent(createEventDto);
-        return { success: true, event };
-      } catch (error) {
-        return { success: false, message: error.message };
+
+  @Get()
+  async getEvents(
+    @Query('type') type: string,
+    @Query('category') category?: string,
+    @Query(new ValidationPipe({ transform: true })) searchEventDto?: SearchEventDto,
+  ) {
+    try {
+      switch (type) {
+        case 'all':
+          return await this.gatheringService.getAllEvents();
+        case 'hot':
+          return await this.gatheringService.getHot8Events();
+        case 'search':
+          return await this.gatheringService.searchEvent(searchEventDto);
+        case 'category':
+          return await this.gatheringService.searchEventByCategory(category || 'ALL');
+        default:
+          throw new Error('Invalid type parameter');
       }
+    } catch (error) {
+      throw new Error(`Failed to get events: ${error.message}`);
     }
-    @Get('getAllEvents')
-    async getAllEvents() {
-      try {
-        const events = await this.gatheringService.getAllEvents();
-        
-        return events;
-      } catch (error) {
-        throw new Error(`Failed to get events: ${error.message}`);
-      }
-    }  
+  }
 
 
-    
-    @Post('upload')
+
+  @Post('upload')
     @UseInterceptors(
       FileInterceptor('file', {
         storage: diskStorage({
@@ -137,15 +140,13 @@ import {
       return await this.gatheringService.getLikedEvents(likedId);
     }
 
-    @Get('searchEvent')
-    async searchEvent(@Query(new ValidationPipe({ transform: true })) searchEventDto: SearchEventDto) {
-      return await this.gatheringService.searchEvent(searchEventDto)
-    }
+
 
     @Get('sorted')
     async getSortedEvents(@Query('sortBy') sortBy: string) {
       return await this.gatheringService.getSortedEvents(sortBy);
     }
+
     @Get('checkParticipation')
     async checkParticipation(
       @Query('eventId') eventId: number,

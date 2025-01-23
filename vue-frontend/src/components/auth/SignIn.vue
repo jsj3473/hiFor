@@ -133,14 +133,15 @@
 </template>
 
 
-
+<!--
 <script>
 
     import SignIn from '../../js/auth/SignIn.js';
-  
+
     export default SignIn;
-     
+
 </script>
+-->
 
 <!-- css -->
 <style scoped>
