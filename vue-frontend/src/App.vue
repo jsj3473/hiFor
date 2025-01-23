@@ -17,7 +17,7 @@
           <router-link class="header-nav-text" to="/">Notice</router-link>
           <router-link v-if="!isLoggedIn" class="header-nav-btn" to="/logIn">SignIn/SignUp</router-link>
           <router-link v-if="isLoggedIn" class="header-nav-btn" to="/myPage">My Page</router-link>
-          <router-link v-if="isLoggedIn" class="header-nav-btn" to="/createEvent">Create Event</router-link>
+          <router-link v-if="isLoggedIn" class="header-nav-btn" to="/postEvent">Create Event</router-link>
           <router-link v-if="isLoggedIn" class="header-nav-btn" to="/" @click="logout">logout</router-link>
         </div>
       </div>
@@ -33,7 +33,7 @@
           <router-link class="header-nav-text" to="/">Notice</router-link>
           <router-link v-if="!isLoggedIn" class="header-nav-btn" to="/logIn">SignIn/SignUp</router-link>
           <router-link v-if="isLoggedIn" class="header-nav-btn" to="/myPage">My Page</router-link>
-          <router-link v-if="isLoggedIn" class="header-nav-btn" to="/createEvent">Create Event</router-link>
+          <router-link v-if="isLoggedIn" class="header-nav-btn" to="/postEvent">Create Event</router-link>
           <router-link v-if="isLoggedIn" class="header-nav-btn" to="/" @click="logout">logout</router-link>
         </div>
       </div>

@@ -1,0 +1,5 @@
+/* global.css */
+a {
+    text-decoration: none !important;
+    color: unset !important;
+}

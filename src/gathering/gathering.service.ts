@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, MoreThanOrEqual, Repository } from 'typeorm';
 import { HiforEvent, Image, Like, Participant } from './gathering.entity';
@@ -455,6 +455,7 @@ export class GatheringService {
       throw new Error('Event not found');
     }
 
+    console.log(_userId)
     const user = await this.userRepository.findOne({
       where: { userId: _userId },
     });
@@ -521,5 +522,31 @@ export class GatheringService {
         status: 'Approved',
       },
     });
+  }
+
+  async cancelParticipation(_userId: string, eventId: number): Promise<void> {
+    // 이벤트 찾기
+    const event = await this.eventRepository.findOne({
+      where: { id: eventId },
+      relations: ['participants','participants.user'],
+    });
+
+    if (!event) {
+      throw new HttpException('Event not found', HttpStatus.NOT_FOUND);
+    }
+
+    // 사용자 찾기
+    const user = await this.userRepository.findOne({ where: { userId: _userId } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    // 참여자 목록에서 사용자 제거
+    event.participants = event.participants.filter(
+      (participant) => participant.user.userId !== _userId
+    );
+
+    // 데이터베이스 업데이트
+    await this.eventRepository.save(event);
   }
 }

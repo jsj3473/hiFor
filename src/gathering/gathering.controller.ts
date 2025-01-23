@@ -110,6 +110,7 @@ import * as path from 'path';
     @Post('createParticipant')
     async createParticipant(@Body() createParticipantDto: CreateParticipantDto) {
       const { eventId, userId, answer } = createParticipantDto;
+      console.log(userId)
       return await this.gatheringService.createParticipant(eventId, userId, answer);
     }
 
@@ -155,6 +156,20 @@ import * as path from 'path';
       console.log(userId,eventId)
       const isParticipating = await this.gatheringService.checkParticipation(eventId, userId);
       return { isParticipating };
+    }
+
+    @Post('cancelParticipation')
+    async cancelParticipation(
+      @Body() cancelParticipationDto: { userId: string; eventId: number }
+    ): Promise<{ message: string }> {
+      const { userId, eventId } = cancelParticipationDto;
+
+      if (!userId || !eventId) {
+        throw new HttpException('Missing userId or eventId', HttpStatus.BAD_REQUEST);
+      }
+
+      await this.gatheringService.cancelParticipation(userId, eventId);
+      return { message: 'Participation canceled successfully.' };
     }
   }
   

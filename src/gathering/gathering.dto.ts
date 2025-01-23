@@ -117,3 +117,12 @@ export class SearchEventDto {
   @IsString()
   type?: string;
 }
+
+export class cancelParticipationDTO {
+  @IsNotEmpty()
+  @IsNumber()
+  eventId: number;
+
+  @IsNotEmpty()
+  userId: string;
+}

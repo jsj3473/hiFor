@@ -1,27 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import SignUp from '../components/auth/SignUp.vue'; 
-import SignIn from '../components/auth/SignIn.vue';
+import SignUp from '../../../trash/SignUp.vue';
+import SignIn from '../../../trash/SignIn.vue';
 import CreateAccount from '../components/auth/CreateAccount.vue';
 import PasswordChange from '../components/auth/PasswordChange.vue';
 import MyPage from '../components/MyPage.vue'
 import MyPageEdit from '../components/MyPageEdit.vue'
 import FindUsername from '../components/auth/FindUsername.vue';
 import FindPassword from '../components/auth/FindPassword.vue';
-import CreateEvent from '../components/gathering/CreateEvent.vue';
-import ShowAllEvents from '../components/gathering/ShowAllEvents.vue';
 import GoogleSignUp from '../components/auth/googleSignUp.vue'; 
 import EventDetailJoin from '../components/gathering/eventDetailJoin.vue';
 import JoinEvent from '../components/gathering/JoinStepParent.vue';
 import GatheringApprove from '../components/gathering/GatheringApprove.vue';
 import OurCompany from '@/components/about/OurCompany.vue';
 import OurService from '@/components/about/OurService.vue';
-//import Notice from '@/components/help/Notice.vue';
 import ServiceGuide from '@/components/help/ServiceGuide.vue';
 import UseClause from '@/components/help/UseClause.vue';
 import HomeIndex from '@/components/HomeIndex.vue';
 import AllEvents from '@/components/main/AllEvents.vue';
-import PostEvent from '@/components/main/PostEvent.vue';
-import EnterEvent from '@/components/main/EnterEvent.vue';
+import PostEvent from '@/components/gathering/PostEvent.vue';
+import EnterEvent from '@/components/gathering/EnterEvent.vue';
 import ContactUs from '@/components/main/ContactUs.vue';
 import LogIn from '@/components/auth/LogIn.vue';
 
@@ -82,18 +79,6 @@ const routes = [
     meta: { hideHeaderFooter: true },
   },
   {
-    path: '/createEvent',
-    name: 'CreateEvent',
-    component: CreateEvent,
-    meta: { hideHeaderFooter: false },
-  },
-  {
-    path: '/showAllEvents',
-    name: 'ShowAllEvents',
-    component: ShowAllEvents,
-    meta: { hideHeaderFooter: false },
-  },
-  {
     path: '/googleSignUp',
     name: 'GoogleSignUp',
     component: GoogleSignUp,
@@ -151,19 +136,20 @@ const routes = [
     path: '/postEvent',
     name: 'PostEvent',
     component: PostEvent,
-    meta: { hideHeaderFooter: true },
+
+    meta: { hideHeaderFooter: false },
   },
   {
-    path: '/enterEvent',
+    path: '/enterEvent/:eventId',
     name: 'EnterEvent',
     component: EnterEvent,
-    meta: { hideHeaderFooter: true },
+    meta: { hideHeaderFooter: false },
   },
   {
     path: '/contactUs',
     name: 'ContactUs',
     component: ContactUs,
-    meta: { hideHeaderFooter: true },
+    meta: { hideHeaderFooter: false },
   },
   {
     path: '/logIn',

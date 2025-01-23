@@ -6,7 +6,7 @@
         <div class="row">
           <div class="col-8">
             <!-- Main banner -->
-            <div class="container banner-img-box" :style="{ backgroundImage: `url(${event.image})` }"></div>
+            <div class="container banner-img-box" :style="{ backgroundImage: `url(${event.mainImage})` }"></div>
             
             <!-- text section -->
             <div class="gathering-box">
@@ -79,34 +79,48 @@
                       {{ event.createdBy.username }}
                     </p>
                   </router-link>
+
+
                   <div class="p-0">
+                    <!-- 사용자가 이벤트 생성자인 경우 -->
                     <router-link
-                      v-if="!isParticipating && !(event.participants.current >= event.participants.max)"
-                      :to="event.createdBy.id === userId ? `/manage/${event.id}` : `/joinEvents/${event.id}`"
+                      v-if="event.createdBy.id === userId"
+                      :to="`/manage/${event.id}`"
                     >
                       <button class="join-btn">
-                        {{
-                          event.createdBy.id === userId
-                            ? 'Manage'
-                            : event.type === 'First come'
-                            ? 'Join Now!'
-                            : 'Register'
-                        }}
+                        Manage
                       </button>
                     </router-link>
+
+                    <!-- 사용자가 이벤트 생성자가 아니고, 참여하지 않은 경우 -->
+                    <router-link
+                      v-else-if="!isParticipating && !(event.participants.current >= event.participants.max) && new Date(`${event.date}T${event.time}`) >= new Date()"
+                      :to="`/enterEvent/${event.id}`"
+                    >
+                      <button class="join-btn">
+                        Join Now!
+                      </button>
+                    </router-link>
+
+                    <!-- 참여한 경우 -->
+                    <button
+                      v-else-if="isParticipating"
+                      class="cancel-btn"
+                      @click="handleCancelParticipation"
+                    >
+                      Cancel
+                    </button>
+
+                    <!-- 참여하지 않은 경우 -->
                     <button
                       v-else
                       class="closed-join-btn"
-                      @click="handleClosedClick"
+                      disabled
                     >
-                      {{
-                        isParticipating
-                          ? 'Participated'
-                          : 'Closed'
-                      }}
+                      Closed
                     </button>
-
                   </div>
+
 
 
 
@@ -131,15 +145,23 @@
       const store = useStore();
       const userId = computed(() => store.getters.userId);
       const event = ref({
+            id: '',
             description: '', // 빈 문자열로 초기화
             name: '',
             date: '',
+            time: '',
             location: '',
+            locationDetail: '',
+            mainImage: '',
+            images: [],
+            participants: { current: 0, max: 0, min: 0},
+            category: '',
             type: '',
-            hashtags: [],
-            participants: { current: 0, max: 0 },
             likes: 0,
-            createdBy: { name: 'Unknown', id: 0, profileImage: '' },});
+            createdBy: { name: '', id: 0, profileImage: '' },
+            price: 0,
+            question: '',
+      });
       const isLiked = ref(false);
       const isParticipating = ref(false); // 사용자 참여 여부 상태
       const formattedDate = computed(() => {
@@ -159,11 +181,15 @@
             name: eventData.name,
             description: eventData.description,
             date: eventData.date,
-            hashtags: eventData.hashtags || [], // 해시태그 배열 확인
+            time: eventData.time,
+            category: eventData.category,
+            mainImage: eventData.mainImage,
             location: eventData.location,
+            locationDetail: eventData.locationDetail,
             participants: {
               current: eventData.participants?.length || 0,
               max: eventData.maxParticipants,
+              min: eventData.minParticipants
             },
             likes: eventData.likes.length || 0,
             createdBy: {
@@ -172,7 +198,8 @@
               //profileImage: eventData.createdBy?.profileImage || "@/assets/images/default-host.png",
             },
             price: eventData.price,
-            type: eventData.type
+            type: eventData.type,
+            question: eventData.question,
           };  
           const userId = sessionStorage.getItem('userId')
           isLiked.value = eventData.likes.some((like) => like.user.userId === userId);
@@ -212,37 +239,51 @@
           isParticipating.value = false;
         }
       };
+    // 참여 취소 함수
+      const handleCancelParticipation = async () => {
+        // 사용자 확인
+        const userConfirmed = window.confirm(
+          "Are you sure you want to cancel your participation in this event?"
+        );
+
+        if (userConfirmed) {
+          try {
+            // 백엔드 호출
+            const response = await axios.post("http://localhost:3000/gathering/cancelParticipation", {
+              userId: userId.value,
+              eventId: event.value.id,
+            });
+
+            // 성공 메시지 표시
+            console.log("Participation canceled:", response.data);
+            alert("Your participation has been successfully canceled.");
+          } catch (error) {
+            // 에러 처리
+            console.error("Error canceling participation:", error);
+            alert("Failed to cancel participation. Please try again.");
+          }
+        } else {
+          // 사용자가 취소를 확정하지 않음
+          console.log("User canceled the confirmation.");
+        }
+      };
 
       onMounted(() => {
         const eventId = parseInt(window.location.pathname.split('/').pop()); // Extract event ID from URL
         fetchEvent(eventId);
         const userId = sessionStorage.getItem('userId');
         checkUserParticipation(eventId, userId); // 사용자 참여 여부 확인
-      });    
-      
-      const copyLinkToClipboard = () => {
-        const url = window.location.href; // 현재 페이지 URL
-        navigator.clipboard.writeText(url).then(() => {
-          alert('Link copied to clipboard!');
-        }).catch((error) => {
-          console.error('Failed to copy link:', error);
-        });
-      };
+      });
 
       return {
         event,
         isLiked,
         toggleLike,
         formattedDate,
-        copyLinkToClipboard,
         userId,
-        isParticipating
+        isParticipating,
+        handleCancelParticipation
       };
-    },
-    methods: {
-        handleClosedClick() {
-          alert('This event is closed and cannot be joined.');
-        },
     },
   };
   </script>
@@ -412,6 +453,19 @@
     padding-left: 100px;
     padding-right: 100px;
     background-color: #4457FF;
+    border: none;
+    border-radius: 96px;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 300;
+  }
+  .cancel-btn{
+    width: 280px;
+    margin: 12px 32px;
+    padding: 20px;
+    padding-left: 100px;
+    padding-right: 100px;
+    background-color: #e84a4a;
     border: none;
     border-radius: 96px;
     color: #ffffff;
