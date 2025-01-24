@@ -25,6 +25,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
+import * as console from 'node:console';
 
 @Controller('gathering')
   export class GatheringController {
@@ -43,12 +44,12 @@ import * as path from 'path';
 
   @Get()
   async getEvents(
-    @Query('type') type: string,
+    @Query('fetchType') fetchType: string,
     @Query('category') category?: string,
     @Query(new ValidationPipe({ transform: true })) searchEventDto?: SearchEventDto,
   ) {
     try {
-      switch (type) {
+      switch (fetchType) {
         case 'all':
           return await this.gatheringService.getAllEvents();
         case 'hot':
@@ -56,7 +57,7 @@ import * as path from 'path';
         case 'search':
           return await this.gatheringService.searchEvent(searchEventDto);
         case 'category':
-          return await this.gatheringService.searchEventByCategory(category || 'ALL');
+          return await this.gatheringService.searchEventByCategory(category);
         default:
           throw new Error('Invalid type parameter');
       }
@@ -106,6 +107,16 @@ import * as path from 'path';
     async toggleLike(@Param('eventId', ParseIntPipe) eventId: number, @Body('userId') userId: string) {
       const updatedLikes = await this.gatheringService.toggleLike(eventId, userId);
       return { likesLen: updatedLikes };
+    }
+
+    // 좋아요 상태 확인
+    @Get(':eventId/isLiked')
+    async isLiked(
+      @Param('eventId') eventId: number,
+      @Query('userId') userId: string,
+    ): Promise<{ isLiked: boolean }> {
+      const isLiked = await this.gatheringService.checkLikeStatus(eventId, userId);
+      return { isLiked };
     }
     @Post('createParticipant')
     async createParticipant(@Body() createParticipantDto: CreateParticipantDto) {

@@ -1,3 +1,4 @@
+
 <template>
     <div class="Web">
         <div class="home-banner">
@@ -10,58 +11,65 @@
 
 
             <div class="search-box">
-              <form class="search-form" @submit.prevent="searchEvents">
-                <table>
-                    <tr class="search-text">
-                        <button type="submit">
-                            <img src="../assets/img/icons_search.png" alt="">
-                        </button>
-                        <input type="text" class="search-text-box" v-model="searchQuery">
-                    </tr>
-                    <tr class="search-date">
-                        <input type="date" v-model="searchDate">
-                    </tr>
-                    <tr class="search-location">
-                        <select v-model="searchLocation">
-                            <option disabled selected>Location</option>
-                            <option value="Jongno-gu">Jongno-gu</option>
-                            <option value="Jung-gu">Jung-gu</option>
-                            <option value="Yongsan-gu">Yongsan-gu</option>
-                            <option value="Seongdong-gu">Seongdong-gu</option>
-                            <option value="Gwangjin-gu">Gwangjin-gu</option>
-                            <option value="Dongdaemun-gu">Dongdaemun-gu</option>
-                            <option value="Jungnang-gu">Jungnang-gu</option>
-                            <option value="Seongbuk-gu">Seongbuk-gu</option>
-                            <option value="Gangbuk-gu">Gangbuk-gu</option>
-                            <option value="Dobong-gu">Dobong-gu</option>
-                            <option value="Nowon-gu">Nowon-gu</option>
-                            <option value="Eunpyeong-gu">Eunpyeong-gu</option>
-                            <option value="Seodaemun-gu">Seodaemun-gu</option>
-                            <option value="Mapo-gu">Mapo-gu</option>
-                            <option value="Yangcheon-gu">Yangcheon-gu</option>
-                            <option value="Gangseo-gu">Gangseo-gu</option>
-                            <option value="Guro-gu">Guro-gu</option>
-                            <option value="Geumcheon-gu">Geumcheon-gu</option>
-                            <option value="Yeongdeungpo-gu">Yeongdeungpo-gu</option>
-                            <option value="Dongjak-gu">Dongjak-gu</option>
-                            <option value="Gwanak-gu">Gwanak-gu</option>
-                            <option value="Seocho-gu">Seocho-gu</option>
-                            <option value="Gangnam-gu">Gangnam-gu</option>
-                            <option value="Songpa-gu">Songpa-gu</option>
-                            <option value="Gangdong-gu">Gangdong-gu</option>
-                            <option value="etc">etc</option>
-                        </select>
-                    </tr>
-                    <tr class="search-type">
-                        <select v-model="searchType">
-                            <option value="">Type</option>
-                            <option value="First come">First come</option>
-                            <option value="Register">Register</option>
-                        </select>
-                    </tr>
-                </table>
-              </form>
-            </div>
+            <form class="search-form" @submit.prevent="searchEvents">
+              <div class="row search-bar">
+                <!-- Search Text -->
+                <div class="col-6 search-text">
+                  <button type="submit">
+                    <img src="@/assets/img/icons_search.png" alt="">
+                  </button>
+                  <input type="text" class="search-text-box" v-model="searchQuery" placeholder="Search...">
+                </div>
+
+                <!-- Search Date -->
+                <div class="col-2 search-date">
+                  <input type="date" v-model="searchDate">
+                </div>
+
+                <!-- Search Location -->
+                <div class="col-2 search-location">
+                  <select v-model="searchLocation">
+                    <option disabled hidden selected>Location</option>
+                    <option value="Jongno-gu">Jongno-gu</option>
+                    <option value="Jung-gu">Jung-gu</option>
+                    <option value="Yongsan-gu">Yongsan-gu</option>
+                    <option value="Seongdong-gu">Seongdong-gu</option>
+                    <option value="Gwangjin-gu">Gwangjin-gu</option>
+                    <option value="Dongdaemun-gu">Dongdaemun-gu</option>
+                    <option value="Jungnang-gu">Jungnang-gu</option>
+                    <option value="Seongbuk-gu">Seongbuk-gu</option>
+                    <option value="Gangbuk-gu">Gangbuk-gu</option>
+                    <option value="Dobong-gu">Dobong-gu</option>
+                    <option value="Nowon-gu">Nowon-gu</option>
+                    <option value="Eunpyeong-gu">Eunpyeong-gu</option>
+                    <option value="Seodaemun-gu">Seodaemun-gu</option>
+                    <option value="Mapo-gu">Mapo-gu</option>
+                    <option value="Yangcheon-gu">Yangcheon-gu</option>
+                    <option value="Gangseo-gu">Gangseo-gu</option>
+                    <option value="Guro-gu">Guro-gu</option>
+                    <option value="Geumcheon-gu">Geumcheon-gu</option>
+                    <option value="Yeongdeungpo-gu">Yeongdeungpo-gu</option>
+                    <option value="Dongjak-gu">Dongjak-gu</option>
+                    <option value="Gwanak-gu">Gwanak-gu</option>
+                    <option value="Seocho-gu">Seocho-gu</option>
+                    <option value="Gangnam-gu">Gangnam-gu</option>
+                    <option value="Songpa-gu">Songpa-gu</option>
+                    <option value="Gangdong-gu">Gangdong-gu</option>
+                    <option value="etc">etc</option>
+                  </select>
+                </div>
+
+                <!-- Search Type -->
+                <div class="col-2 search-type">
+                  <select v-model="searchType">
+                    <option disabled hidden selected>Type</option>
+                    <option value="FirstCome">First come</option>
+                    <option value="Register">Register</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+          </div>
             <div class="category-row">
               <p class="title">Top categories</p>
               <div class="row">
@@ -408,23 +416,16 @@
     </div>
 </template>
 
-<script>
-import { ref, computed, onMounted, nextTick } from 'vue';
-import { useStore } from 'vuex';
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+//import { useStore } from 'vuex';
 import axios from 'axios';
 import EventCard from './gathering/EventCard.vue'; // EventCard 컴포넌트 가져오기
 
-export default {
 
-  name: 'HomePage',
-  components: {
-    EventCard, // 컴포넌트 등록
-  },
-  setup() {
-    // 로컬 상태 관리
     const events = ref([]); // 이벤트 데이터
     const hotEvents = ref([]); // 캐러셀 이벤트
-    const store = useStore();
+    //const store = useStore();
     // Carousel DOM 요소 참조
     const carousel = ref(null);
 
@@ -439,9 +440,6 @@ export default {
         }
       }
     };
-    // Vuex 상태 및 getter 사용
-    const isLoggedIn = computed(() => store.getters.isLoggedIn);
-    const token = computed(() => store.getters.token);
     // 상태 관리
     const currentPage = ref(1);
     const itemsPerPage = 6;
@@ -468,11 +466,11 @@ export default {
     });
 
     // 메서드
-    const isCardVisible = (index) => {
-      const start = (currentPage.value - 1) * itemsPerPage + 1;
-      const end = start + itemsPerPage - 1;
-      return index >= start && index <= end;
-    };
+    // const isCardVisible = (index) => {
+    //   const start = (currentPage.value - 1) * itemsPerPage + 1;
+    //   const end = start + itemsPerPage - 1;
+    //   return index >= start && index <= end;
+    // };
     //검색
     const searchQuery = ref(''); // 제목 검색어
     const searchDate = ref(''); // 날짜
@@ -496,14 +494,14 @@ export default {
 
 
     // 통합된 fetchEvents 함수
-    const fetchEvents = async (type, params = {}) => {
+    const fetchEvents = async (fetchType, params = {}) => {
       try {
         const response = await axios.get('http://localhost:3000/gathering', {
-          params: { type, ...params }, // type을 쿼리 파라미터에 추가
+          params: { fetchType, ...params }, // type을 쿼리 파라미터에 추가
         });
         return response.data.map(mapEventData); // 데이터 매핑 후 반환
       } catch (error) {
-        console.error(`Failed to fetch events for type "${type}":`, error);
+        console.error(`Failed to fetch events for type "${fetchType}":`, error);
         return []; // 에러 시 빈 배열 반환
       }
     };
@@ -516,7 +514,6 @@ export default {
 // 핫 이벤트 가져오기
     const fetchHotEvents = async () => {
       hotEvents.value = await fetchEvents('hot');
-      console.log('Hot events:', hotEvents.value); // 값 확인
     };
 
 // 검색 이벤트 가져오기
@@ -550,35 +547,10 @@ export default {
 
     onMounted(async () => {
       await fetchAllEvents(); // 모든 이벤트 가져오기
-      // DOM 업데이트 완료 대기
-      await nextTick();
-      if (carousel.value) {
-        console.log('Carousel initialized:', carousel.value);
-      }
       await fetchHotEvents(); // 핫 이벤트
     });
 
-    return {
-      isLoggedIn,
-      token,
-      scrollCarousel,
-      searchEvents,
-      searchQuery,
-      searchDate,
-      searchLocation,
-      searchType,
-      categories,
-      fetchEventsByCategory,
-      isCardVisible,
-      prevPage,
-      nextPage,
-      totalPages,
-      currentPage,
-      visibleEvents,
-      hotEvents,
-    };
-  },
-};
+
 </script>
 
 

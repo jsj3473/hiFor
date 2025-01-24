@@ -269,7 +269,7 @@ export class GatheringService {
         where: {
           createdBy: { userId: hostId },
         },
-        relations: ['images', 'participants', 'likes'],
+        relations: ['createdBy','images', 'participants', 'likes'],
       });
 
       return await Promise.all(
@@ -294,6 +294,10 @@ export class GatheringService {
             maxParticipants: event.maxParticipants,
             participants: approvedParticipantsCount, // 승인된 참가자 수
             likes: event.likes.length,
+            createdBy: {
+              username: event.createdBy?.username, // createdBy에서 username 가져옴
+              userId: event.createdBy?.userId,     // createdBy에서 userId 가져옴
+            },
           };
         }),
       );
@@ -302,27 +306,68 @@ export class GatheringService {
     }
   }
 
-  // like
+// 좋아요한 이벤트 가져오기
   async getLikedEvents(likedId: string) {
     try {
       const likedEvents = await this.likeRepository.find({
         where: {
           user: { userId: likedId }, // 특정 userId가 좋아요를 누른 이벤트
         },
-        relations: ['event'], // 이벤트 정보 로드
+        relations: ['event', 'event.createdBy', 'event.likes', 'event.participants'], // 필요한 관계 로드
       });
 
-      // 좋아요한 이벤트만 반환
-      const events = likedEvents.map((like) => like.event);
-      console.log('liked event:', events);
-      return events;
+      // 좋아요한 이벤트만 추출
+      const events = likedEvents
+        .map((like) => like.event)
+        .filter((event) => event !== null);
+
+      // 데이터 매핑
+      const mappedEvents = await Promise.all(
+        events.map(async (event) => {
+          // Approved 참가자 수 계산
+          const approvedParticipantsCount =
+            await this.participantRepository.count({
+              where: {
+                event: { id: event.id },
+                status: 'Approved',
+              },
+            });
+
+          return {
+            id: event.id,
+            name: event.name,
+            description: event.description,
+            mainImage: event.mainImage,
+            location: event.location,
+            date: event.date,
+            type: event.type,
+            category: event.category,
+            price: event.price,
+            maxParticipants: event.maxParticipants,
+            createdBy: {
+              username: event.createdBy?.username,
+              userId: event.createdBy?.userId,
+              // profileImage: event.createdBy?.profileImage,
+            },
+            participants: approvedParticipantsCount, // 승인된 참가자 수
+            likes: event.likes.length,
+          };
+        }),
+      );
+
+      // 디버깅: 매핑된 결과 확인
+      console.log(`Mapped Liked Events:`, mappedEvents);
+
+      // 매핑된 좋아요 이벤트 반환
+      return mappedEvents;
     } catch (error) {
       throw new Error(`Failed to fetch liked events: ${error.message}`);
     }
   }
+
   async searchEventByCategory(_category: string) {
     try {
-      if (_category === 'ALL') {
+      if (_category === 'All') {
         return await this.getAllEvents();
       }
       return await this.eventRepository.find({
@@ -392,6 +437,7 @@ export class GatheringService {
           maxParticipants: event.maxParticipants,
           createdBy: {
             name: event.createdBy?.username,
+            userId: event.createdBy?.userId,
             //profileImage: event.createdBy?.profileImage,
           },
           participants: approvedParticipantsCount, // 승인된 참가자 수
@@ -399,9 +445,6 @@ export class GatheringService {
         };
       }),
     );
-
-    // 디버깅: 검색된 이벤트와 매핑된 결과 확인
-    console.log(`Mapped Events:`, mappedEvents);
 
     return mappedEvents;
   }
@@ -413,7 +456,6 @@ export class GatheringService {
     if (!event) {
       throw new NotFoundException('Event not found');
     }
-    //console.log("변경전:",event.likes)
 
     const user = await this.userRepository.findOne({
       where: { userId: _userId },
@@ -441,7 +483,13 @@ export class GatheringService {
 
     return event.likes.length;
   }
-
+  // 좋아요 상태 확인
+  async checkLikeStatus(eventId: number, _userId: string): Promise<boolean> {
+    const like = await this.likeRepository.findOne({
+      where: { event: { id: eventId }, user: { userId: _userId } },
+    });
+    return !!like; // 좋아요 여부 반환
+  }
   //participant
   async createParticipant(
     eventId: number,
@@ -454,23 +502,23 @@ export class GatheringService {
     if (!event) {
       throw new Error('Event not found');
     }
-
-    console.log(_userId)
     const user = await this.userRepository.findOne({
       where: { userId: _userId },
     });
     if (!user) {
       throw new Error('User not found');
     }
+    const status = event.type === 'Register' ? 'Pending' : 'Approved';
 
     const participant = this.participantRepository.create({
       event,
       user,
-      status: 'Pending',
+      status,
       answer,
     });
 
     return await this.participantRepository.save(participant);
+
   }
   async getParticipatedEvent(participatedId: string) {
     try {
@@ -479,15 +527,59 @@ export class GatheringService {
           user: { userId: participatedId }, // 특정 userId가 참여한 이벤트
           status: 'Approved', // 승인된 상태만 필터링
         },
-        relations: ['event'], // 이벤트 정보 로드
+        relations: ['event', 'event.createdBy', 'event.likes', 'event.participants'], // 필요한 관계 로드
       });
 
-      // 참여한 이벤트 반환
-      return participants.map((participant) => participant.event);
+      // null이 아닌 이벤트만 추출
+      const events = participants
+        .map((participant) => participant.event)
+        .filter((event) => event !== null);
+
+      // 데이터 매핑
+      const mappedEvents = await Promise.all(
+        events.map(async (event) => {
+          // Approved 참가자 수 계산
+          const approvedParticipantsCount =
+            await this.participantRepository.count({
+              where: {
+                event: { id: event.id },
+                status: 'Approved',
+              },
+            });
+
+          return {
+            id: event.id,
+            name: event.name,
+            description: event.description,
+            mainImage: event.mainImage,
+            location: event.location,
+            date: event.date,
+            type: event.type,
+            category: event.category,
+            price: event.price,
+            maxParticipants: event.maxParticipants,
+            createdBy: {
+              username: event.createdBy?.username,
+              userId: event.createdBy?.userId,
+              // profileImage: event.createdBy?.profileImage,
+            },
+            participants: approvedParticipantsCount, // 승인된 참가자 수
+            likes: event.likes.length,
+          };
+        }),
+      );
+
+      // 디버깅: 매핑된 결과 확인
+      console.log(`Mapped Events:`, mappedEvents);
+
+      // 매핑된 이벤트를 반환
+      return mappedEvents;
     } catch (error) {
       throw new Error(`Failed to fetch participated events: ${error.message}`);
     }
   }
+
+
   // 사용자 참여 여부 확인
   async checkParticipation(eventId: number, _userId: string): Promise<boolean> {
     const user = await this.userRepository.findOne({

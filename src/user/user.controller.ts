@@ -16,10 +16,6 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Post('/create')
-  createUser(@Body() user: CreateUserDto) {
-    return this.userService.createUser(user);
-  }  
   
   @Get('/isUserId/:userId')
   async isUserId(@Param('userId') userId: string) {

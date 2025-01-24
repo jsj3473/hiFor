@@ -23,19 +23,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsOptional()
-  phoneNumber?: string; // 휴대폰 번호 (선택 사항)
-
-  @IsString()
-  @IsOptional()
   nationality?: string; // 국적 - 선택 사항
-
-  @IsString()
-  @IsOptional()
-  identityStatus?: string; // 신분 - 선택 사항
-
-  @IsString()
-  @IsOptional()
-  university: string;
 }
 
 

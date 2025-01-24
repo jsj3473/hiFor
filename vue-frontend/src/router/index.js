@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import SignUp from '../../../trash/SignUp.vue';
-import SignIn from '../../../trash/SignIn.vue';
 import CreateAccount from '../components/auth/CreateAccount.vue';
 import PasswordChange from '../components/auth/PasswordChange.vue';
 import MyPage from '../components/MyPage.vue'
@@ -9,7 +7,6 @@ import FindUsername from '../components/auth/FindUsername.vue';
 import FindPassword from '../components/auth/FindPassword.vue';
 import GoogleSignUp from '../components/auth/googleSignUp.vue'; 
 import EventDetailJoin from '../components/gathering/eventDetailJoin.vue';
-import JoinEvent from '../../../trash/joinEvent/JoinStepParent.vue';
 import EventApprove from '../components/gathering/EventApprove.vue';
 import OurCompany from '@/components/about/OurCompany.vue';
 import OurService from '@/components/about/OurService.vue';
@@ -21,6 +18,7 @@ import PostEvent from '@/components/gathering/PostEvent.vue';
 import EnterEvent from '@/components/gathering/EnterEvent.vue';
 import ContactUs from '@/components/main/ContactUs.vue';
 import LogIn from '@/components/auth/LogIn.vue';
+import UserPage from '../components/UserPage.vue'
 
 const routes = [
 
@@ -29,18 +27,6 @@ const routes = [
     name: 'HomeIndex',
     component: HomeIndex,
     meta: { hideHeaderFooter: false , mainHeader: true},
-  },
-  {
-    path: '/signUp',
-    name: 'SignUp',
-    component: SignUp, 
-    meta: { hideHeaderFooter: false },
-  },
-  {
-    path: '/signIn',
-    name: 'SignIn',
-    component: SignIn, 
-    meta: { hideHeaderFooter: true },
   },
   {
     path: '/createAccount',
@@ -88,12 +74,6 @@ const routes = [
     path: '/events/:eventId',
     name: 'EventDetailJoin',
     component: EventDetailJoin,
-    meta: { hideHeaderFooter: false },
-  },
-  {
-    path: '/joinEvents/:eventId',
-    name: 'JoinEvent',
-    component: JoinEvent,
     meta: { hideHeaderFooter: false },
   },
   {
@@ -156,6 +136,12 @@ const routes = [
     name: 'LogIn',
     component: LogIn,
     meta: { hideHeaderFooter: true },
+  },
+  {
+    path: '/userPage/:userId',
+    name: 'UserPage',
+    component: UserPage,
+    meta: { hideHeaderFooter: false },
   },
 
 ];

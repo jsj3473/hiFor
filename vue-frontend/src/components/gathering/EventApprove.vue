@@ -11,7 +11,7 @@
 
 
   <!-- 참가자 승인 -->
-  <div class="login-container">
+  <div class="login-container" v-if="eventType === 'Register'">
 
     <div class="row create-image">
       <div class="sub-icon">
@@ -115,6 +115,7 @@ const participants = ref([]);
 const currentCount = ref(0);
 const maxParticipants = ref(0);
 const eventQuestion = ref("");
+const eventType = ref("");
 
 // 상태가 Pending인 참가자 필터링
 const pendingParticipants = computed(() => {
@@ -133,6 +134,7 @@ const loadEventDetails = async () => {
     ).length || 0;
     eventQuestion.value = event.value.question; // 질문 데이터 (설명 필드 사용)
     participants.value = event.value.participants;
+    eventType.value = event.value.type;
   } catch (error) {
     console.error("Error loading event details:", error);
   }

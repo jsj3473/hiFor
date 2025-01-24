@@ -411,178 +411,144 @@
   </div>
 </template>
 
-<script>
-import { ref, computed, onMounted, nextTick } from 'vue';
-import { useStore } from 'vuex';
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+//import { useStore } from 'vuex';
 import axios from 'axios';
 import EventCard from './EventCard.vue'; // EventCard 컴포넌트 가져오기
 
-export default {
 
-  name: 'HomePage',
-  components: {
-    EventCard, // 컴포넌트 등록
+const events = ref([]); // 이벤트 데이터
+const hotEvents = ref([]); // 캐러셀 이벤트
+//const store = useStore();
+// Carousel DOM 요소 참조
+const carousel = ref(null);
+
+// 스크롤 이동 함수
+const scrollCarousel = (direction) => {
+  const scrollAmount = 300; // 한 번에 이동하는 픽셀
+  if (carousel.value) {
+    if (direction === 'prev') {
+      carousel.value.scrollLeft -= scrollAmount;
+    } else if (direction === 'next') {
+      carousel.value.scrollLeft += scrollAmount;
+    }
+  }
+};
+// 상태 관리
+const currentPage = ref(1);
+const itemsPerPage = 12;
+const totalItems = computed(() => events.value.length);
+
+const categories = ref([
+  { name: "All", displayName: "ALL", icon: require('@/assets/img/icon_All.png') },
+  { name: "Social", displayName: "SOCIAL", icon: require('@/assets/img/icon_Social.png') },
+  { name: "Food", displayName: "FOOD", icon: require('@/assets/img/icon_Food.png') },
+  { name: "Games", displayName: "GAMES", icon: require('@/assets/img/icon_Games.png') },
+  { name: "Growth", displayName: "GROWTH", icon: require('@/assets/img/icon_Growth.png') },
+  { name: "Sports", displayName: "SPORTS", icon: require('@/assets/img/icon_Sports.png') },
+  { name: "Trip", displayName: "TRIP", icon: require('@/assets/img/icon_Trip.png') },
+  { name: "Artfasion", displayName: "ART/FASHION", icon: require('@/assets/img/icon_ArtFasion.png') },
+  { name: "Others", displayName: "OTHERS", icon: require('@/assets/img/icon_Others.png') },
+]);
+
+// 계산된 속성
+const totalPages = computed(() => Math.max(1, Math.ceil(totalItems.value / itemsPerPage)));
+const visibleEvents = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return events.value.slice(start, end); // 현재 페이지에 해당하는 이벤트만 반환
+});
+
+// 메서드
+// const isCardVisible = (index) => {
+//   const start = (currentPage.value - 1) * itemsPerPage + 1;
+//   const end = start + itemsPerPage - 1;
+//   return index >= start && index <= end;
+// };
+//검색
+const searchQuery = ref(''); // 제목 검색어
+const searchDate = ref(''); // 날짜
+const searchLocation = ref(''); // 위치
+const searchType = ref(''); // 모집 유형
+
+const mapEventData = (event) => ({
+  id: event.id,
+  mainImage: event.mainImage,
+  title: event.name,
+  date: event.date,
+  location: event.location,
+  category: event.category,
+  type: event.type,
+  participants: {
+    current: event.participants ?? 0, // 현재 참가자 수
+    max: event.maxParticipants, // 최대 참가자 수
   },
-  setup() {
-    // 로컬 상태 관리
-    const events = ref([]); // 이벤트 데이터
-    const hotEvents = ref([]); // 캐러셀 이벤트
-    const store = useStore();
-    // Carousel DOM 요소 참조
-    const carousel = ref(null);
+  likes: event.likes, // 좋아요 수
+});
 
-    // 스크롤 이동 함수
-    const scrollCarousel = (direction) => {
-      const scrollAmount = 300; // 한 번에 이동하는 픽셀
-      if (carousel.value) {
-        if (direction === 'prev') {
-          carousel.value.scrollLeft -= scrollAmount;
-        } else if (direction === 'next') {
-          carousel.value.scrollLeft += scrollAmount;
-        }
-      }
-    };
-    // Vuex 상태 및 getter 사용
-    const isLoggedIn = computed(() => store.getters.isLoggedIn);
-    const token = computed(() => store.getters.token);
-    // 상태 관리
-    const currentPage = ref(1);
-    const itemsPerPage = 12;
-    const totalItems = computed(() => events.value.length);
 
-    const categories = ref([
-      { name: "All", displayName: "ALL", icon: require('@/assets/img/icon_All.png') },
-      { name: "Social", displayName: "SOCIAL", icon: require('@/assets/img/icon_Social.png') },
-      { name: "Food", displayName: "FOOD", icon: require('@/assets/img/icon_Food.png') },
-      { name: "Games", displayName: "GAMES", icon: require('@/assets/img/icon_Games.png') },
-      { name: "Growth", displayName: "GROWTH", icon: require('@/assets/img/icon_Growth.png') },
-      { name: "Sports", displayName: "SPORTS", icon: require('@/assets/img/icon_Sports.png') },
-      { name: "Trip", displayName: "TRIP", icon: require('@/assets/img/icon_Trip.png') },
-      { name: "Artfasion", displayName: "ART/FASHION", icon: require('@/assets/img/icon_ArtFasion.png') },
-      { name: "Others", displayName: "OTHERS", icon: require('@/assets/img/icon_Others.png') },
-    ]);
-
-    // 계산된 속성
-    const totalPages = computed(() => Math.max(1, Math.ceil(totalItems.value / itemsPerPage)));
-    const visibleEvents = computed(() => {
-      const start = (currentPage.value - 1) * itemsPerPage;
-      const end = start + itemsPerPage;
-      return events.value.slice(start, end); // 현재 페이지에 해당하는 이벤트만 반환
+// 통합된 fetchEvents 함수
+const fetchEvents = async (fetchType, params = {}) => {
+  try {
+    console.log(fetchType,params)
+    const response = await axios.get('http://localhost:3000/gathering', {
+      params: { fetchType, ...params }, // type을 쿼리 파라미터에 추가
     });
-
-    // 메서드
-    const isCardVisible = (index) => {
-      const start = (currentPage.value - 1) * itemsPerPage + 1;
-      const end = start + itemsPerPage - 1;
-      return index >= start && index <= end;
-    };
-    //검색
-    const searchQuery = ref(''); // 제목 검색어
-    const searchDate = ref(''); // 날짜
-    const searchLocation = ref(''); // 위치
-    const searchType = ref(''); // 모집 유형
-
-    const mapEventData = (event) => ({
-      id: event.id,
-      mainImage: event.mainImage,
-      title: event.name,
-      date: event.date,
-      location: event.location,
-      category: event.category,
-      type: event.type,
-      participants: {
-        current: event.participants ?? 0, // 현재 참가자 수
-        max: event.maxParticipants, // 최대 참가자 수
-      },
-      likes: event.likes, // 좋아요 수
-    });
-
-
-    // 통합된 fetchEvents 함수
-    const fetchEvents = async (type, params = {}) => {
-      try {
-        const response = await axios.get('http://localhost:3000/gathering', {
-          params: { type, ...params }, // type을 쿼리 파라미터에 추가
-        });
-        return response.data.map(mapEventData); // 데이터 매핑 후 반환
-      } catch (error) {
-        console.error(`Failed to fetch events for type "${type}":`, error);
-        return []; // 에러 시 빈 배열 반환
-      }
-    };
+    return response.data.map(mapEventData); // 데이터 매핑 후 반환
+  } catch (error) {
+    console.error(`Failed to fetch events for type "${fetchType}":`, error);
+    return []; // 에러 시 빈 배열 반환
+  }
+};
 
 // 모든 이벤트 가져오기
-    const fetchAllEvents = async () => {
-      events.value = await fetchEvents('all');
-    };
+const fetchAllEvents = async () => {
+  events.value = await fetchEvents('all');
+};
 
 // 핫 이벤트 가져오기
-    const fetchHotEvents = async () => {
-      hotEvents.value = await fetchEvents('hot');
-      console.log('Hot events:', hotEvents.value); // 값 확인
-    };
+const fetchHotEvents = async () => {
+  hotEvents.value = await fetchEvents('hot');
+};
 
 // 검색 이벤트 가져오기
-    const searchEvents = async () => {
-      const params = {
-        query: searchQuery.value || undefined,
-        date: searchDate.value || undefined,
-        location: searchLocation.value || undefined,
-        type: searchType.value || undefined,
-      };
-      events.value = await fetchEvents('search', params);
-    };
+const searchEvents = async () => {
+  const params = {
+    query: searchQuery.value || undefined,
+    date: searchDate.value || undefined,
+    location: searchLocation.value || undefined,
+    type: searchType.value || undefined,
+  };
+  events.value = await fetchEvents('search', params);
+};
 
 // 카테고리별 이벤트 가져오기
-    const fetchEventsByCategory = async (category) => {
-      events.value = await fetchEvents('category', { category });
-    };
-
-
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value++;
-      }
-    };
-
-    const prevPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value--;
-      }
-    };
-
-    onMounted(async () => {
-      await fetchAllEvents(); // 모든 이벤트 가져오기
-      // DOM 업데이트 완료 대기
-      await nextTick();
-      if (carousel.value) {
-        console.log('Carousel initialized:', carousel.value);
-      }
-      await fetchHotEvents(); // 핫 이벤트
-    });
-
-    return {
-      isLoggedIn,
-      token,
-      scrollCarousel,
-      searchEvents,
-      searchQuery,
-      searchDate,
-      searchLocation,
-      searchType,
-      categories,
-      fetchEventsByCategory,
-      isCardVisible,
-      prevPage,
-      nextPage,
-      totalPages,
-      currentPage,
-      visibleEvents,
-      hotEvents,
-    };
-  },
+const fetchEventsByCategory = async (category) => {
+  events.value = await fetchEvents('category', { category });
 };
+
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+onMounted(async () => {
+  await fetchAllEvents(); // 모든 이벤트 가져오기
+  await fetchHotEvents(); // 핫 이벤트
+});
+
+
 </script>
+
 
 
 <!-- css -->

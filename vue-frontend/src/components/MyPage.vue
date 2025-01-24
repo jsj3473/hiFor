@@ -96,15 +96,11 @@ export default {
     // user 상태를 reactive 객체로 선언
     const user = reactive({
       userId: '',
-      email: '',
       username: '',
       dob: '',
       gender: '',
       age: 0,
-      university: '',
-      phoneNumber: '',
       nationality: '',
-      identityStatus: '',
     });
 
 

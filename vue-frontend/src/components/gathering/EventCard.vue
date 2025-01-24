@@ -20,7 +20,7 @@
                 </div>
               </div>
               <div class="col-3">
-                <img class="card-icon-heart" src="@/assets/img/icon_Heart.png" alt="" />
+                <button class="btn_like" :class="{ on: isLiked }" @click.stop.prevent="toggleLike">like</button>
               </div>
             </div>
           </div>
@@ -37,6 +37,13 @@
                 </p>
               </div>
             </div>
+            <div class="row">
+              <div class="col-6">
+                <p class="card-info-text">
+                  <img class="card-info-icon" src="@/assets/img/icon_Heart.png" alt="" /> {{localEvent.likes}}
+                </p>
+              </div>
+            </div>
             <p class="card-title">{{event.title}}</p>
           </div>
         </div>
@@ -46,6 +53,9 @@
   </template>
   
   <script>
+  import axios from 'axios';
+  import { onMounted, ref } from 'vue';
+
   export default {
     props: {
       event: {
@@ -53,6 +63,54 @@
         required: true,
       },
     },
+    setup(props) {
+      const isLiked = ref(false);
+      const localEvent = ref({ ...props.event }); // 로컬 상태 생성
+      // 좋아요 상태 초기화
+      const initializeLikeStatus = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:3000/gathering/${props.event.id}/isLiked`,
+            {
+              params: {
+                userId: sessionStorage.getItem('userId'), // 사용자 ID 전달
+              },
+            }
+          );
+          isLiked.value = response.data.isLiked; // 서버에서 받은 상태로 초기화
+        } catch (error) {
+          console.error('Failed to initialize like status:', error);
+        }
+      };
+      const toggleLike = async () => {
+        isLiked.value = !isLiked.value;
+
+        try {
+          // 좋아요 상태를 백엔드에 반영
+          const response = await axios.post(`http://localhost:3000/gathering/${props.event.id}/like`, {
+            userId: sessionStorage.getItem('userId'), // 사용자 ID 전달
+          });
+
+          // 백엔드로부터 최신 좋아요 상태를 반영
+          localEvent.value.likes = response.data.likesLen;
+        } catch (error) {
+          console.error('Failed to toggle like:', error);
+          // 상태 복원
+          isLiked.value = !isLiked.value;
+        }
+      };
+
+      // 컴포넌트가 마운트될 때 좋아요 상태 초기화
+      onMounted(() => {
+        initializeLikeStatus();
+      });
+
+      return {
+        isLiked,
+        toggleLike,
+        localEvent,
+      }
+    }
   };
   </script>
 
@@ -97,6 +155,26 @@
     text-align: left;
     font-size: 15px;
     font-weight: 300;
+  }
+
+
+  .btn_like {
+    position: absolute;
+    right: 25px;
+    top: 45px;
+    width: 50px;
+    height: 50px;
+    background: url("@/assets/img/icon_Heart.png") no-repeat center / 40px;
+    cursor: pointer;
+    border:0;
+    font-size:0;
+    display:block;
+    margin-top: -15px;
+    margin-right: -0px;
+  }
+  .btn_like.on {
+    background: url("@/assets/img/icon_HeartFilled.png") no-repeat center / 40px;
+    animation: beating .5s 1 alternate;
   }
 
   .icon_type{
