@@ -83,12 +83,14 @@ export class AuthController {
   
     // 사용자 데이터 확인 (DB에서 다시 조회)
     const completeUser = await this.userService.findByEmail(user.email);
+    console.log('cuser:',completeUser)
   
 
   
     // Google 사용자 정보를 포함한 JWT 생성
     const jwtToken = await this.authService.googleGenerateJwtToken({
       id: user.id,
+      userId: user.userId,
       email: user.email,
       username: user.username,
       dob: user.dob,
@@ -114,18 +116,19 @@ export class AuthController {
   
   @Post('googleSignUp')
   async handleGoogleSignUp(@Body() body: any) {
-    const { email, userId, username, dob, gender, nationality } = body;
+    const { email, username, dob, gender, nationality } = body;
 
-
+    console.log('googlesignup body',body)
     try {
       // 서비스 호출
       const user = await this.userService.findByEmail(email);
-      user.userId = userId;
+      console.log('수정전 유저:',user);
       user.username = username;
       user.dob = dob;
       user.gender = gender;
       user.nationality = nationality;
       await this.userService.updateUser(user);
+      console.log('수정후 유저:',user);
       // JWT 토큰 생성
       const jwtToken = await this.authService.generateJwtToken(user);
     

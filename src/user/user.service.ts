@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UpdateUserDto } from 'src/user/user.dto';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
@@ -61,7 +60,9 @@ export class UserService {
   
     try {
       // userId를 기반으로 업데이트
-      await this.userRepository.update({ userId }, fieldsToUpdate);
+      const result = await this.userRepository.update({ userId: userId }, fieldsToUpdate);
+      console.log('Update result:', result);
+
   
       // 반환 없이 종료
       return { success: true };
@@ -86,20 +87,13 @@ export class UserService {
     return { message: 'User deleted successfully.' };
   }
 
-  async signUpToGoogle(userId,email,username, dob,gender): Promise<User> {
-    const foundUser = await this.getUser(email);
-    if (foundUser) {
-      return foundUser;
-    }
+  async signUpToGoogle(userId: string,email: string,username: string): Promise<User> {
 
-    const newUser = await this.userRepository.save({
+    return await this.userRepository.save({
       userId,
       email,
       username,
-      dob,
-      gender
-    })
-    return newUser;
+    });
   }
 
   async findByUsernameAndEmail(userId: string, email: string): Promise<User | undefined> {

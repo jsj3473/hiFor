@@ -59,6 +59,7 @@ export class AuthService {
   
   async googleGenerateJwtToken(user: {
     id: number;
+    userId: string;
     email: string;
     username: string;
     dob?: string | null;

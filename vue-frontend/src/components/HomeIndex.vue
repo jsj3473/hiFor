@@ -85,6 +85,14 @@
               </div>
             </div>
         </div>
+      <!--임시방편의 핫이벤트 -->
+          <div class="events-container">
+            <div class="row cards-grid">
+              <div  class="col-4" v-for="(event, index) in hotEvents" :key="index">
+                <EventCard :event="event" />
+              </div>
+            </div>
+          </div>
 
         <!-- Hot Events Carousel -->
          <div class="carousel-container">
@@ -514,6 +522,7 @@ import EventCard from './gathering/EventCard.vue'; // EventCard 컴포넌트 가
 // 핫 이벤트 가져오기
     const fetchHotEvents = async () => {
       hotEvents.value = await fetchEvents('hot');
+      console.log('hoteventvalue',hotEvents.value)
     };
 
 // 검색 이벤트 가져오기

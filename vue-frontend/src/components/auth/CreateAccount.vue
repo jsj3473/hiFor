@@ -26,7 +26,7 @@
                             <input type="email" v-model="user.email" @input="checkEmailAvailability" placeholder="Email" required />
                         </div>
                         <div class="col-6 code-btn-box">
-                          <button class="code-btn" :disabled="isTimerRunning" type="button" @click="sendEmailVerification">{{ buttonText }}</button>
+                          <button class="code-btn"  :disabled="isTimerRunning && buttonText !== 'Resend'"  type="button" @click="sendEmailVerification">{{ buttonText }}</button>
                         </div>
                     </div>
                 </div>
@@ -84,28 +84,33 @@
                     </div>
                 </div>
 
+              <div>
+                <!-- 통합 검색 입력 필드 -->
                 <div class="form-group">
-                    <label for="Nationality">Nationality</label>
-                    <input type="text" v-model="user.nationality"  @input="filterCountries"
-                           placeholder="Search for your country" required />
+                  <input
+                    type="text"
+                    v-model="searchQuery"
+                    @focus="showDropdown = true"
+                    @blur="hideDropdown"
+                    @input="filterCountries"
+                    placeholder="Search for a country..."
+                    class="search-input"
+                    required
+                  />
+                  <!-- 드롭다운 -->
+                  <ul v-if="showDropdown" class="dropdown-list">
+                    <li
+                      v-for="country in filteredCountries.slice(0,5)"
+                      :key="country.code"
+                      @mousedown="selectCountry(country)"
+                      class="dropdown-item"
+                    >
+                      {{ country.name }}
+                    </li>
+                  </ul>
                 </div>
+              </div>
 
-                <!-- 드롭다운 -->
-                <ul v-if=" Array.isArray(filteredCountries) &&  filteredCountries.length && showDropdown" class="dropdown">
-                  <li
-                    v-for="country in filteredCountries"
-                    :key="country.cca2"
-                    @click="selectCountry(country.name.common)"
-                    class="dropdown-item"
-                  >
-                    {{ country.name.common }}
-                  </li>
-                </ul>
-
-                <!-- 선택된 국가 표시 -->
-                <p v-if="selectedCountry" class="selected-country">
-                  Selected Country: {{ selectedCountry }}
-                </p>
 
               <!-- 동의 section -->
               <div class="row agree-box">
@@ -137,14 +142,214 @@
 
 </template>
 
-<script>
+<script setup>
 import axios from 'axios';
-import { reactive, ref, computed,onMounted  } from 'vue';
+import { reactive, ref, computed  } from 'vue';
 import debounce from 'lodash/debounce';
 
-export default {
-  name: 'SignUp',
-  setup() {
+const searchQuery = ref('');
+const selectedCountry = ref({});
+const showDropdown = ref(false);
+const countries = ref([
+     { code: 'AF', name: 'Afghanistan' },
+     { code: 'AL', name: 'Albania' },
+     { code: 'DZ', name: 'Algeria' },
+     { code: 'AS', name: 'American Samoa' },
+     { code: 'AD', name: 'Andorra' },
+     { code: 'AO', name: 'Angola' },
+     { code: 'AG', name: 'Antigua and Barbuda' },
+     { code: 'AR', name: 'Argentina' },
+     { code: 'AM', name: 'Armenia' },
+     { code: 'AU', name: 'Australia' },
+     { code: 'AT', name: 'Austria' },
+     { code: 'AZ', name: 'Azerbaijan' },
+     { code: 'BS', name: 'Bahamas' },
+     { code: 'BH', name: 'Bahrain' },
+     { code: 'BD', name: 'Bangladesh' },
+     { code: 'BB', name: 'Barbados' },
+     { code: 'BY', name: 'Belarus' },
+     { code: 'BE', name: 'Belgium' },
+     { code: 'BZ', name: 'Belize' },
+     { code: 'BJ', name: 'Benin' },
+     { code: 'BT', name: 'Bhutan' },
+     { code: 'BO', name: 'Bolivia' },
+     { code: 'BA', name: 'Bosnia and Herzegovina' },
+     { code: 'BW', name: 'Botswana' },
+     { code: 'BR', name: 'Brazil' },
+     { code: 'BN', name: 'Brunei' },
+     { code: 'BG', name: 'Bulgaria' },
+     { code: 'BF', name: 'Burkina Faso' },
+     { code: 'BI', name: 'Burundi' },
+     { code: 'CV', name: 'Cabo Verde' },
+     { code: 'KH', name: 'Cambodia' },
+     { code: 'CM', name: 'Cameroon' },
+     { code: 'CA', name: 'Canada' },
+     { code: 'CF', name: 'Central African Republic' },
+     { code: 'TD', name: 'Chad' },
+     { code: 'CL', name: 'Chile' },
+     { code: 'CN', name: 'China' },
+     { code: 'CO', name: 'Colombia' },
+     { code: 'KM', name: 'Comoros' },
+     { code: 'CG', name: 'Congo (Republic)' },
+     { code: 'CD', name: 'Congo (Democratic Republic)' },
+     { code: 'CR', name: 'Costa Rica' },
+     { code: 'CI', name: "Côte d'Ivoire" },
+     { code: 'HR', name: 'Croatia' },
+     { code: 'CU', name: 'Cuba' },
+     { code: 'CY', name: 'Cyprus' },
+     { code: 'CZ', name: 'Czech Republic' },
+     { code: 'DK', name: 'Denmark' },
+     { code: 'DJ', name: 'Djibouti' },
+     { code: 'DM', name: 'Dominica' },
+     { code: 'DO', name: 'Dominican Republic' },
+     { code: 'EC', name: 'Ecuador' },
+     { code: 'EG', name: 'Egypt' },
+     { code: 'SV', name: 'El Salvador' },
+     { code: 'GQ', name: 'Equatorial Guinea' },
+     { code: 'ER', name: 'Eritrea' },
+     { code: 'EE', name: 'Estonia' },
+     { code: 'SZ', name: 'Eswatini' },
+     { code: 'ET', name: 'Ethiopia' },
+     { code: 'FJ', name: 'Fiji' },
+     { code: 'FI', name: 'Finland' },
+     { code: 'FR', name: 'France' },
+     { code: 'GA', name: 'Gabon' },
+     { code: 'GM', name: 'Gambia' },
+     { code: 'GE', name: 'Georgia' },
+     { code: 'DE', name: 'Germany' },
+     { code: 'GH', name: 'Ghana' },
+     { code: 'GR', name: 'Greece' },
+     { code: 'GD', name: 'Grenada' },
+     { code: 'GT', name: 'Guatemala' },
+     { code: 'GN', name: 'Guinea' },
+     { code: 'GW', name: 'Guinea-Bissau' },
+     { code: 'GY', name: 'Guyana' },
+     { code: 'HT', name: 'Haiti' },
+     { code: 'HN', name: 'Honduras' },
+     { code: 'HU', name: 'Hungary' },
+     { code: 'IS', name: 'Iceland' },
+     { code: 'IN', name: 'India' },
+     { code: 'ID', name: 'Indonesia' },
+     { code: 'IR', name: 'Iran' },
+     { code: 'IQ', name: 'Iraq' },
+     { code: 'IE', name: 'Ireland' },
+     { code: 'IL', name: 'Israel' },
+     { code: 'IT', name: 'Italy' },
+     { code: 'JM', name: 'Jamaica' },
+     { code: 'JP', name: 'Japan' },
+     { code: 'JO', name: 'Jordan' },
+     { code: 'KZ', name: 'Kazakhstan' },
+     { code: 'KE', name: 'Kenya' },
+     { code: 'KI', name: 'Kiribati' },
+     { code: 'KP', name: 'North Korea' },
+     { code: 'KR', name: 'South Korea' },
+     { code: 'KW', name: 'Kuwait' },
+     { code: 'KG', name: 'Kyrgyzstan' },
+     { code: 'LA', name: 'Laos' },
+     { code: 'LV', name: 'Latvia' },
+     { code: 'LB', name: 'Lebanon' },
+     { code: 'LS', name: 'Lesotho' },
+     { code: 'LR', name: 'Liberia' },
+     { code: 'LY', name: 'Libya' },
+     { code: 'LI', name: 'Liechtenstein' },
+     { code: 'LT', name: 'Lithuania' },
+     { code: 'LU', name: 'Luxembourg' },
+  { code: "MG", name: "Madagascar" },
+  { code: "MW", name: "Malawi" },
+  { code: "MY", name: "Malaysia" },
+  { code: "MV", name: "Maldives" },
+  { code: "ML", name: "Mali" },
+  { code: "MT", name: "Malta" },
+  { code: "MH", name: "Marshall Islands" },
+  { code: "MR", name: "Mauritania" },
+  { code: "MU", name: "Mauritius" },
+  { code: "MX", name: "Mexico" },
+  { code: "FM", name: "Micronesia" },
+  { code: "MD", name: "Moldova" },
+  { code: "MC", name: "Monaco" },
+  { code: "MN", name: "Mongolia" },
+  { code: "ME", name: "Montenegro" },
+  { code: "MA", name: "Morocco" },
+  { code: "MZ", name: "Mozambique" },
+  { code: "MM", name: "Myanmar" },
+  { code: "NA", name: "Namibia" },
+  { code: "NR", name: "Nauru" },
+  { code: "NP", name: "Nepal" },
+  { code: "NL", name: "Netherlands" },
+  { code: "NZ", name: "New Zealand" },
+  { code: "NI", name: "Nicaragua" },
+  { code: "NE", name: "Niger" },
+  { code: "NG", name: "Nigeria" },
+  { code: "MK", name: "North Macedonia" },
+  { code: "NO", name: "Norway" },
+  { code: "OM", name: "Oman" },
+  { code: "PK", name: "Pakistan" },
+  { code: "PW", name: "Palau" },
+  { code: "PA", name: "Panama" },
+  { code: "PG", name: "Papua New Guinea" },
+  { code: "PY", name: "Paraguay" },
+  { code: "PE", name: "Peru" },
+  { code: "PH", name: "Philippines" },
+  { code: "PL", name: "Poland" },
+  { code: "PT", name: "Portugal" },
+  { code: "QA", name: "Qatar" },
+  { code: "RO", name: "Romania" },
+  { code: "RU", name: "Russia" },
+  { code: "RW", name: "Rwanda" },
+  { code: "KN", name: "Saint Kitts and Nevis" },
+  { code: "LC", name: "Saint Lucia" },
+  { code: "VC", name: "Saint Vincent and the Grenadines" },
+  { code: "WS", name: "Samoa" },
+  { code: "SM", name: "San Marino" },
+  { code: "ST", name: "Sao Tome and Principe" },
+  { code: "SA", name: "Saudi Arabia" },
+  { code: "SN", name: "Senegal" },
+  { code: "RS", name: "Serbia" },
+  { code: "SC", name: "Seychelles" },
+  { code: "SL", name: "Sierra Leone" },
+  { code: "SG", name: "Singapore" },
+  { code: "SK", name: "Slovakia" },
+  { code: "SI", name: "Slovenia" },
+  { code: "SB", name: "Solomon Islands" },
+  { code: "SO", name: "Somalia" },
+  { code: "ZA", name: "South Africa" },
+  { code: "SS", name: "South Sudan" },
+  { code: "ES", name: "Spain" },
+  { code: "LK", name: "Sri Lanka" },
+  { code: "SD", name: "Sudan" },
+  { code: "SR", name: "Suriname" },
+  { code: "SE", name: "Sweden" },
+  { code: "CH", name: "Switzerland" },
+  { code: "SY", name: "Syria" },
+  { code: "TW", name: "Taiwan" },
+  { code: "TJ", name: "Tajikistan" },
+  { code: "TZ", name: "Tanzania" },
+  { code: "TH", name: "Thailand" },
+  { code: "TL", name: "Timor-Leste" },
+  { code: "TG", name: "Togo" },
+  { code: "TO", name: "Tonga" },
+  { code: "TT", name: "Trinidad and Tobago" },
+  { code: "TN", name: "Tunisia" },
+  { code: "TR", name: "Turkey" },
+  { code: "TM", name: "Turkmenistan" },
+  { code: "TV", name: "Tuvalu" },
+  { code: "UG", name: "Uganda" },
+  { code: "UA", name: "Ukraine" },
+  { code: "AE", name: "United Arab Emirates" },
+  { code: "GB", name: "United Kingdom" },
+  { code: "US", name: "United States" },
+  { code: "UY", name: "Uruguay" },
+  { code: "UZ", name: "Uzbekistan" },
+  { code: "VU", name: "Vanuatu" },
+  { code: "VE", name: "Venezuela" },
+  { code: "VN", name: "Vietnam" },
+  { code: "YE", name: "Yemen" },
+  { code: "ZM", name: "Zambia" },
+  { code: "ZW", name: "Zimbabwe" },
+     // 추가 국가 리스트
+   ]);
+
+
     const user = reactive({
       username: '',
       dob: '',
@@ -155,19 +360,29 @@ export default {
       confirmPassword: '',
       nationality: '',
     });
+    const selectCountry = (country) => {
+      selectedCountry.value = country;
+      searchQuery.value = country.name;
+      user.nationality = country.name; // 선택된 국가의 이름을 user.nationality에 저장
+      showDropdown.value = false;
+    }
+    const hideDropdown = () => {
+      setTimeout(() => {
+        showDropdown.value = false;
+      }, 100); // 클릭 이벤트와 blur가 겹치지 않도록 약간의 지연
+    }
 
-    const countries = ref([]);
-    const filteredCountries = ref([]);
-    const selectedCountry = ref("");
-    const showDropdown = ref(false);
+    const filteredCountries = computed(() => {
+      return countries.value.filter(country =>
+        country.name.toLowerCase().includes(searchQuery.value.toLowerCase()))
+
+    })
     const userIdAvailable = ref(true);
     const emailAvailable = ref(true);
     const showVerificationInput = ref(false);
     const verificationCodeInput = ref('');
-    const verificationCode = ref('');
+    //const verificationCode = ref('');
     const isVerified = ref(false);
-    const isPasswordVisible = ref(false);
-    const isConfirmPasswordVisible = ref(false);
     const buttonText = ref('Send Code');
     const isTimerRunning = ref(false);
     const timeLeft = ref(300);
@@ -189,6 +404,8 @@ export default {
 
     let timerInterval = null;
 
+
+
     const formattedTime = computed(() => {
       const minutes = Math.floor(timeLeft.value / 60);
       const seconds = timeLeft.value % 60;
@@ -197,7 +414,6 @@ export default {
 
     const startTimer = () => {
       isTimerRunning.value = true;
-      buttonText.value = 'Resend';
 
       if (timerInterval) clearInterval(timerInterval);
 
@@ -216,40 +432,6 @@ export default {
       startTimer();
     };
 
-    // 국가 목록 가져오기 (API 호출)
-    const fetchCountries = async () => {
-      try {
-        const response = await axios.get("https://restcountries.com/v3.1/all");
-        countries.value = response.data.map((country) => ({
-          name: country.name,
-          cca2: country.cca2,
-        }));
-      } catch (error) {
-        console.error("Failed to fetch countries:", error);
-      }
-    };
-
-// 국가 검색 필터링
-    const filterCountries = () => {
-      if (user.nationality.trim()) {
-        filteredCountries.value = countries.value.filter((country) =>
-          country.name.common
-            .toLowerCase()
-            .includes(user.nationality.toLowerCase())
-        );
-        showDropdown.value = true;
-      } else {
-        filteredCountries.value = [];
-        showDropdown.value = false;
-      }
-    };
-
-// 국가 선택 핸들러
-    const selectCountry = (country) => {
-      selectedCountry.value = country;
-      user.nationality = country; // 검색창에 선택된 국가 표시
-      showDropdown.value = false; // 드롭다운 숨기기
-    };
 
     const checkUserIdAvailability = debounce(async () => {
       if (user.userId) {
@@ -275,25 +457,19 @@ export default {
       }
     }, 500);
 
-    const togglePasswordVisibility = () => {
-      isPasswordVisible.value = !isPasswordVisible.value;
-    };
-
-    const toggleConfirmPasswordVisibility = () => {
-      isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
-    };
-
     const sendEmailVerification = async () => {
       if (!emailAvailable.value) {
         alert('An account created with this email already exists');
         return;
       }
       try {
+        //console.log('123123')
         const response = await axios.post('http://localhost:3000/mail/sendVerification', {
           email: user.email,
         });
         if (response.status === 200 || response.status === 201) {
           showVerificationInput.value = true;
+          buttonText.value = 'Resend';
           resetTimer();
           alert('The verification code has been sent to your email.');
         }
@@ -349,7 +525,7 @@ export default {
         return;
       }
 
-      if (!userIdAvailable.value || !emailAvailable.value) {
+      if (!userIdAvailable.value) {
         alert('The username or email is already in use.');
         return;
       }
@@ -380,40 +556,9 @@ export default {
         cb.checked = !allChecked;
       });
     };
-    // 컴포넌트가 마운트될 때 fetchCountries 실행
-    onMounted(async () => {
-      await fetchCountries();
-    });
 
-    return {
-      user,
-      userIdAvailable,
-      emailAvailable,
-      showVerificationInput,
-      verificationCodeInput,
-      verificationCode,
-      isVerified,
-      isPasswordVisible,
-      isConfirmPasswordVisible,
-      togglePasswordVisibility,
-      toggleConfirmPasswordVisibility,
-      startTimer,
-      resetTimer,
-      checkUserIdAvailability,
-      checkEmailAvailability,
-      sendEmailVerification,
-      verifyCode,
-      handleRegister,
-      checkboxes,
-      toggleAllCheckboxes,
-      formattedTime,
-      buttonText,
-      isTimerRunning,
-      filterCountries,
-      selectCountry,
-    };
-  },
-};
+
+
 
 </script>
 

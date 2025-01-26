@@ -125,46 +125,60 @@ export class GatheringService {
       const now = new Date();
 
       const events = await this.eventRepository
-        .createQueryBuilder('event')
-        .leftJoinAndSelect('event.participants', 'participants')
-        .leftJoinAndSelect('event.likes', 'likes')
-        .addSelect('COUNT(likes.id)', 'likeCount')
-        .groupBy('event.id')
+        .createQueryBuilder('hifor_event') // 테이블 이름을 hifor_event로 변경
+        .leftJoin('hifor_event.participants', 'participants') // 관계도 수정
+        .leftJoin('hifor_event.likes', 'likes')
+        .addSelect('COUNT(DISTINCT likes.id)', 'likeCount') // DISTINCT 추가
+        .groupBy('hifor_event.id') // 그룹화 기준 수정
         .orderBy('likeCount', 'DESC')
-        .where('event.date >= :now', { now: now.toISOString() }) // 과거 이벤트 제외
+        .where('hifor_event.date >= :now', { now: now.toISOString() }) // 과거 이벤트 제외
         .limit(8)
-        .getMany();
+        .getRawMany();
 
-      // 승인된 참가자 수 계산 추가 (필요 시)
+      console.log('Events:', events);
+
+      // Raw 데이터 가공
       return await Promise.all(
         events.map(async (event) => {
-          const approvedParticipantsCount =
-            await this.participantRepository.count({
+          try {
+            console.log('Processing Event:', event);
+
+            // 참가자 수 계산
+            const approvedParticipantsCount = await this.participantRepository.count({
               where: {
-                event: { id: event.id },
+                event: { id: event.id }, // 관계가 맞는지 확인
                 status: 'Approved',
               },
             });
-          return {
-            id: event.id,
-            name: event.name,
-            description: event.description,
-            mainImage: event.mainImage,
-            location: event.location,
-            date: event.date,
-            type: event.type,
-            category: event.category,
-            price: event.price,
-            maxParticipants: event.maxParticipants,
-            participants: approvedParticipantsCount, // 승인된 참가자 수
-            likes: event.likes.length,
-          };
+            console.log('Approved Participants Count:', approvedParticipantsCount);
+
+            return {
+              id: event.hifor_event_id,
+              name: event.hifor_event_name,
+              description: event.hifor_event_description,
+              mainImage: event.hifor_event_mainImage,
+              location: event.hifor_event_location,
+              date: event.hifor_event_date,
+              type: event.hifor_event_type,
+              category: event.hifor_event_category,
+              price: event.hifor_event_price,
+              maxParticipants: event.hifor_event_maxParticipants,
+              participants: approvedParticipantsCount, // 승인된 참가자 수
+              likes: parseInt(event.likeCount, 10), // likes 카운트
+            };
+
+          } catch (innerError) {
+            console.error('Error processing event:', event, innerError.message);
+            return null; // 오류 발생 시 null로 반환
+          }
         }),
       );
     } catch (error) {
       throw new Error(`Failed to fetch hot events: ${error.message}`);
     }
   }
+
+
 
   async getEventById(eventId: number): Promise<HiforEvent> {
     const event = await this.eventRepository.findOne({

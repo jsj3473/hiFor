@@ -117,7 +117,7 @@ const router = useRouter();
 
 const isLoggedIn = computed(() => store.getters.isLoggedIn);
 //const token = computed(() => store.getters.token);
-//const userId = computed(() => store.getters.userId);
+const userId = computed(() => store.getters.userId);
 
 const clearToken = () => store.commit('clearToken');
 const setToken = (token) => store.commit('setToken', token);

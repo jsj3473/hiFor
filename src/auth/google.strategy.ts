@@ -13,63 +13,46 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: 'http://localhost:3000/auth/google',
       scope: [
-        'email', 
-        'profile',
-        'https://www.googleapis.com/auth/user.birthday.read', // 생일 정보
-        'https://www.googleapis.com/auth/user.gender.read'    // 성별 정보
-        ],
+        'email',
+        'profile'
+      ],
     });
-  } 
-  
+  }
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
     const { id, name, emails } = profile;
-    const email = emails[0].value;
-    
-    // People API 호출
+    const email = emails?.[0]?.value;
+
+    if (!email) {
+      throw new Error('Email is required but not provided by Google.');
+    }
+
     try {
-      const peopleApiResponse = await axios.get('https://people.googleapis.com/v1/people/me', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        params: {
-          personFields: 'birthdays,genders', // 가져올 필드
-        },
-      });
-  
-      // 생일과 성별 정보 추출
-      const birthdays = peopleApiResponse.data.birthdays;
-      const genders = peopleApiResponse.data.genders;
-  
-      const birthdayObj = birthdays?.[0]?.date || null;
-      const gender = genders?.[0]?.value || null;
+      const fullName = `${name?.familyName || ''} ${name?.givenName || ''}`.trim();
 
-      // 생일 객체를 문자열로 변환 (예: YYYY-MM-DD)
-      const birthday = birthdayObj
-      ? `${birthdayObj.year}-${String(birthdayObj.month).padStart(2, '0')}-${String(birthdayObj.day).padStart(2, '0')}`
-      : null;
-  
-      let user = await this.userService.findByEmail(email)
-
-      if(!user){
-        
-        // 사용자 생성 또는 업데이트
-        const NewUser: User = await this.userService.signUpToGoogle(
-          id,
-          email,
-          name.familyName + name.givenName,
-          birthday, 
-          gender
-        );
-
-        return NewUser;
+      // Check if user already exists
+      let user: User;
+      try {
+        user = await this.userService.findByEmail(email);
+        console.log(user)
+      } catch (error) {
+        console.error(`Error finding user by email (${email}):`, error);
+        throw new Error('Failed to find user by email');
       }
-      
-  
-  
+
+      if (!user) {
+        // Create a new user without birthday or gender
+        user = await this.userService.signUpToGoogle(id, email, fullName);
+        console.log(user)
+      }
+
       return user;
     } catch (error) {
-      console.error('Error fetching additional user info:', error);
-      throw error;
+      console.error('Error validating Google user:', {
+        message: error.message,
+        stack: error.stack,
+        response: error.response?.data,
+      });
+      throw new Error('Failed to validate Google user');
     }
   }
 }
