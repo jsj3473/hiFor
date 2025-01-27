@@ -1,133 +1,32 @@
 
 <template>
     <div class="Web">
-        <div class="home-banner">
-            <!-- 메인 -->
-            <p class="banner-title">
-              <router-link to="/contactUs">contactUs</router-link>
-                Start real Korean Life <br>
-                from the <span style="color: #58C3FF;">HiFor.</span>
-            </p>
+      <div class="home-banner">
+        <!-- 메인 -->
+        <p class="banner-title animate__fadeInUp">
+          Start real Korean Life <br>
+          from the <span style="color: #58C3FF;">HiFor.</span>
+        </p>
+      </div>
 
-
-            <div class="search-box">
-            <form class="search-form" @submit.prevent="searchEvents">
-              <div class="row search-bar">
-                <!-- Search Text -->
-                <div class="col-6 search-text">
-                  <button type="submit">
-                    <img src="@/assets/img/icons_search.png" alt="">
-                  </button>
-                  <input type="text" class="search-text-box" v-model="searchQuery" placeholder="Search...">
-                </div>
-
-                <!-- Search Date -->
-                <div class="col-2 search-date">
-                  <input type="date" v-model="searchDate">
-                </div>
-
-                <!-- Search Location -->
-                <div class="col-2 search-location">
-                  <select v-model="searchLocation">
-                    <option disabled hidden selected>Location</option>
-                    <option value="Jongno-gu">Jongno-gu</option>
-                    <option value="Jung-gu">Jung-gu</option>
-                    <option value="Yongsan-gu">Yongsan-gu</option>
-                    <option value="Seongdong-gu">Seongdong-gu</option>
-                    <option value="Gwangjin-gu">Gwangjin-gu</option>
-                    <option value="Dongdaemun-gu">Dongdaemun-gu</option>
-                    <option value="Jungnang-gu">Jungnang-gu</option>
-                    <option value="Seongbuk-gu">Seongbuk-gu</option>
-                    <option value="Gangbuk-gu">Gangbuk-gu</option>
-                    <option value="Dobong-gu">Dobong-gu</option>
-                    <option value="Nowon-gu">Nowon-gu</option>
-                    <option value="Eunpyeong-gu">Eunpyeong-gu</option>
-                    <option value="Seodaemun-gu">Seodaemun-gu</option>
-                    <option value="Mapo-gu">Mapo-gu</option>
-                    <option value="Yangcheon-gu">Yangcheon-gu</option>
-                    <option value="Gangseo-gu">Gangseo-gu</option>
-                    <option value="Guro-gu">Guro-gu</option>
-                    <option value="Geumcheon-gu">Geumcheon-gu</option>
-                    <option value="Yeongdeungpo-gu">Yeongdeungpo-gu</option>
-                    <option value="Dongjak-gu">Dongjak-gu</option>
-                    <option value="Gwanak-gu">Gwanak-gu</option>
-                    <option value="Seocho-gu">Seocho-gu</option>
-                    <option value="Gangnam-gu">Gangnam-gu</option>
-                    <option value="Songpa-gu">Songpa-gu</option>
-                    <option value="Gangdong-gu">Gangdong-gu</option>
-                    <option value="etc">etc</option>
-                  </select>
-                </div>
-
-                <!-- Search Type -->
-                <div class="col-2 search-type">
-                  <select v-model="searchType">
-                    <option disabled hidden selected>Type</option>
-                    <option value="FirstCome">First come</option>
-                    <option value="Register">Register</option>
-                  </select>
-                </div>
-              </div>
-            </form>
+      <!--핫이벤트 -->
+      <div class="events-container hot-event">
+        <p class="hot-event-title">
+          Hot Event
+        </p>
+        <div class="row cards-grid">
+          <div  class="col-4" v-for="(event, index) in hotEvents.slice(0, 6)" :key="index">
+            <EventCard :event="event" />
           </div>
-            <div class="category-row">
-              <p class="title">Top categories</p>
-              <div class="row">
-                <div
-                  class="col category-box"
-                  v-for="category in categories"
-                  :key="category.name"
-                  @click="fetchEventsByCategory(category.name)"
-                >
-                  <img :src="category.icon" :alt="category.name" />
-                  <p>{{ category.displayName }}</p>
-                </div>
-              </div>
-            </div>
         </div>
-      <!--임시방편의 핫이벤트 -->
-          <div class="events-container">
-            <div class="row cards-grid">
-              <div  class="col-4" v-for="(event, index) in hotEvents" :key="index">
-                <EventCard :event="event" />
-              </div>
-            </div>
-          </div>
+      </div>
 
-        <!-- Hot Events Carousel -->
-         <div class="carousel-container">
-            <!-- 이전 버튼 -->
-            <button class="carousel-btn prev-btn" @click="scrollCarousel('prev')">‹</button>
-
-           <!-- 카드 슬라이더 -->
-           <div ref="carousel" class="carousel">
-             <div class="carousel-item" v-for="(event, index) in hotEvents" :key="index">
-               <EventCard :event="event" />
-             </div>
-           </div>
-
-            <!-- 다음 버튼 -->
-            <button class="carousel-btn next-btn" @click="scrollCarousel('next')">›</button>
-        </div>
-
-        <!-- All Events -->
-        <div class="events-container">
-            <p class="eventcontainer-title">Events</p>
-            <!-- Event Cards -->
-            <div class="row cards-grid">
-              <div class="col-4" v-for="(event, index) in visibleEvents" :key="index">
-                <EventCard :event="event" />
-              </div>
-            <!-- 다른 카드들도 여기에 추가 -->
-            </div>
-
-            <!-- 페이지네이션 버튼 -->
-            <div class="pagination">
-                <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
-                <span>{{ currentPage }} / {{ totalPages }}</span>
-                <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
-            </div>
-        </div>
+      <!-- Buttons -->
+      <div class="allevent-btn-box">
+        <router-link to="/allEvents">
+          <button class="allevent-btn">Browse events</button>
+        </router-link>
+      </div>
 
 
         <!-- explain section -->
@@ -425,7 +324,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 //import { useStore } from 'vuex';
 import axios from 'axios';
 import EventCard from './gathering/EventCard.vue'; // EventCard 컴포넌트 가져오기
@@ -434,56 +333,7 @@ import EventCard from './gathering/EventCard.vue'; // EventCard 컴포넌트 가
     const events = ref([]); // 이벤트 데이터
     const hotEvents = ref([]); // 캐러셀 이벤트
     //const store = useStore();
-    // Carousel DOM 요소 참조
-    const carousel = ref(null);
 
-    // 스크롤 이동 함수
-    const scrollCarousel = (direction) => {
-      const scrollAmount = 300; // 한 번에 이동하는 픽셀
-      if (carousel.value) {
-        if (direction === 'prev') {
-          carousel.value.scrollLeft -= scrollAmount;
-        } else if (direction === 'next') {
-          carousel.value.scrollLeft += scrollAmount;
-        }
-      }
-    };
-    // 상태 관리
-    const currentPage = ref(1);
-    const itemsPerPage = 6;
-    const totalItems = computed(() => events.value.length);
-
-    const categories = ref([
-      { name: "All", displayName: "ALL", icon: require('@/assets/img/icon_All.png') },
-      { name: "Social", displayName: "SOCIAL", icon: require('@/assets/img/icon_Social.png') },
-      { name: "Food", displayName: "FOOD", icon: require('@/assets/img/icon_Food.png') },
-      { name: "Games", displayName: "GAMES", icon: require('@/assets/img/icon_Games.png') },
-      { name: "Growth", displayName: "GROWTH", icon: require('@/assets/img/icon_Growth.png') },
-      { name: "Sports", displayName: "SPORTS", icon: require('@/assets/img/icon_Sports.png') },
-      { name: "Trip", displayName: "TRIP", icon: require('@/assets/img/icon_Trip.png') },
-      { name: "Artfasion", displayName: "ART/FASHION", icon: require('@/assets/img/icon_ArtFasion.png') },
-      { name: "Others", displayName: "OTHERS", icon: require('@/assets/img/icon_Others.png') },
-    ]);
-
-    // 계산된 속성
-    const totalPages = computed(() => Math.max(1, Math.ceil(totalItems.value / itemsPerPage)));
-    const visibleEvents = computed(() => {
-      const start = (currentPage.value - 1) * itemsPerPage;
-      const end = start + itemsPerPage;
-      return events.value.slice(start, end); // 현재 페이지에 해당하는 이벤트만 반환
-    });
-
-    // 메서드
-    // const isCardVisible = (index) => {
-    //   const start = (currentPage.value - 1) * itemsPerPage + 1;
-    //   const end = start + itemsPerPage - 1;
-    //   return index >= start && index <= end;
-    // };
-    //검색
-    const searchQuery = ref(''); // 제목 검색어
-    const searchDate = ref(''); // 날짜
-    const searchLocation = ref(''); // 위치
-    const searchType = ref(''); // 모집 유형
 
     const mapEventData = (event) => ({
       id: event.id,
@@ -525,34 +375,8 @@ import EventCard from './gathering/EventCard.vue'; // EventCard 컴포넌트 가
       console.log('hoteventvalue',hotEvents.value)
     };
 
-// 검색 이벤트 가져오기
-    const searchEvents = async () => {
-      const params = {
-        query: searchQuery.value || undefined,
-        date: searchDate.value || undefined,
-        location: searchLocation.value || undefined,
-        type: searchType.value || undefined,
-      };
-      events.value = await fetchEvents('search', params);
-    };
-
-// 카테고리별 이벤트 가져오기
-    const fetchEventsByCategory = async (category) => {
-      events.value = await fetchEvents('category', { category });
-    };
 
 
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value++;
-      }
-    };
-
-    const prevPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value--;
-      }
-    };
 
     onMounted(async () => {
       await fetchAllEvents(); // 모든 이벤트 가져오기

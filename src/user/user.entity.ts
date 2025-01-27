@@ -20,6 +20,9 @@ export class User {
   userId: string;
 
   @Column({ nullable: true })
+  profileImage: string;  // 프사
+
+  @Column({ nullable: true })
   phoneNumber: string;  // 휴대폰 번호
 
   @Column({ nullable: true })

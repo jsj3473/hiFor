@@ -126,3 +126,9 @@ export class cancelParticipationDTO {
   @IsNotEmpty()
   userId: string;
 }
+
+export class UploadImageDto {
+  userId: string; // 업로드한 유저 ID
+  fileName?: string; // 업로드된 파일의 이름 (선택 사항)
+  imageUrl?: string; // 업로드된 파일의 URL (서버에서 생성 후 반환)
+}

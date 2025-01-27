@@ -13,8 +13,8 @@
         <div class="header-nav main-page">
           <router-link class="header-nav-text" to="/">Home</router-link>
           <router-link class="header-nav-text" to="/allEvents">All Events</router-link>
-          <router-link class="header-nav-text" to="/">F&Q</router-link>
-          <router-link class="header-nav-text" to="/">Notice</router-link>
+          <router-link class="header-nav-text" to="/fnq">F&Q</router-link>
+          <router-link class="header-nav-text" to="/notice">Notice</router-link>
           <router-link v-if="!isLoggedIn" class="header-nav-btn" to="/logIn">SignIn/SignUp</router-link>
           <router-link v-if="isLoggedIn" class="header-nav-btn" :to="`/userPage/${userId}`">My Page</router-link>
           <router-link v-if="isLoggedIn" class="header-nav-btn" to="/postEvent">Create Event</router-link>
@@ -29,8 +29,8 @@
         <div class="header-nav">
           <router-link class="header-nav-text" to="/">Home</router-link>
           <router-link class="header-nav-text" to="/allEvents">All Events</router-link>
-          <router-link class="header-nav-text" to="/">F&Q</router-link>
-          <router-link class="header-nav-text" to="/">Notice</router-link>
+          <router-link class="header-nav-text" to="/fnq">F&Q</router-link>
+          <router-link class="header-nav-text" to="/notice">Notice</router-link>
           <router-link v-if="!isLoggedIn" class="header-nav-btn" to="/logIn">SignIn/SignUp</router-link>
           <router-link v-if="isLoggedIn" class="header-nav-btn" :to="`/userPage/${userId}`">My Page</router-link>
           <router-link v-if="isLoggedIn" class="header-nav-btn" to="/postEvent">Create Event</router-link>

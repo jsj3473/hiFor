@@ -4,7 +4,21 @@
       <!-- 좌측 프로필 영역 -->
       <div class="col-lg-4 col-md-12">
         <div class="profile-box">
-          <div class="profile-img"></div>
+          <div
+            class="profile-img"
+            @click="triggerFileInput"
+            :style="{ backgroundImage: `url(${user.profileImage})` }"
+          >
+            <input
+              v-if="currentUserId==wantShowUserId"
+              type="file"
+              ref="fileInput"
+              accept="image/*"
+              @change="handleFileChange"
+              style="display: none"
+            />
+          </div>
+
           <p class="profile-name">{{ user.username }}</p>
           <p class="profile-info">{{user.nationality}},{{user.gender}}, {{user.age}}</p>
         </div>
@@ -59,7 +73,7 @@
                       <router-link :to="`/userPage/${event.hostId}`">
                         <img
                           class="mp-host-icon"
-                          src="@/assets/img/img_LogInBanner2.png"
+                          src="../../assets/img/img_LogInBanner2.png"
                           alt="Host"
                         />
                         {{ event.host }}
@@ -88,7 +102,7 @@
                       <router-link :to="`/userPage/${event.hostId}`">
                         <img
                           class="mp-host-icon"
-                          src="@/assets/img/img_LogInBanner2.png"
+                          src="../../assets/img/img_LogInBanner2.png"
                           alt="Host"
                         />
                         {{ event.host }}
@@ -114,7 +128,7 @@ import axios from 'axios';
 const store = useStore();
 const currentUserId = ref(store.state.userId);
 const wantShowUserId = window.location.pathname.split('/').pop(); // Extract event ID from URL
-console.log(currentUserId,wantShowUserId)
+const fileInput = ref(null); // file input 요소에 대한 참조
 
 const user = reactive({
   userId: '',
@@ -123,7 +137,47 @@ const user = reactive({
   gender: '',
   age: 0,
   nationality: '',
+  profileImage: '/profile-images/default-profile-image.png', // 정적 경로로 설정
 });
+
+const triggerFileInput = () => {
+  if (fileInput.value) {
+    fileInput.value.click(); // 클릭 이벤트로 파일 선택 창 열기
+  }
+};
+
+const handleFileChange = async (event) => {
+  const file = event.target.files[0]; // 선택된 파일
+  if (!file) return;
+  console.log('Raw File:', file);
+  console.log('Type of Raw File:', typeof file); // 타입 확인
+  console.log('Is File Instance:', file instanceof File); // File 객체인지 확인
+  console.log('File Type:', file.type); // 파일의 MIME 타입 (예: image/jpeg)
+  const formData = new FormData();
+  formData.append('file', file);
+
+  console.log('formdata:',formData)
+  try {
+    // 서버로 이미지 업로드
+    const response = await axios.post(
+      `http://localhost:3000/user/uploadProfileImage/${user.userId}`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+
+    // 서버에서 반환된 이미지 URL로 업데이트
+    if (response.data.imageUrl) {
+      user.profileImage = response.data.imageUrl; // 서버에서 반환된 경로 사용
+    } else {
+      console.warn('No image URL returned from the server.');
+    }
+  } catch (error) {
+    console.error('Failed to upload profile image:', error);
+  }
+};
+
 
 // 유저 데이터 가져오기
 const getUser = async (userId) => {
@@ -141,6 +195,7 @@ const getUser = async (userId) => {
     user.university = userData.university || '';
     user.phoneNumber = userData.phoneNumber || '';
     user.nationality = userData.nationality || '';
+    user.profileImage = userData.profileImage || '';
   } catch (error) {
     console.error('Failed to fetch user:', error);
   }
@@ -225,7 +280,6 @@ onMounted(() => {
 }
 
 .profile-img {
-  background-image: url('@/assets/img/img_LogInBanner2.png');
   background-size: cover;
   background-position: center;
   height: 200px;

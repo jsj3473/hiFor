@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -142,5 +142,18 @@ export class UserService {
   
     return age;
   }
-  
+  async updateProfileImage(userId: string, imageUrl: string): Promise<User> {
+    // Step 1: 유저 검색
+    const user = await this.userRepository.findOne({ where: { userId } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Step 2: 프로필 이미지 업데이트
+    user.profileImage = imageUrl;
+
+    // Step 3: 저장
+    return await this.userRepository.save(user);
+  }
 }

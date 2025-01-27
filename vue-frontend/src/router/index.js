@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import CreateAccount from '../components/auth/CreateAccount.vue';
 import PasswordChange from '../components/auth/PasswordChange.vue';
-import MyPage from '../components/MyPage.vue'
-import MyPageEdit from '../components/MyPageEdit.vue'
 import FindUsername from '../components/auth/FindUsername.vue';
 import FindPassword from '../components/auth/FindPassword.vue';
 import GoogleSignUp from '../components/auth/googleSignUp.vue'; 
@@ -10,7 +8,6 @@ import EventDetailJoin from '../components/gathering/eventDetailJoin.vue';
 import EventApprove from '../components/gathering/EventApprove.vue';
 import OurCompany from '@/components/about/OurCompany.vue';
 import OurService from '@/components/about/OurService.vue';
-import ServiceGuide from '@/components/help/ServiceGuide.vue';
 import UseClause from '@/components/help/UseClause.vue';
 import HomeIndex from '@/components/HomeIndex.vue';
 import AllEvents from '@/components/gathering/AllEvents.vue';
@@ -18,7 +15,9 @@ import PostEvent from '@/components/gathering/PostEvent.vue';
 import EnterEvent from '@/components/gathering/EnterEvent.vue';
 import ContactUs from '@/components/main/ContactUs.vue';
 import LogIn from '@/components/auth/LogIn.vue';
-import UserPage from '../components/UserPage.vue'
+import UserPage from '../components/main/UserPage.vue';
+import fnq from '@/components/main/ServiceGuide.vue';
+import notice from '@/components/main/HiForeigners.vue';
 
 const routes = [
 
@@ -33,18 +32,6 @@ const routes = [
     name: 'CreateAccount',
     component: CreateAccount, 
     meta: { hideHeaderFooter: true },
-  },
-  {
-    path: '/myPage',
-    name: 'MyPage',
-    component: MyPage,
-    meta: { hideHeaderFooter: false },
-  },
-  {
-    path: '/myPageEdit',
-    name: 'MyPageEdit',
-    component: MyPageEdit,
-    meta: { hideHeaderFooter: false },
   },
   {
     path: '/passwordChange',
@@ -95,12 +82,6 @@ const routes = [
     meta: { hideHeaderFooter: false },
   },
   {
-    path: '/serviceGuide',
-    name: 'ServiceGuide',
-    component: ServiceGuide,
-    meta: { hideHeaderFooter: false },
-  },
-  {
     path: '/useClause',
     name: 'UseClause',
     component: UseClause,
@@ -141,6 +122,18 @@ const routes = [
     path: '/userPage/:userId',
     name: 'UserPage',
     component: UserPage,
+    meta: { hideHeaderFooter: false },
+  },
+  {
+    path: '/fnq',
+    name: 'fnq',
+    component: fnq,
+    meta: { hideHeaderFooter: false },
+  },
+  {
+    path: '/notice',
+    name: 'notice',
+    component: notice,
     meta: { hideHeaderFooter: false },
   },
 

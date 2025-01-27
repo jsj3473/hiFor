@@ -132,7 +132,7 @@ export class GatheringService {
         .groupBy('hifor_event.id') // 그룹화 기준 수정
         .orderBy('likeCount', 'DESC')
         .where('hifor_event.date >= :now', { now: now.toISOString() }) // 과거 이벤트 제외
-        .limit(8)
+        .limit(6)
         .getRawMany();
 
       console.log('Events:', events);
@@ -146,7 +146,7 @@ export class GatheringService {
             // 참가자 수 계산
             const approvedParticipantsCount = await this.participantRepository.count({
               where: {
-                event: { id: event.id }, // 관계가 맞는지 확인
+                event: { id: event.hifor_event_id }, // 관계가 맞는지 확인
                 status: 'Approved',
               },
             });

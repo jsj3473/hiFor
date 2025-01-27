@@ -9,7 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query,
+  Query, Req,
   UploadedFile,
   UseInterceptors,
   ValidationPipe,
@@ -26,12 +26,45 @@ import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import * as console from 'node:console';
+import { extname } from 'path';
 
 @Controller('gathering')
   export class GatheringController {
     constructor(private readonly gatheringService: GatheringService) {}
 
-    @Post('submit')
+  @Post('upload-image-postEvent')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './vue-frontend/public/event-images',
+        filename: (req, file, callback) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          callback(null, uniqueSuffix + extname(file.originalname));
+        },
+      }),
+      limits: { fileSize: 5 * 1024 * 1024 }, // 파일 크기 제한: 5MB
+    }),
+  )
+  async uploadImage(@UploadedFile() file: Express.Multer.File,@Req() req) {
+    console.log('Request Headers:', req.headers); // 요청 헤더 출력
+    console.log('Request Body:', req.body); // 요청 본문 출력
+    console.log('Uploaded File:', file); // 업로드된 파일 출력
+    if (!file) {
+      throw new Error('No file uploaded');
+    }
+
+    // 업로드된 파일 경로 생성
+    const imageUrl = `/event-images/${file.filename}`;
+
+    // 파일 정보 반환
+    return {
+      success: true,
+      fileName: file.originalname,
+      imageUrl,
+    };
+  }
+
+  @Post('submit')
     async createEvent(@Body() createEventDto: CreateEventDto) {
       try {
         const event = await this.gatheringService.createEvent(createEventDto);

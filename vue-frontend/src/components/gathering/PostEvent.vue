@@ -1,6 +1,8 @@
+
 <template>
 
   <div class="Web">
+
 
     <!-- banner -->
     <div class="banner">
@@ -126,16 +128,51 @@
             ></textarea>
           </div>
 
+          <!-- Dropzone 수정된 부분 -->
           <div class="form-group">
-            <label for="details">Event images</label>
-            <div id="dropzone-form" class="dropzone needsclick" ref="dropzone">
-              <div class="dz-message needsclick">
-                <span class="text">The first image will be the main image of the event.</span><br>
-                <span class="text">Drop files here or click to upload.</span>
-                <span class="plus">+</span>
-              </div>
+            <label for="file-upload">Event Images</label>
+            <p>The first image will be the main image of the event.<br>Drop files here or click to upload.</p>
+
+            <!-- 파일 입력 -->
+            <input
+              type="file"
+              id="file-upload"
+              multiple
+              accept="image/*"
+              @change="handleFileUpload"
+              style="display: none;"
+            />
+
+            <!-- 클릭 가능한 업로드 박스 -->
+            <div
+              id="upload-box"
+              @click="triggerFileInput"
+              @dragover.prevent
+              @drop.prevent="handleDrop"
+              style="border: 2px dashed #ccc; padding: 20px; text-align: center; cursor: pointer;"
+            >
+              <span>Click to upload or drag and drop files here</span>
             </div>
+
+            <!-- 업로드된 파일 미리보기 및 제거 -->
+            <ul id="file-list" style="margin-top: 10px; list-style: none; padding: 0;">
+              <li v-for="(file, index) in uploadedFiles" :key="index">
+                <img
+                  :src="file.preview"
+                  alt="Preview"
+                  style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;"
+                />
+                {{ file.name }}
+                <button
+                  @click="removeFile(index)"
+                  style="margin-left: 10px; cursor: pointer; color: red;"
+                >
+                  Remove
+                </button>
+              </li>
+            </ul>
           </div>
+          <!-- Dropzone 끝 -->
 
           <div class="form-group">
             <div class="row half-input-row">
@@ -198,8 +235,7 @@
 </template>
 
 <script setup>
-import { onMounted, onBeforeUnmount, ref, toRaw } from 'vue';
-import Dropzone from "dropzone";
+import { ref, toRaw } from 'vue';
 import axios from "axios";
 
 // 폼 데이터 및 상태 관리
@@ -220,71 +256,78 @@ const form = ref({
   images: [], // 나머지 이미지 URL 배열
 });
 
-let dropzoneInstance = null;
+const uploadedFiles = ref([]);
+const maxFiles = 5;
 
-// Dropzone 초기화 함수
-const initDropzone = () => {
-  // 기존 Dropzone 인스턴스 제거
-  if (Dropzone.instances.length > 0) {
-    Dropzone.instances.forEach((dz) => dz.destroy());
+const handleFileUpload = (event) => {
+  const files = Array.from(event.target.files);
+  processFiles(files);
+};
+
+const handleDrop = (event) => {
+  const files = Array.from(event.dataTransfer.files);
+  processFiles(files);
+};
+
+const processFiles = (files) => {
+  if (uploadedFiles.value.length + files.length > maxFiles) {
+    alert(`You can upload up to ${maxFiles} files.`);
+    return;
   }
 
-  // 새로운 Dropzone 인스턴스 생성
-  dropzoneInstance = new Dropzone("#dropzone-form", {
-    url: "http://localhost:3000/gathering/upload", // 업로드 URL
-    maxFiles: 5, // 최대 파일 수
-    addRemoveLinks: true,
-    acceptedFiles: "image/*", // 이미지 파일만 허용
-    dictMaxFilesExceeded: "You can only upload up to 5 images.", // 제한 초과 메시지
-    dictRemoveFile: "Remove", // 파일 제거 버튼 텍스트
-    init() {
-      this.on("addedfile", () => {
-        // 최대 파일 수 초과 시 초과된 파일은 자동으로 제거
-        if (this.files.length > this.options.maxFiles) {
-          this.removeFile(this.files[0]); // 첫 번째 파일 삭제
-        }
+  files.forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      uploadedFiles.value.push({
+        file: file,
+        name: file.name,
+        preview: e.target.result,
       });
-
-      this.on("success", (file, response) => {
-        // 업로드 성공 시 파일 URL을 응답에서 가져옴
-        const imageUrl = response.url;
-        console.log(imageUrl)
-        if (!form.value.mainImage) {
-          // 첫 번째 이미지는 mainImage로 설정form
-          form.value = { ...form.value, mainImage: imageUrl };
-
-          console.log('1')
-          console.log(imageUrl)
-          console.log(form.value.mainImage)
-        } else {
-          form.value = {
-            ...form.value,
-            images: [...form.value.images, imageUrl],
-          };
-          console.log('2')
-          console.log(imageUrl)
-          console.log(form.value.images)
-        }
-      });
-
-
-    },
+    };
+    reader.readAsDataURL(file);
   });
 };
 
-// Dropzone 초기화 및 정리
-onMounted(() => {
-  initDropzone();
-});
+const removeFile = (index) => {
+  uploadedFiles.value.splice(index, 1);
+};
 
-onBeforeUnmount(() => {
-  if (dropzoneInstance) {
-    dropzoneInstance.destroy();
-  }
-});
+const triggerFileInput = () => {
+  document.getElementById('file-upload').click();
+};
+
+
+
 
 const postEvent = async () => {
   try {
+    const uploadedImageUrls = [];
+    for (const fileObj of uploadedFiles.value) {
+      const rawFile = toRaw(fileObj.file); // Proxy 객체 제거
+      console.log('Raw File:', rawFile);
+      console.log('Type of Raw File:', typeof rawFile); // 타입 확인
+      console.log('Is File Instance:', rawFile instanceof File); // File 객체인지 확인
+      console.log('File Type:', rawFile.type); // 파일의 MIME 타입 (예: image/jpeg)
+
+      const formData = new FormData();
+      formData.append('file', rawFile);
+
+
+      console.log('formdata:',formData)
+      const uploadResponse = await axios.post(
+        "http://localhost:3000/gathering/upload-image-postEvent",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      uploadedImageUrls.push(uploadResponse.data.imageUrl);
+    }
+// `uploadedFiles.value`에서 데이터를 분리
+    const mainImage =
+      uploadedImageUrls.length > 0 ? uploadedImageUrls[0] : null; // 첫 번째 파일
+    const images =
+      uploadedImageUrls.length > 1 ? uploadedImageUrls.slice(1) : []; // 나머지 파일들
     const userId = sessionStorage.getItem("userId");
     const eventData = {
       category: form.value.category,
@@ -299,8 +342,8 @@ const postEvent = async () => {
       maxParticipants: form.value.maxParticipants,
       question: form.value.question,
       price: form.value.price,
-      mainImage: form.value.mainImage,
-      images: form.value.images,
+      mainImage: mainImage,
+      images: images,
     };
     const enrichedFormData = {
       ...toRaw(eventData),
