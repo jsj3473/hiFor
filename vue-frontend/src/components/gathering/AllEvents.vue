@@ -91,16 +91,16 @@
     <div class="events-container hot-event">
       <div class="row">
         <p class="hot-event-title">Events</p>
-        <select class="event-sort" name="" id="">
-          <option disabled hidden selected>Sort</option>
-          <option value="All">All</option> <!-- 최근 올라온 순서(디폴트) -->
-          <option value="Hot">Hot</option> <!-- 좋아요 많은 순서 -->
-          <option value="Upcoming">Upcoming</option> <!-- 마감일 가까운 순서 -->
+        <select class="event-sort" v-model="selectedSort" @change="handleSortChange">
+          <option disabled hidden value="">Sort</option>
+          <option value="Latest">Latest</option>
+          <option value="Hot">Hot</option>
+          <option value="Upcoming">Upcoming</option>
         </select>
       </div>
       <!-- Event Cards -->
       <div class="row cards-grid">
-        <div class="col-4" v-for="(event, index) in visibleEvents" :key="index">
+        <div class="col-4" v-for="event in visibleEvents" :key="event.id">
           <EventCard :event="event" />
         </div>
       </div>
@@ -124,8 +124,19 @@ import EventCard from '../gathering/EventCard.vue'; // EventCard 컴포넌트 �
 
 
 const events = ref([]); // 이벤트 데이터
-const hotEvents = ref([]); // 캐러셀 이벤트
-//const store = useStore();
+
+const selectedSort = ref(''); // 선택된 정렬 값
+
+// 🔹 정렬 옵션 변경 시 실행되는 함수
+const handleSortChange = () => {
+  if (selectedSort.value === 'Latest') {
+    fetchAllEvents();
+  } else if (selectedSort.value === 'Hot') {
+    fetchHotEvents();
+  } else if (selectedSort.value === 'Upcoming') {
+    fetchUpcomingEvents();
+  }
+};
 
 // 상태 관리
 const currentPage = ref(1);
@@ -198,9 +209,19 @@ const fetchAllEvents = async () => {
   events.value = await fetchEvents('all');
 };
 
-// 핫 이벤트 가져오기
 const fetchHotEvents = async () => {
-  hotEvents.value = await fetchEvents('hot');
+  console.log('🔥 Fetching hot events...');
+  events.value = await fetchEvents('hot');
+
+  // 만약 데이터가 섞이면 다시 정렬
+  events.value.sort((a, b) => b.likes - a.likes);
+
+  console.log('🔥 Sorted Events in Frontend (After Re-Sort):', events.value);
+};
+
+const fetchUpcomingEvents = async () => {
+  console.log('업커밍입니다')
+  events.value = await fetchEvents('upcoming');
 };
 
 // 검색 이벤트 가져오기
@@ -234,7 +255,6 @@ const prevPage = () => {
 
 onMounted(async () => {
   await fetchAllEvents(); // 모든 이벤트 가져오기
-  await fetchHotEvents(); // 핫 이벤트
 });
 
 

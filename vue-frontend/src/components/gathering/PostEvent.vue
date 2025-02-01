@@ -93,7 +93,7 @@
                 </select>
               </div>
               <div class="col-6">
-                <label for="EventType">Event type  바꿔야함 (정상진)</label>
+                <label for="EventType"></label>
                 <input type="text" v-model="form.locationDetail" placeholder="The exact address" required />
               </div>
             </div>
@@ -237,6 +237,7 @@
 <script setup>
 import { ref, toRaw } from 'vue';
 import axios from "axios";
+import { useRouter } from 'vue-router';
 
 // 폼 데이터 및 상태 관리
 const form = ref({
@@ -299,6 +300,8 @@ const triggerFileInput = () => {
 
 
 
+const router = useRouter(); // Vue Router에 접근
+const userId = sessionStorage.getItem("userId");
 const postEvent = async () => {
   try {
     const uploadedImageUrls = [];
@@ -328,7 +331,6 @@ const postEvent = async () => {
       uploadedImageUrls.length > 0 ? uploadedImageUrls[0] : null; // 첫 번째 파일
     const images =
       uploadedImageUrls.length > 1 ? uploadedImageUrls.slice(1) : []; // 나머지 파일들
-    const userId = sessionStorage.getItem("userId");
     const eventData = {
       category: form.value.category,
       type: form.value.type,
@@ -349,8 +351,6 @@ const postEvent = async () => {
       ...toRaw(eventData),
       userId: userId
     };
-    console.log(eventData.mainImage)
-    console.log(eventData.images)
 
     // Axios를 이용한 POST 요청
     const response = await axios.post("http://localhost:3000/gathering/submit", enrichedFormData);
@@ -360,6 +360,8 @@ const postEvent = async () => {
 
     // 성공 메시지 표시 (필요에 따라 구현)
     alert("Event created successfully!");
+    await router.push(`/events/${response.data.event.id}`);
+
 
     // 폼 초기화
     Object.keys(form.value).forEach((key) => {

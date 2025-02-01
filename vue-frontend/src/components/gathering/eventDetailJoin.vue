@@ -62,7 +62,7 @@
                   <div class="col-12 p-0">
                     <p class="s-card-text4">
                       <img class="s-card-icon1" src="@/assets/img/icon_User.png" alt="" />
-                      {{ event.participants.current }}/{{ event.participants.max }}
+                      {{ event.participants.current }}/{{ event.participants.max }}/최소참가인원:{{ event.participants.min }}
                     </p>
                   </div>
                   <div class="col-12 p-0">
@@ -75,14 +75,12 @@
                 <div class="row">
                   <router-link :to="`/hosts/${event.createdBy.userId}`" class="p-0">
                     <p class="card-host">
-                      <!--<img class="host-icon" :src="event.createdBy.profileImage || '@/assets/images/default-host.png'" alt="" />-->
                       {{ event.createdBy.username }}
                     </p>
                   </router-link>
 
-
                   <div class="p-0">
-                    <!-- 사용자가 이벤트 생성자인 경우 -->
+                    <!-- 이벤트 생성자이면 Manage 버튼 -->
                     <router-link
                       v-if="event.createdBy.id === userId"
                       :to="`/manage/${event.id}`"
@@ -92,38 +90,48 @@
                       </button>
                     </router-link>
 
-                    <!-- 사용자가 이벤트 생성자가 아니고, 참여하지 않은 경우 -->
-                    <router-link
-                      v-else-if="!isParticipating && !(event.participants.current >= event.participants.max) && new Date(`${event.date}T${event.time}`) >= new Date()"
-                      :to="`/enterEvent/${event.id}`"
-                    >
-                      <button class="join-btn">
+                    <div v-else>
+
+                      <!-- 사용자가 이벤트 생성자가 아니고, 참여하지 않은 경우 -->
+                      <!-- (로그인한 상태이면 router-link 사용) -->
+                      <router-link
+                        v-if="!isParticipating && userId && isEventJoinable"
+                        :to="`/enterEvent/${event.id}`"
+                      >
+                        <button class="join-btn">
+                          Join Now!
+                        </button>
+                      </router-link>
+
+                      <!-- 로그인하지 않은 경우 (userId가 null이면) -->
+                      <button
+                        v-else-if="!isParticipating && !userId && isEventJoinable"
+                        class="join-btn"
+                        @click="handleLoginRedirect"
+                      >
                         Join Now!
                       </button>
-                    </router-link>
 
-                    <!-- 참여한 경우 -->
-                    <button
-                      v-else-if="isParticipating"
-                      class="cancel-btn"
-                      @click="handleCancelParticipation"
-                    >
-                      Cancel
-                    </button>
+                      <!-- 참여한 경우 -->
+                      <button
+                        v-else-if="isParticipating"
+                        class="cancel-btn"
+                        @click="handleCancelParticipation"
+                      >
+                        Cancel
+                      </button>
 
-                    <!-- 참여하지 않은 경우 -->
-                    <button
-                      v-else
-                      class="closed-join-btn"
-                      disabled
-                    >
-                      Closed
-                    </button>
+                      <!-- 기타 상황: (예, 이벤트 참가 인원이 꽉 찼거나 기간이 지난 경우) -->
+                      <button
+                        v-else
+                        class="closed-join-btn"
+                        disabled
+                      >
+                        Closed
+                      </button>
+
+                    </div>
                   </div>
-
-
-
-
                 </div>
               </div>
             </div>
@@ -169,6 +177,12 @@
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(event.value.date).toLocaleDateString(undefined, options);
       });
+      const handleLoginRedirect = () => {
+        // 경고창 띄우기
+        alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+        // 로그인 페이지로 리디렉션 (라우터를 사용)
+        window.location.href = '/login'; // 로그인 페이지로 이동
+      }
   
       const fetchEvent = async (eventId) => {
         try {
@@ -207,8 +221,26 @@
           console.error("Error fetching event data:", error);
         }
       };
+
+      // 날짜 및 시간 비교를 위한 computed property
+      const isEventJoinable = computed(() => {
+        // event.date와 event.time을 합쳐 Date 객체 생성
+        const eventDateTime = new Date(`${event.value.date}T${event.value.time}`);
+        // 참가 가능 조건: 참가 인원이 제한 미만이고, 이벤트 시간이 현재 이후인 경우
+        return (
+          event.value.participants.current < event.value.participants.max &&
+          eventDateTime >= new Date()
+        );
+      });
   
       const toggleLike = async () => {
+        const userId = sessionStorage.getItem('userId'); // 로그인 여부 확인
+
+        if (!userId) {
+          alert('로그인이 필요합니다.');
+          window.location.href = '/login'; // 로그인 페이지로 이동
+          return;
+        }
         isLiked.value = !isLiked.value;
 
         try {
@@ -282,7 +314,9 @@
         formattedDate,
         userId,
         isParticipating,
-        handleCancelParticipation
+        handleCancelParticipation,
+        handleLoginRedirect,
+        isEventJoinable
       };
     },
   };

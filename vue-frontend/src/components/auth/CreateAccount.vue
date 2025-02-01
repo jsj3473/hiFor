@@ -146,6 +146,7 @@
 import axios from 'axios';
 import { reactive, ref, computed  } from 'vue';
 import debounce from 'lodash/debounce';
+import { useRouter } from 'vue-router';
 
 const searchQuery = ref('');
 const selectedCountry = ref({});
@@ -349,6 +350,7 @@ const countries = ref([
      // 추가 국가 리스트
    ]);
 
+const router = useRouter(); // Vue Router에 접근
 
     const user = reactive({
       username: '',
@@ -544,6 +546,7 @@ const countries = ref([
         const response = await axios.post('http://localhost:3000/auth/signUp', user);
         console.log('Sign-up response:', response.data);
         alert('Sign-up completed!');
+        router.push('/logIn'); // 로그인 후 메인 페이지로 이동
       } catch (error) {
         console.error('Error during sign-up:', error);
         alert('An error occurred during sign-up. Please try again.');

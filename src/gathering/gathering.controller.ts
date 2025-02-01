@@ -46,9 +46,6 @@ import { extname } from 'path';
     }),
   )
   async uploadImage(@UploadedFile() file: Express.Multer.File,@Req() req) {
-    console.log('Request Headers:', req.headers); // 요청 헤더 출력
-    console.log('Request Body:', req.body); // 요청 본문 출력
-    console.log('Uploaded File:', file); // 업로드된 파일 출력
     if (!file) {
       throw new Error('No file uploaded');
     }
@@ -86,11 +83,13 @@ import { extname } from 'path';
         case 'all':
           return await this.gatheringService.getAllEvents();
         case 'hot':
-          return await this.gatheringService.getHot8Events();
+          return await this.gatheringService.getHotEvents();
         case 'search':
           return await this.gatheringService.searchEvent(searchEventDto);
         case 'category':
           return await this.gatheringService.searchEventByCategory(category);
+        case 'upcoming':
+          return await this.gatheringService.getUpcomingEvents();
         default:
           throw new Error('Invalid type parameter');
       }
@@ -161,13 +160,14 @@ import { extname } from 'path';
     @Patch(':id/status')
     async updateParticipantStatus(
       @Param('id') participantId: number,
-      @Body('status') status: string
+      @Body('status') status: string,
+      @Body('eventId') eventId: number,
     ) {
       if (!['Approved', 'Rejected'].includes(status)) {
         throw new HttpException('Invalid status value', HttpStatus.BAD_REQUEST);
       }
   
-      return await this.gatheringService.updateStatus(participantId, status);
+      return await this.gatheringService.updateStatus(participantId, status, eventId);
     }
 
     @Get('getEventsByHostId/:userId')

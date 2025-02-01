@@ -119,13 +119,12 @@ const isLoggedIn = computed(() => store.getters.isLoggedIn);
 //const token = computed(() => store.getters.token);
 const userId = computed(() => store.getters.userId);
 
-const clearToken = () => store.commit('clearToken');
 const setToken = (token) => store.commit('setToken', token);
 const setUserId = (userId) => store.commit('setUserId', userId);
 
 const logout = () => {
-  // 로그아웃 버튼 클릭 시 Vuex에서 토큰 삭제 및 로그인 상태 갱신
-  clearToken();
+  // Vuex 상태 및 sessionStorage 초기화
+  store.commit('resetState');
   router.push('/');
 };
 

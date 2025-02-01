@@ -118,6 +118,8 @@
 import {  onMounted, ref } from 'vue';
 import EventCard from '@/components/gathering/EventCard.vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+const router = useRouter(); // Vue Router에 접근
 //import { useStore } from 'vuex';
 //const store = useStore();
 const userId =  sessionStorage.getItem('userId');
@@ -281,6 +283,7 @@ const submitEvent =  async ()  => {
 
     if (response.status === 201) {
       alert('Registration successful!');
+      router.push('/'); // 로그인 후 메인 페이지로 이동
     }
   } catch (error) {
     console.error('Error during registration:', error);

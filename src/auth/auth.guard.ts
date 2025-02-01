@@ -5,7 +5,10 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class signInGuard implements CanActivate {
-  constructor(private authService: AuthService, private jwtService: JwtService) {}
+  constructor(
+    private authService: AuthService,
+    private jwtService: JwtService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -15,8 +18,7 @@ export class signInGuard implements CanActivate {
     if (authHeader) {
       const token = authHeader.split(' ')[1];
       try {
-        const payload = this.jwtService.verify(token);
-        request.user = payload;
+        request.user = this.jwtService.verify(token);
         return true;
       } catch (error) {
         return false;
@@ -47,7 +49,6 @@ export class signInGuard implements CanActivate {
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    console.log('333');
     const request = context.switchToHttp().getRequest();
     return request.isAuthenticated();
   }
@@ -56,8 +57,7 @@ export class AuthenticatedGuard implements CanActivate {
 @Injectable()
 export class GoogleAuthGuard extends AuthGuard('google') {
   async canActivate(context: any): Promise<boolean> {
-    const result = (await super.canActivate(context)) as boolean;
-    return result;
+    return (await super.canActivate(context)) as boolean;
   }
 }
 
@@ -65,15 +65,17 @@ export class GoogleAuthGuard extends AuthGuard('google') {
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    console.log('1111')
-    const result = (await super.canActivate(context)) as boolean;
-    console.log('Auth Guard Result:', result); 
     const request = context.switchToHttp().getRequest();
-    // 만약 인증이 성공했을 경우, 사용자 정보를 요청 객체에 설정
-    if (result) {
-      const user = request.user;
-      request.user = user;
+    const response = context.switchToHttp().getResponse();
+
+    const result = (await super.canActivate(context)) as boolean;
+
+    // 인증에 실패한 경우 로그인 페이지로 리다이렉트
+    if (!result) {
+      // 브라우저 요청일 경우 리다이렉트 가능 (REST API가 아닌 웹 어플리케이션 상황)
+      response.redirect('/login');
+      return false;
     }
-    return result;
+    return true;
   }
 }

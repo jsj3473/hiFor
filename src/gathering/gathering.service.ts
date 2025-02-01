@@ -4,6 +4,7 @@ import { DataSource, MoreThanOrEqual, Repository } from 'typeorm';
 import { HiforEvent, Image, Like, Participant } from './gathering.entity';
 import { User } from '../user/user.entity';
 import { CreateEventDto, SearchEventDto } from './gathering.dto';
+import { EmailService } from '../mail/mail.service';
 
 @Injectable()
 export class GatheringService {
@@ -19,6 +20,7 @@ export class GatheringService {
     @InjectRepository(Image)
     private imageRepository: Repository<Image>,
     private readonly dataSource: DataSource,
+    private emailService: EmailService, // EmailService 주입
   ) {}
   async createEvent(createEventDto: CreateEventDto): Promise<HiforEvent> {
     // 트랜잭션 생성
@@ -120,39 +122,96 @@ export class GatheringService {
     }
   }
 
-  async getHot8Events() {
+  async getUpcomingEvents() {
+    try {
+      const events = await this.eventRepository.find({
+        relations: ['participants', 'likes'], // 관계를 로드
+      });
+
+      // 현재 날짜 및 시간 가져오기
+      const now = new Date();
+
+      // 각 이벤트에 대해 승인된 참가자 수 계산
+      const eventsWithApprovedCount = await Promise.all(
+        events.map(async (event) => {
+          const eventDateTime = new Date(`${event.date}T${event.time}`);
+
+          // 이벤트가 과거일 경우 제외
+          if (eventDateTime < now) {
+            return null;
+          }
+
+          const approvedParticipantsCount =
+            await this.participantRepository.count({
+              where: {
+                event: { id: event.id },
+                status: 'Approved',
+              },
+            });
+
+          return {
+            id: event.id,
+            name: event.name,
+            description: event.description,
+            mainImage: event.mainImage,
+            location: event.location,
+            date: event.date,
+            time: event.time,
+            type: event.type,
+            category: event.category,
+            price: event.price,
+            maxParticipants: event.maxParticipants,
+            participants: approvedParticipantsCount, // 승인된 참가자 수
+            likes: event.likes.length,
+          };
+        })
+      );
+
+      // null 값을 제거하고, date와 time을 기준으로 오름차순 정렬
+      return eventsWithApprovedCount
+        .filter((event) => event !== null)
+        .sort((a, b) => {
+          const dateA = new Date(`${a.date}T${a.time}`);
+          const dateB = new Date(`${b.date}T${b.time}`);
+          return dateA.getTime() - dateB.getTime();
+        });
+
+    } catch (error) {
+      throw new Error(`Failed to fetch events: ${error.message}`);
+    }
+  }
+
+
+  async getHotEvents() {
     try {
       const now = new Date();
 
+
       const events = await this.eventRepository
-        .createQueryBuilder('hifor_event') // 테이블 이름을 hifor_event로 변경
+        .createQueryBuilder('hifor_event') // 테이블 이름을 hifor_event로 지정
         .leftJoin('hifor_event.participants', 'participants') // 관계도 수정
-        .leftJoin('hifor_event.likes', 'likes')
-        .addSelect('COUNT(DISTINCT likes.id)', 'likeCount') // DISTINCT 추가
-        .groupBy('hifor_event.id') // 그룹화 기준 수정
-        .orderBy('likeCount', 'DESC')
-        .where('hifor_event.date >= :now', { now: now.toISOString() }) // 과거 이벤트 제외
-        .limit(6)
+        .leftJoin('hifor_event.likes', 'likes') // 좋아요 테이블과 조인
+        .addSelect('COUNT(DISTINCT likes.id)', 'likeCount') // DISTINCT 추가하여 좋아요 개수 계산
+        .groupBy('hifor_event.id') // 이벤트별 그룹화
+        .orderBy('likeCount', 'DESC') // 좋아요 수 기준 내림차순 정렬
+        .where('hifor_event.date >= :now', { now: now.toISOString() }) // 현재 날짜 이후 이벤트만 조회
         .getRawMany();
 
-      console.log('Events:', events);
 
-      // Raw 데이터 가공
-      return await Promise.all(
+      // Raw 데이터 가공 (참가자 수 포함)
+      const processedEvents = await Promise.all(
         events.map(async (event) => {
           try {
-            console.log('Processing Event:', event);
 
             // 참가자 수 계산
             const approvedParticipantsCount = await this.participantRepository.count({
               where: {
-                event: { id: event.hifor_event_id }, // 관계가 맞는지 확인
+                event: { id: event.hifor_event_id }, // 관계 확인
                 status: 'Approved',
               },
             });
-            console.log('Approved Participants Count:', approvedParticipantsCount);
 
-            return {
+            const formattedEvent = {
               id: event.hifor_event_id,
               name: event.hifor_event_name,
               description: event.hifor_event_description,
@@ -164,16 +223,22 @@ export class GatheringService {
               price: event.hifor_event_price,
               maxParticipants: event.hifor_event_maxParticipants,
               participants: approvedParticipantsCount, // 승인된 참가자 수
-              likes: parseInt(event.likeCount, 10), // likes 카운트
+              likes: parseInt(event.likeCount, 10), // 좋아요 수 변환
             };
 
+            return formattedEvent;
+
           } catch (innerError) {
-            console.error('Error processing event:', event, innerError.message);
-            return null; // 오류 발생 시 null로 반환
+            console.error('❌ Error processing event:', event, innerError.message);
+            return null; // 오류 발생 시 null 반환
           }
         }),
       );
+
+      return processedEvents.filter(e => e !== null); // 오류 발생한 이벤트(null)는 제외하고 반환
+
     } catch (error) {
+      console.error('❌ Failed to fetch hot events:', error.message);
       throw new Error(`Failed to fetch hot events: ${error.message}`);
     }
   }
@@ -369,9 +434,6 @@ export class GatheringService {
         }),
       );
 
-      // 디버깅: 매핑된 결과 확인
-      console.log(`Mapped Liked Events:`, mappedEvents);
-
       // 매핑된 좋아요 이벤트 반환
       return mappedEvents;
     } catch (error) {
@@ -518,6 +580,7 @@ export class GatheringService {
     }
     const user = await this.userRepository.findOne({
       where: { userId: _userId },
+      relations: ['createdBy'],
     });
     if (!user) {
       throw new Error('User not found');
@@ -530,6 +593,18 @@ export class GatheringService {
       status,
       answer,
     });
+
+    await this.emailService.sendCreatePartiEmail(
+      event.createdBy.email, // 메일 수신자는 호스트
+      {
+        hostName: event.createdBy.username,      // 호스트 이름
+        eventTitle: event.name,                    // 이벤트 제목
+        eventDate: event.date,                     // 이벤트 날짜
+        eventLocation: event.location,             // 이벤트 장소
+        participantName: user.username,            // 신청한 참가자의 이름
+        eventId: event.id,
+      }
+    )
 
     return await this.participantRepository.save(participant);
 
@@ -607,19 +682,51 @@ export class GatheringService {
   async updateStatus(
     participantId: number,
     status: string,
+    eventId: number,
   ): Promise<Participant> {
+    // participant와 관련된 user 정보를 함께 조회
     const participant = await this.participantRepository.findOne({
       where: { id: participantId },
+      relations: ['user'],
     });
-
+    const curEvent = await  this.eventRepository.findOne({
+      where: { id: eventId}
+    })
     if (!participant) {
-      throw new NotFoundException(
-        `Participant with ID ${participantId} not found`,
-      );
+      throw new NotFoundException(`Participant with ID ${participantId} not found`);
     }
 
-    participant.status = status; // 상태 변경
-    return await this.participantRepository.save(participant); // 변경 사항 저장
+    participant.status = status;
+    const updatedParticipant = await this.participantRepository.save(participant);
+
+    // 이메일 전송: 상태에 따라 각각 다른 템플릿 사용
+    try {
+      if (status === 'Approved') {
+        await this.emailService.sendApprovedEmail(
+          participant.user.email,
+          {
+            guestName: participant.user.username,
+            eventTitle: curEvent.name,
+            eventDate: curEvent.date,
+            eventLocation: curEvent.location,
+            eventId: curEvent.id,
+          },
+        );
+      } else if (status === 'Rejected') {
+        await this.emailService.sendRejectedEmail(
+          participant.user.email,
+          {
+            guestName: participant.user.username,
+            eventTitle: curEvent.name,
+          },
+        );
+      }
+    } catch (error) {
+      console.error('이메일 전송 실패:', error);
+      // 이메일 전송 실패해도 업데이트 로직은 정상 처리하도록 함
+    }
+
+    return updatedParticipant;
   }
   async getApprovedParticipantsCount(eventId: number): Promise<number> {
     return await this.participantRepository.count({

@@ -354,10 +354,8 @@
       alert('You must agree to the required terms to sign up.');
       return; // 제출 중단
     }
-    console.log('핸들레지스터의 유저:',user)
     try {
       const response = await axios.post('http://localhost:3000/auth/googleSignUp', user);
-      console.log('회원가입 응답:', response.data);
       alert('Sign-up completed!');
 
       // JWT 토큰 저장

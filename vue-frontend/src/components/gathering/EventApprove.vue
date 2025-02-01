@@ -142,8 +142,9 @@ const loadEventDetails = async () => {
 
 const updateParticipantStatus = async (participantId, status) => {
   try {
-    console.log(participantId, status)
-    await axios.patch(`http://localhost:3000/gathering/${participantId}/status`, { status });
+    await axios.patch(`http://localhost:3000/gathering/${participantId}/status`, {
+      status,
+      eventId: event.value.id, });
     await loadEventDetails(); // 업데이트 후 다시 로드
     currentCount.value = participants.value.filter(
       (p) => p.status === "Approved"

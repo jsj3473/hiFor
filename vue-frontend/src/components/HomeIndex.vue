@@ -372,7 +372,6 @@ import EventCard from './gathering/EventCard.vue'; // EventCard 컴포넌트 가
 // 핫 이벤트 가져오기
     const fetchHotEvents = async () => {
       hotEvents.value = await fetchEvents('hot');
-      console.log('hoteventvalue',hotEvents.value)
     };
 
 
