@@ -5,7 +5,7 @@ import {
   BadRequestException,
   NotFoundException,
   UseInterceptors,
-  UploadedFile, HttpException, HttpStatus,
+  UploadedFile, HttpException, HttpStatus, UseGuards,
 } from '@nestjs/common';
 import { EmailService } from './mail.service'; // 이메일 전송을 담당하는 서비스
 import { CacheService } from './cache.service'; // 인증번호 저장을 담당하는 서비스 (예: Redis)
@@ -13,6 +13,7 @@ import { UserService } from '../user/user.service';
 import { FindPasswordDto } from 'src/user/user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ContactDto } from './mail.dto';
+import {SessionAuthGuard} from "../auth/auth.guard";
 
 @Controller('mail')
 export class VerificationController {
@@ -83,6 +84,7 @@ export class VerificationController {
   }
 
   @Post('contactUs')
+  @UseGuards(SessionAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   async sendMessage(
     @Body() contactDto: ContactDto,

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, MoreThanOrEqual, Repository } from 'typeorm';
-import { HiforEvent, Image, Like, Participant } from './gathering.entity';
+import {AdEmail, HiforEvent, Image, Like, Participant} from './gathering.entity';
 import { User } from '../user/user.entity';
 import { CreateEventDto, SearchEventDto } from './gathering.dto';
 import { EmailService } from '../mail/mail.service';
@@ -19,6 +19,8 @@ export class GatheringService {
     private likeRepository: Repository<Like>,
     @InjectRepository(Image)
     private imageRepository: Repository<Image>,
+    @InjectRepository(AdEmail)
+    private adEmailRepository: Repository<AdEmail>,
     private readonly dataSource: DataSource,
     private emailService: EmailService, // EmailService 주입
   ) {}
@@ -761,5 +763,11 @@ export class GatheringService {
 
     // 데이터베이스 업데이트
     await this.eventRepository.save(event);
+  }
+
+  async subscribe(email: string) {
+    // email 값만 받아서 엔티티 생성
+    const adEmail = this.adEmailRepository.create({ email });
+    return await this.adEmailRepository.save(adEmail);
   }
 }

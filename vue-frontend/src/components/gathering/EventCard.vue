@@ -240,7 +240,7 @@ export default {
 
 .event-card{
   width: 100%;
-  padding: 15px;
+  padding: 10px 0px;
 }
 .events-container .card-img{
   height: 240px;

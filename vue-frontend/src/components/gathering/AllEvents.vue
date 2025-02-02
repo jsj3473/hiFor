@@ -75,10 +75,10 @@
         <p class="title">Top categories</p>
         <div class="row">
           <div
-            class="col category-box"
-            v-for="category in categories"
-            :key="category.name"
-            @click="fetchEventsByCategory(category.name)"
+              class="col category-box"
+              v-for="category in categories"
+              :key="category.name"
+              @click="fetchEventsByCategory(category.name)"
           >
             <img :src="category.icon" :alt="category.name" />
             <p>{{ category.displayName }}</p>

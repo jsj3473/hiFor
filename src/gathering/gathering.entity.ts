@@ -114,3 +114,12 @@ export class Image {
   @ManyToOne(() => HiforEvent, (event) => event.images)
   event: HiforEvent;
 }
+
+@Entity('adEmails')
+export class AdEmail {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  email: string;
+}

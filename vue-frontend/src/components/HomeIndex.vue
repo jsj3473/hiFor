@@ -1,326 +1,262 @@
 
 <template>
-    <div class="Web">
-      <div class="home-banner">
-        <!-- 메인 -->
-        <p class="banner-title animate__fadeInUp">
-          Start real Korean Life <br>
-          from the <span style="color: #58C3FF;">HiFor.</span>
+  <div class="Web">
+    <div class="home-banner">
+      <!-- 메인 -->
+      <p class="banner-title animate__fadeInUp">
+        Start real Korean Life <br>
+        from the <span style="color: #58C3FF;">HiFor.</span>
+      </p>
+    </div>
+
+    <!--핫이벤트 -->
+    <div class="events-container hot-event">
+      <p class="hot-event-title">
+        Hot Event
+      </p>
+      <div class="row cards-grid">
+        <div  class="col-4" v-for="(event, index) in hotEvents.slice(0, 6)" :key="index">
+          <EventCard :event="event" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="allevent-btn-box">
+      <router-link to="/allEvents">
+        <button class="allevent-btn">Browse events</button>
+      </router-link>
+    </div>
+
+
+    <!-- explain section -->
+    <div class="contaienr ex-con">
+      <div class="row">
+        <div class="col ex-text1">
+          How it works
+        </div>
+      </div>
+      <div class="row">
+        <p class="ex-title">
+          Learn how the experience works
+        </p>
+      </div>
+      <div class="row">
+        <div class="col ex-box">
+          <img class="ex-icon1" src="../assets/img/icon_HowTo1.png" alt=""><br>
+          <img class="ex-num1" src="../assets/img/icon_Num1.png" alt=""><br>
+          <p class="ex-text2">
+            Search for events<br>
+            interests you
+          </p>
+          <p class="ex-text3">
+            Search for a topic you're interested in and<br> find a event you want!
+          </p>
+        </div>
+        <div class="col ex-box">
+          <img class="ex-icon2" src="../assets/img/icon_HowTo2.png" alt=""><br>
+          <img class="ex-num2" src="../assets/img/icon_Num2.png" alt=""><br>
+          <p class="ex-text2">
+            Create any events<br>you want!
+          </p>
+          <p class="ex-text3">
+            If you don't like anything or have a good idea,<br>make your own event!
+          </p>
+        </div>
+        <div class="col ex-box">
+          <img class="ex-icon3" src="../assets/img/icon_HowTo3.svg" alt=""><br>
+          <img class="ex-num3" src="../assets/img/icon_Num3.png" alt=""><br>
+          <p class="ex-text2">
+            Enjoy an event and<br> connect with people
+          </p>
+          <p class="ex-text3">
+            Enjoy the event and have a new meeting with<br> new people at HiFor!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- why hifor -->
+    <div class="container why-con">
+      <div class="row">
+        <div class="col-6 why-box">
+          <img src="../assets/img/img_MeetUp.png" alt="">
+        </div>
+        <div class="col-6 why-box">
+          <p class="wc-text1">Why HiFor</p>
+          <p class="wc-title">
+            Connecting Worlds,<br>
+            Creating Value
+          </p>
+          <p class="wc-text2">
+            HiFor is a global community platform that connects people and businesses.We offer meaningful connections based on interests, culture, and goals—not just casual gatherings.Through HiFor, you can engage with people from diverse backgrounds and stories, creating new experiences and value together.
+          </p>
+          <router-link to="/">
+            <button class="wc-btn">Post an Event</button>
+          </router-link>
+        </div>
+      </div>
+    </div>
+    <!-- our values -->
+    <div class="row ov-con">
+      <p class="rc-text1">Our values</p>
+      <p class="rc-title">
+        The values that drive<br>
+        everything we do
+      </p>
+      <div class="col-4">
+        <div class="value-card">
+          <img src="../assets/img/icon_OurValue1.png" alt="">
+          <p class="value-title">Inclusivity</p>
+          <p class="value-text">HiFor welcomes everyone,<br>fostering a sense of belonging.</p>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="value-card">
+          <img src="../assets/img/icon_OurValue2.png" alt="">
+          <p class="value-title">Growth</p>
+          <p class="value-text">Guided by feedback and data,<br>we improve to support growth.</p>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="value-card">
+          <img src="../assets/img/icon_OurValue3.png" alt="">
+          <p class="value-title">Innovation</p>
+          <p class="value-text">AI-driven services transform<br>experiences with personalization.</p>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="value-card">
+          <img src="../assets/img/icon_OurValue4.png" alt="">
+          <p class="value-title">Connection</p>
+          <p class="value-text">HiFor connects people through <br>shared interests and events.</p>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="value-card">
+          <img src="../assets/img/icon_OurValue5.png" alt="">
+          <p class="value-title">Support</p>
+          <p class="value-text">We empower individuals with <br>language learning and networking.</p>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="value-card">
+          <img src="../assets/img/icon_OurValue6.png" alt="">
+          <p class="value-title">Accessibility</p>
+          <p class="value-text">Affordable services ensure <br>easy participation for all.</p>
+        </div>
+      </div>
+    </div>
+    <!-- user say -->
+    <div class="review-con">
+      <p class="rc-text1">Testimonials</p>
+      <p class="rc-title">What our users say about us</p>
+      <p class="rc-text2">
+        Lorem ipsum dolor sit amet consectetur elit cursus bibendum pharetra <br>
+        integer pharetra eu sollicitudin ipsum sit id mi vulputate quis vel.
+      </p>
+    </div>
+    <!-- Testimonials Cards1 -->
+    <div class="testimonials-grid review-row1">
+      <!-- Testimonial 1 -->
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          Fames in metus ipsum nisi atibus id mauris lectus non semper nisi elementum.
         </p>
       </div>
 
-      <!--핫이벤트 -->
-      <div class="events-container hot-event">
-        <p class="hot-event-title">
-          Hot Event
+      <!-- Testimonial 2 -->
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          Lorem ipsum dolor sit amet ipsum non consectetur adipiscing elit hendrerit elit at a at cursus nibh lorem aliquam.
         </p>
-        <div class="row cards-grid">
-          <div  class="col-4" v-for="(event, index) in hotEvents.slice(0, 6)" :key="index">
-            <EventCard :event="event" />
+      </div>
+
+      <!-- Testimonial 3 -->
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          Eu tempus viverra mi porttitor ut at neque at nisl sed pharetra sodales ultrices volutpat tincidunt dictum ut.
+        </p>
+      </div>
+
+      <!-- Testimonial 4 -->
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          Lorem ipsum dolor sit amet consectetu adipiscing elit nisi id at felis risus commodo elit ut ultrices.
+        </p>
+      </div>
+
+      <!-- Add more testimonial cards as needed -->
+    </div>
+
+    <!-- Testimonials Cards2 -->
+    <div class="testimonials-grid review-row2">
+      <!-- Testimonial 1 -->
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          Fames in metus ipsum nisi atibus id mauris lectus non semper nisi elementum.
+        </p>
+      </div>
+
+      <!-- Testimonial 2 -->
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          Lorem ipsum dolor sit amet ipsum non consectetur adipiscing elit hendrerit elit at a at cursus nibh lorem aliquam.
+        </p>
+      </div>
+
+      <!-- Testimonial 3 -->
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          Eu tempus viverra mi porttitor ut at neque at nisl sed pharetra sodales ultrices volutpat tincidunt dictum ut.
+        </p>
+      </div>
+
+      <!-- Testimonial 4 -->
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          Lorem ipsum dolor sit amet consectetu adipiscing elit nisi id at felis risus commodo elit ut ultrices.
+        </p>
+      </div>
+
+      <!-- Add more testimonial cards as needed -->
+    </div>
+
+    <!-- Buttons -->
+    <div class="button-row">
+      <button class="cta-button primary-button">Post an event</button>
+      <button class="cta-button secondary-button">Browse events</button>
+    </div>
+
+    <!-- 컨택어스 -->
+    <!-- past a event -->
+    <div class="contaeiner contact-con">
+      <div class="row contact-box">
+        <div class="col-6">
+          <div class="row c-img-box">
+            <div class="col-6 c-img-box1">
+              <img class="c-img1" src="../assets/c-img1.png" alt="">
+              <img class="c-img2" src="../assets/c-img2.png" alt="">
+            </div>
+            <div class="col-6 c-img-box2">
+              <img class="c-img3" src="../assets/c-img3.png" alt="">
+              <img class="c-img4" src="../assets/c-img4.png" alt="">
+            </div>
           </div>
         </div>
+        <div class="col-6 c-text-box">
+          <p class="c-title">
+            Create the next<br>event you want!
+          </p>
+          <p class="c-text">
+            Make your own ideas or <br>
+            whatever you want an event on HiFor and enjoy it!
+          </p>
+          <button class="contact-btn" type="button">Post an event</button>
+        </div>
       </div>
-
-      <!-- Buttons -->
-      <div class="allevent-btn-box">
-        <router-link to="/allEvents">
-          <button class="allevent-btn">Browse events</button>
-        </router-link>
-      </div>
-
-
-        <!-- explain section -->
-        <div class="contaienr ex-con">
-            <div class="row">
-                <div class="col ex-text1">
-                    How it works
-                </div>
-            </div>
-            <div class="row">
-                <p class="ex-title">
-                    Learn how the experience works
-                </p>
-            </div>
-            <div class="row">
-                <div class="col ex-box">
-                    <img class="ex-icon1" src="../assets/img/icon_HowTo1.png" alt=""><br>
-                    <img class="ex-num1" src="../assets/img/icon_Num1.png" alt=""><br>
-                    <p class="ex-text2">
-                        Search for events<br>
-                        interests you 
-                    </p>
-                    <p class="ex-text3">
-                        Search for a topic you're interested in and<br> find a event you want!
-                    </p>
-                </div>
-                <div class="col ex-box">
-                    <img class="ex-icon2" src="../assets/img/icon_HowTo2.png" alt=""><br>
-                    <img class="ex-num2" src="../assets/img/icon_Num2.png" alt=""><br>
-                    <p class="ex-text2">
-                        Create any events<br>you want! 
-                    </p>
-                    <p class="ex-text3">
-                        If you don't like anything or have a good idea,<br>make your own event!
-                    </p>
-                </div>
-                <div class="col ex-box">
-                    <img class="ex-icon3" src="../assets/img/icon_HowTo3.svg" alt=""><br>
-                    <img class="ex-num3" src="../assets/img/icon_Num3.png" alt=""><br>
-                    <p class="ex-text2">
-                        Enjoy an event and<br> connect with people
-                    </p>
-                    <p class="ex-text3">
-                        Enjoy the event and have a new meeting with<br> new people at HiFor!
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- why hifor -->
-        <div class="container why-con">
-            <div class="row">
-                <div class="col-6 why-box">
-                    <img src="../assets/img/img_MeetUp.png" alt="">
-                </div>
-                <div class="col-6 why-box">
-                    <p class="wc-text1">Why HiFor</p>
-                    <p class="wc-title">
-                        Discover more than <br>
-                        3,000+ technology events
-                    </p>
-                    <p class="wc-text2">
-                        Lorem ipsum dolor sit amet consectetur erat elit viverra quis vestibulum auctor sit tellus est quam quis urna id at nunc amet dolor hendrerit justo.
-                    </p>
-                    <router-link to="/">
-                        <button class="wc-btn">Create Event</button>
-                    </router-link>
-                </div>
-            </div>
-        </div>
-        <!-- our values -->
-        <div class="row ov-con">
-            <p class="rc-text1">Our values</p>
-            <p class="rc-title">
-                The values that drive<br>
-                everything we do
-            </p>
-            <div class="col-4">
-                <div class="value-card">
-                    <img src="../assets/img/icon_OurValue1.png" alt="">
-                    <p class="value-title">Inclusivity</p>
-                    <p class="value-text">HiFor welcomes everyone,<br>fostering a sense of belonging.</p>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="value-card">
-                    <img src="../assets/img/icon_OurValue2.png" alt="">
-                    <p class="value-title">Growth</p>
-                    <p class="value-text">Guided by feedback and data,<br>we improve to support growth.</p>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="value-card">
-                    <img src="../assets/img/icon_OurValue3.png" alt="">
-                    <p class="value-title">Innovation</p>
-                    <p class="value-text">AI-driven services transform<br>experiences with personalization.</p>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="value-card">
-                    <img src="../assets/img/icon_OurValue4.png" alt="">
-                    <p class="value-title">Connection</p>
-                    <p class="value-text">HiFor connects people through <br>shared interests and events.</p>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="value-card">
-                    <img src="../assets/img/icon_OurValue5.png" alt="">
-                    <p class="value-title">Support</p>
-                    <p class="value-text">We empower individuals with <br>language learning and networking.</p>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="value-card">
-                    <img src="../assets/img/icon_OurValue6.png" alt="">
-                    <p class="value-title">Accessibility</p>
-                    <p class="value-text">Affordable services ensure <br>easy participation for all.</p>
-                </div>
-            </div>
-        </div>
-        <!-- user say -->
-        <div class="review-con">
-            <p class="rc-text1">Testimonials</p>
-            <p class="rc-title">What our users say about us</p>
-            <p class="rc-text2">
-                Lorem ipsum dolor sit amet consectetur elit cursus bibendum pharetra <br> 
-                integer pharetra eu sollicitudin ipsum sit id mi vulputate quis vel.
-            </p>
-        </div>
-        <!-- Testimonials Cards1 -->
-        <div class="testimonials-grid review-row1">
-            <!-- Testimonial 1 -->
-            <div class="testimonial-card">
-            <div class="testimonial-header">
-                <img src="https://via.placeholder.com/50" alt="John Carter" class="testimonial-avatar" />
-                <div>
-                    <p class="testimonial-name">John Carter</p>
-                    <p class="testimonial-location">New York, NY</p>
-                </div>
-                <img src="https://via.placeholder.com/20" alt="Twitter Icon" class="testimonial-icon" />
-            </div>
-            <p class="testimonial-text">
-                Fames in metus ipsum nisi atibus id mauris lectus non semper nisi elementum.
-            </p>
-            </div>
-
-            <!-- Testimonial 2 -->
-            <div class="testimonial-card">
-            <div class="testimonial-header">
-                <img src="https://via.placeholder.com/50" alt="Lily Woods" class="testimonial-avatar" />
-                <div>
-                    <p class="testimonial-name">Lily Woods</p>
-                    <p class="testimonial-location">San Francisco, CA</p>
-                </div>
-                <img src="https://via.placeholder.com/20" alt="Twitter Icon" class="testimonial-icon" />
-            </div>
-            <p class="testimonial-text">
-                Lorem ipsum dolor sit amet ipsum non consectetur adipiscing elit hendrerit elit at a at cursus nibh lorem aliquam.
-            </p>
-            </div>
-
-            <!-- Testimonial 3 -->
-            <div class="testimonial-card">
-            <div class="testimonial-header">
-                <img src="https://via.placeholder.com/50" alt="Andy Smith" class="testimonial-avatar" />
-                <div>
-                    <p class="testimonial-name">Andy Smith</p>
-                    <p class="testimonial-location">Chicago, IL</p>
-                </div>
-                <img src="https://via.placeholder.com/20" alt="Twitter Icon" class="testimonial-icon" />
-            </div>
-            <p class="testimonial-text">
-                Eu tempus viverra mi porttitor ut at neque at nisl sed pharetra sodales ultrices volutpat tincidunt dictum ut.
-            </p>
-            </div>
-
-            <!-- Testimonial 4 -->
-            <div class="testimonial-card">
-            <div class="testimonial-header">
-                <img src="https://via.placeholder.com/50" alt="Kelly Sung" class="testimonial-avatar" />
-                <div>
-                    <p class="testimonial-name">Kelly Sung</p>
-                    <p class="testimonial-location">New York, NY</p>
-                </div>
-                <img src="https://via.placeholder.com/20" alt="Twitter Icon" class="testimonial-icon" />
-            </div>
-            <p class="testimonial-text">
-                Lorem ipsum dolor sit amet consectetu adipiscing elit nisi id at felis risus commodo elit ut ultrices.
-            </p>
-            </div>
-
-            <!-- Add more testimonial cards as needed -->
-        </div>
-
-        <!-- Testimonials Cards2 -->
-        <div class="testimonials-grid review-row2">
-            <!-- Testimonial 1 -->
-            <div class="testimonial-card">
-            <div class="testimonial-header">
-                <img src="https://via.placeholder.com/50" alt="John Carter" class="testimonial-avatar" />
-                <div>
-                    <p class="testimonial-name">John Carter</p>
-                    <p class="testimonial-location">New York, NY</p>
-                </div>
-                <img src="https://via.placeholder.com/20" alt="Twitter Icon" class="testimonial-icon" />
-            </div>
-            <p class="testimonial-text">
-                Fames in metus ipsum nisi atibus id mauris lectus non semper nisi elementum.
-            </p>
-            </div>
-
-            <!-- Testimonial 2 -->
-            <div class="testimonial-card">
-            <div class="testimonial-header">
-                <img src="https://via.placeholder.com/50" alt="Lily Woods" class="testimonial-avatar" />
-                <div>
-                    <p class="testimonial-name">Lily Woods</p>
-                    <p class="testimonial-location">San Francisco, CA</p>
-                </div>
-                <img src="https://via.placeholder.com/20" alt="Twitter Icon" class="testimonial-icon" />
-            </div>
-            <p class="testimonial-text">
-                Lorem ipsum dolor sit amet ipsum non consectetur adipiscing elit hendrerit elit at a at cursus nibh lorem aliquam.
-            </p>
-            </div>
-
-            <!-- Testimonial 3 -->
-            <div class="testimonial-card">
-            <div class="testimonial-header">
-                <img src="https://via.placeholder.com/50" alt="Andy Smith" class="testimonial-avatar" />
-                <div>
-                    <p class="testimonial-name">Andy Smith</p>
-                    <p class="testimonial-location">Chicago, IL</p>
-                </div>
-                <img src="https://via.placeholder.com/20" alt="Twitter Icon" class="testimonial-icon" />
-            </div>
-            <p class="testimonial-text">
-                Eu tempus viverra mi porttitor ut at neque at nisl sed pharetra sodales ultrices volutpat tincidunt dictum ut.
-            </p>
-            </div>
-
-            <!-- Testimonial 4 -->
-            <div class="testimonial-card">
-            <div class="testimonial-header">
-                <img src="https://via.placeholder.com/50" alt="Kelly Sung" class="testimonial-avatar" />
-                <div>
-                    <p class="testimonial-name">Kelly Sung</p>
-                    <p class="testimonial-location">New York, NY</p>
-                </div>
-                <img src="https://via.placeholder.com/20" alt="Twitter Icon" class="testimonial-icon" />
-            </div>
-            <p class="testimonial-text">
-                Lorem ipsum dolor sit amet consectetu adipiscing elit nisi id at felis risus commodo elit ut ultrices.
-            </p>
-            </div>
-
-            <!-- Add more testimonial cards as needed -->
-        </div>
-
-        <!-- Buttons -->
-        <div class="button-row">
-            <button class="cta-button primary-button">Post a event</button>
-            <button class="cta-button secondary-button">Browse events</button>
-        </div>
-
-        <!-- 컨택어스 -->
-        <!-- past a event -->
-        <div class="contaeiner contact-con">
-            <div class="row contact-box">
-            <div class="col-6">
-                <div class="row c-img-box">
-                <div class="col-6 c-img-box1">
-                    <img class="c-img1" src="../assets/c-img1.png" alt="">
-                    <img class="c-img2" src="../assets/c-img2.png" alt="">
-                </div>
-                <div class="col-6 c-img-box2">
-                    <img class="c-img3" src="../assets/c-img3.png" alt="">
-                    <img class="c-img4" src="../assets/c-img4.png" alt="">
-                </div>
-                </div>
-            </div>
-            <div class="col-6 c-text-box">
-                <p class="c-title">
-                Create the next<br>event you want!
-                </p>
-                <p class="c-text">
-                    Make your own ideas or <br> 
-                    whatever you want an event on HiFor and enjoy it!
-                </p>
-                <button class="contact-btn" type="button">Post a event</button>
-            </div>
-            </div>
-        </div>
     </div>
+  </div>
 </template>
 
 <script setup>
@@ -330,57 +266,57 @@ import axios from 'axios';
 import EventCard from './gathering/EventCard.vue'; // EventCard 컴포넌트 가져오기
 
 
-    const events = ref([]); // 이벤트 데이터
-    const hotEvents = ref([]); // 캐러셀 이벤트
-    //const store = useStore();
+const events = ref([]); // 이벤트 데이터
+const hotEvents = ref([]); // 캐러셀 이벤트
+//const store = useStore();
 
 
-    const mapEventData = (event) => ({
-      id: event.id,
-      mainImage: event.mainImage,
-      title: event.name,
-      date: event.date,
-      location: event.location,
-      category: event.category,
-      type: event.type,
-      participants: {
-        current: event.participants ?? 0, // 현재 참가자 수
-        max: event.maxParticipants, // 최대 참가자 수
-      },
-      likes: event.likes, // 좋아요 수
+const mapEventData = (event) => ({
+  id: event.id,
+  mainImage: event.mainImage,
+  title: event.name,
+  date: event.date,
+  location: event.location,
+  category: event.category,
+  type: event.type,
+  participants: {
+    current: event.participants ?? 0, // 현재 참가자 수
+    max: event.maxParticipants, // 최대 참가자 수
+  },
+  likes: event.likes, // 좋아요 수
+});
+
+
+// 통합된 fetchEvents 함수
+const fetchEvents = async (fetchType, params = {}) => {
+  try {
+    const response = await axios.get('http://localhost:3000/gathering', {
+      params: { fetchType, ...params }, // type을 쿼리 파라미터에 추가
     });
-
-
-    // 통합된 fetchEvents 함수
-    const fetchEvents = async (fetchType, params = {}) => {
-      try {
-        const response = await axios.get('http://localhost:3000/gathering', {
-          params: { fetchType, ...params }, // type을 쿼리 파라미터에 추가
-        });
-        return response.data.map(mapEventData); // 데이터 매핑 후 반환
-      } catch (error) {
-        console.error(`Failed to fetch events for type "${fetchType}":`, error);
-        return []; // 에러 시 빈 배열 반환
-      }
-    };
+    return response.data.map(mapEventData); // 데이터 매핑 후 반환
+  } catch (error) {
+    console.error(`Failed to fetch events for type "${fetchType}":`, error);
+    return []; // 에러 시 빈 배열 반환
+  }
+};
 
 // 모든 이벤트 가져오기
-    const fetchAllEvents = async () => {
-      events.value = await fetchEvents('all');
-    };
+const fetchAllEvents = async () => {
+  events.value = await fetchEvents('all');
+};
 
 // 핫 이벤트 가져오기
-    const fetchHotEvents = async () => {
-      hotEvents.value = await fetchEvents('hot');
-    };
+const fetchHotEvents = async () => {
+  hotEvents.value = await fetchEvents('hot');
+};
 
 
 
 
-    onMounted(async () => {
-      await fetchAllEvents(); // 모든 이벤트 가져오기
-      await fetchHotEvents(); // 핫 이벤트
-    });
+onMounted(async () => {
+  await fetchAllEvents(); // 모든 이벤트 가져오기
+  await fetchHotEvents(); // 핫 이벤트
+});
 
 
 </script>
@@ -691,6 +627,8 @@ import EventCard from './gathering/EventCard.vue'; // EventCard 컴포넌트 가
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 30px;
     margin: 40px 0;
+    max-width: 1180px;
+    justify-self: center;
   }
 
   .testimonial-card {
@@ -698,35 +636,6 @@ import EventCard from './gathering/EventCard.vue'; // EventCard 컴포넌트 가
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .testimonial-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-  }
-
-  .testimonial-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-  }
-
-  .testimonial-name {
-    font-size: 16px;
-    font-weight: bold;
-  }
-
-  .testimonial-location {
-    font-size: 14px;
-    color: #999;
-  }
-
-  .testimonial-icon {
-    margin-left: auto;
-    width: 20px;
-    height: 20px;
   }
 
   .testimonial-text {

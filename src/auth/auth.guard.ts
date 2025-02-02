@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class signInGuard implements CanActivate {
@@ -46,13 +47,6 @@ export class signInGuard implements CanActivate {
   }
 }
 
-@Injectable()
-export class AuthenticatedGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
-    return request.isAuthenticated();
-  }
-}
 
 @Injectable()
 export class GoogleAuthGuard extends AuthGuard('google') {
@@ -76,6 +70,27 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       response.redirect('/login');
       return false;
     }
+    return true;
+  }
+}
+
+@Injectable()
+export class SessionAuthGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest<Request>();
+    const response = context.switchToHttp().getResponse<Response>();
+
+    // 세션에 userId가 있는지 확인
+    if (!request.session || !(request.session as any).userId) {
+      console.log('---------------------')
+      console.log(request.session)
+      console.log((request.session as any).userId)
+      response.status(401).json({ message: '로그인이 필요합니다.' });
+      return false;
+    }
+
+
+    // userId가 있으면 요청 통과
     return true;
   }
 }

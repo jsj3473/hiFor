@@ -5,7 +5,9 @@
         <p class="banner-text1">Contact us</p>
         <p class="banner-title">Get in touch</p>
         <p class="banner-text2">
-          If you have any questions or concerns about issues <br />please feel free to reach out anytime!
+          If you have any questions or concerns, <br> feel free to reach out anytime! <br>
+          Looking to connect your brand with the right audience? <br>
+          Get in touch with us today!
         </p>
       </div>
     </div>
@@ -184,8 +186,6 @@ const sendMessage = async () => {
   .form-group label {
     font-size: 14px;
   }
-  .form-group input,
-  .form-group textarea,
   .form-group select {
     width: 100%;
     height: 50px;
@@ -376,7 +376,7 @@ const sendMessage = async () => {
 
   .form-group textarea {
     width: 100%;
-    height: 50px;
+    height: 250px;
     padding: 20px;
     font-size: 16px;
     border: 1px solid #ccc;

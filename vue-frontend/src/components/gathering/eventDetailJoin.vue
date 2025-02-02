@@ -15,6 +15,26 @@
                 <p class="gathering-text" v-html="event.description"></p>
               </div>
             </div>
+
+            <!-- Gallery section -->
+            <div class="gallery-box row">
+              <p class="map-title">
+                Photo Gallery
+              </p>
+              <div class="col-6 large-box">
+                <img class="large-img" :style="{ backgroundImage: `url(${event.mainImage})` }" alt="">
+              </div>
+              <div class="col-6">
+                <div class="row">
+                  <div
+                    class="col-6 small-box"
+                    v-for="(bgImage, index) in imagesToDisplay"
+                    :key="index"
+                    :style="{ backgroundImage: `url(${bgImage.url})` }"
+                ></div>
+                </div>
+              </div>
+            </div>
   
             <!-- Map section -->
             <div class="map-box">
@@ -129,6 +149,13 @@
                       >
                         Closed
                       </button>
+                      <p class="host">
+                        <br>
+                        Hosted by.
+                        <router-link :to="`/userPage/${event.createdBy.id}`" class="p-0">
+                          {{ event.createdBy.name }}
+                        </router-link>
+                      </p>
 
                     </div>
                   </div>
@@ -183,6 +210,14 @@
         // 로그인 페이지로 리디렉션 (라우터를 사용)
         window.location.href = '/login'; // 로그인 페이지로 이동
       }
+
+      // 4개의 이미지를 표시하기 위한 computed 프로퍼티
+      const imagesToDisplay = computed(() => {
+        // event.value.images가 정의되어 있다고 가정하고, 배열이 아니면 빈 배열로 처리
+        console.log(event.value.images)
+        const imgs = Array.isArray(event.value.images) ? event.value.images : [];
+        return imgs;
+      });
   
       const fetchEvent = async (eventId) => {
         try {
@@ -191,7 +226,7 @@
               // 데이터 매핑 및 변환
           event.value = {
             id: eventData.id,
-            image: eventData.image, // API 응답에 맞춰 필드명 확인
+            images: eventData.images, // API 응답에 맞춰 필드명 확인
             name: eventData.name,
             description: eventData.description,
             date: eventData.date,
@@ -316,207 +351,244 @@
         isParticipating,
         handleCancelParticipation,
         handleLoginRedirect,
-        isEventJoinable
+        isEventJoinable,
+        imagesToDisplay
       };
     },
   };
   </script>
-  
-  
-  <style scoped>
 
-  .row{
-    width:100%;
-  }
 
-  .space{
-    padding: 75px;
-  }
+<style scoped>
 
-  .p-0{
-    padding: 0px;
-  }
+.row{
+  width:100%;
+}
 
-  .m-0{
-    margin: 0px;
-  }
+.space{
+  padding: 75px;
+}
 
-  /* header */
-  .header-space{
-    height: 90px;
-  }
+.p-0{
+  padding: 0px;
+}
 
-  /* main banner */
-  .banner-img-box{
-    max-width:100%;
-    height: 400px;
-    background-image: url("@/assets/images/image1.png");
-    background-size:cover;
-    background-position: center;
-  }
+.m-0{
+  margin: 0px;
+}
+
+/* header */
+.header-space{
+  height: 90px;
+}
+
+/* main banner */
+.banner-img-box{
+  max-width:100%;
+  height: 400px;
+  background-image: url("@/assets/images/image1.png");
+  background-size:cover;
+  background-position: center;
+}
 
 /* Event content */
-  .gatheing-title{
-    margin-top: 66px;
-    font-size: 48px;
-    margin-bottom: 33px;
-    font-weight: 600;
-  }
-  .map-box{
-    margin-top: 33px;
-    margin-bottom: 66px;
-  }
-  .map-title{
-    font-size: 38px;
-    font-weight: bold;
-    margin: 0px;
-  }
-  .map-text{
-    color: #5F687A;
-    font-size: 16px;
-  }
-  .price-box{
-    margin-bottom: 132px;
-  }
-  .price-title{
-    font-size: 38px;
-    font-weight: bold;
-    margin: 0px;
-  }
-  .price-text{
-    font-size: 24px;
-    font-weight: 400;
-  }
+.gatheing-title{
+  margin-top: 66px;
+  font-size: 48px;
+  margin-bottom: 33px;
+  font-weight: 600;
+}
+.map-box{
+  margin-top: 33px;
+  margin-bottom: 66px;
+}
+.map-title{
+  font-size: 38px;
+  font-weight: bold;
+  margin: 0px;
+}
+.map-text{
+  color: #5F687A;
+  font-size: 16px;
+}
+.price-box{
+  margin-bottom: 132px;
+}
+.price-title{
+  font-size: 38px;
+  font-weight: bold;
+  margin: 0px;
+}
+.price-text{
+  font-size: 24px;
+  font-weight: 400;
+}
+.photo-gallery {
+  width: 100%;
+  padding: 20px;
+}
+.large-box{
+  height: 420px;
+  padding: 0px;
+}
+.small-box{
+  height: 210px;
+  padding: 0px;
+}
+.large-img{
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  border-radius: 24px;
+}
+.small-img{
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  border-radius: 24px;
+}
 
 /* sticky-card */
-  .sticky-card{
-    position: sticky;
-    top: 66px;
-    margin-top: -200px;
-    height: 320px;
-    margin-bottom: 30px;
-    border-radius: 24px;
-    padding: 15px;
-    padding-left: 27px;
-    padding-right: 27px;
-  }
-  .btn_like {
-    position: absolute;
-    right: 25px;
-    top: 45px;
-    width: 50px; 
-    height: 50px;
-    background: url("@/assets/img/icon_Heart.png") no-repeat center / 40px; 
-    cursor: pointer; 
-    border:0; 
-    font-size:0; 
-    display:block;
-    margin-top: -15px;
-    margin-right: -0px;
-  }
-  .btn_like.on {
-    background: url("@/assets/img/icon_HeartFilled.png") no-repeat center / 40px; 
-    animation: beating .5s 1 alternate;
-  }
-  @keyframes beating {
-    0% {transform: scale(1);}
-    40% {transform: scale(1.25);}
-    70% {transform: scale(0.9);}
-    100% {transform: scale(1);}
-  }
+.sticky-card{
+  position: sticky;
+  top: 99px;
+  margin-top: -200px;
+  height: 320px;
+  margin-bottom: 30px;
+  border-radius: 24px;
+  padding: 15px;
+  padding-left: 27px;
+  padding-right: 27px;
+}
+.sticky-card-info{
+  padding: 5px 3px;
+}
+.host{
+  text-align: center;
+  margin-top: -18px;
+  height: 15px;
+}
+.btn_like {
+  position: absolute;
+  right: 25px;
+  top: 45px;
+  width: 50px;
+  height: 50px;
+  background: url("@/assets/img/icon_Heart.png") no-repeat center / 40px;
+  cursor: pointer;
+  border:0;
+  font-size:0;
+  display:block;
+  margin-top: -15px;
+  margin-right: -0px;
+}
+.btn_like.on {
+  background: url("@/assets/img/icon_HeartFilled.png") no-repeat center / 40px;
+  animation: beating .5s 1 alternate;
+}
+@keyframes beating {
+  0% {transform: scale(1);}
+  40% {transform: scale(1.25);}
+  70% {transform: scale(0.9);}
+  100% {transform: scale(1);}
+}
 
-  .card-date-icon{
-    background-image: url("@/assets/img/icon_DateDetail.png");
-    width: 50px;
-    height: 50px;
-    background-size: cover;
-    align-content: center;
-    text-align: center;
-    font-weight: 600;
-    color: #4457FF;
-  }
-  .s-card-icon1{
-    margin-bottom: 3px;
-    width: 17px;
-    height: 17px;
-  }
-  .s-card-icon2{
-    width: 15px;
-    margin-top: 5px;
-    cursor: pointer;
-  }
-  .s-card-text1{
-    margin: 0px;
-    color: #5F687A;
-    font-size: 16px;
-  }
-  .s-card-text2{
-    margin: 0px;
-    color: #1C1F23;
-    font-size: 16px;
-    font-weight: bold;
-  }
-  .s-card-text3{
-    margin-top: 15px;
-    margin-bottom: 24px;
-    padding: 0px;
-    color: #5F687A;
-    font-size: 16px;
-  }
-  .s-card-text4{
-    padding: 0px;
-    color: #5F687A;
-    font-size: 16px;
-    margin: 0px;
-    padding: 5px 0px;
-  }
-  .card-host{
-    margin: 0px;
-    margin-top: 16px;
-    cursor: pointer;
-  }
-  .host-icon{
-    width: 32px;
-    height: 32px;
-    border-radius: 100%;
-  }
-  .join-btn{
-    width: 280px;
-    margin: 12px 32px;
-    padding: 20px;
-    padding-left: 100px;
-    padding-right: 100px;
-    background-color: #4457FF;
-    border: none;
-    border-radius: 96px;
-    color: #ffffff;
-    font-size: 18px;
-    font-weight: 300;
-  }
-  .cancel-btn{
-    width: 280px;
-    margin: 12px 32px;
-    padding: 20px;
-    padding-left: 100px;
-    padding-right: 100px;
-    background-color: #e84a4a;
-    border: none;
-    border-radius: 96px;
-    color: #ffffff;
-    font-size: 18px;
-    font-weight: 300;
-  }
-  .closed-join-btn{
-    width: 280px;
-    margin: 32px;
-    padding: 20px;
-    padding-left: 100px;
-    padding-right: 100px;
-    background-color:gray;
-    border: none;
-    border-radius: 96px;
-    color: #ffffff;
-  }
+.card-date-icon{
+  background-image: url("@/assets/img/icon_DateDetail.png");
+  width: 50px;
+  height: 50px;
+  background-size: cover;
+  align-content: center;
+  text-align: center;
+  font-weight: 600;
+  color: #4457FF;
+}
+.s-card-icon1{
+  margin-bottom: 3px;
+  width: 17px;
+  height: 17px;
+}
+.s-card-icon2{
+  width: 15px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+.s-card-text1{
+  margin: 0px;
+  color: #5F687A;
+  font-size: 16px;
+}
+.s-card-text2{
+  margin: 0px;
+  color: #1C1F23;
+  font-size: 16px;
+  font-weight: bold;
+}
+.s-card-text3{
+  margin-top: 15px;
+  margin-bottom: 24px;
+  padding: 0px;
+  color: #5F687A;
+  font-size: 16px;
+}
+.s-card-text4{
+  padding: 0px;
+  color: #5F687A;
+  font-size: 16px;
+  margin: 0px;
+  padding: 5px 0px;
+}
+.card-host{
+  margin: 0px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+.host-icon{
+  width: 24px;
+  height: 24px;
+  border-radius: 100%;
+}
+.join-btn{
+  width: 280px;
+  margin: 12px 32px;
+  padding: 12px;
+  background-color: #4457FF;
+  border: none;
+  border-radius: 96px;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 300;
+  transition: all 0.3s ease;
+}
+.join-btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+.cancel-btn{
+  width: 280px;
+  margin: 12px 32px;
+  padding: 12px;
+  background-color: #e84a4a;
+  border: none;
+  border-radius: 96px;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 300;
+  transition: all 0.3s ease;
+}
+.cancel-btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+.closed-join-btn{
+  width: 280px;
+  margin: 12px 32px;
+  padding: 12px;
+  background-color:gray;
+  border: none;
+  border-radius: 96px;
+  color: #ffffff;
+}
 
 </style>
 

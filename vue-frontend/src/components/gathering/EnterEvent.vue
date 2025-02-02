@@ -4,105 +4,107 @@
 
     <!-- 호스트 질문이 있는경우 -->
     <template v-if="event.question">
-    <!-- banner -->
-    <div class="banner">
-      <p class="banner-text1">it’s time to join!</p>
-      <p class="banner-title">Join event</p>
-      <p class="banner-text2">Your next great adventure starts here!</p>
-    </div>
-
-    <EventCard
-      :event="event"
-    />
-
-    <p class="card-detail text-center">
-      <br>
-      Event fees are paid by the host on site.
-    </p>
-
-    <!-- 방참가 -->
-    <div class="login-container">
-
-      <div class="row create-image">
-        <div class="col-2 sub-icon">
-          <img src="../../assets/img/icon_CreateEvent.png" alt="">
-        </div>
-        <div class="col sub-icon-text">
-          <p class="sub-title">Host’s Question</p>
-          <p class="sub-text">Answer the following questions to help the host select the guests for the event!</p>
-        </div>
+      <!-- banner -->
+      <div class="banner">
+        <p class="banner-text1">it’s time to join!</p>
+        <p class="banner-title">Join event</p>
+        <p class="banner-text2">Your next great adventure starts here!</p>
       </div>
 
-      <div class="create-form">
-        <form  @submit.prevent="submitEvent">
-
-          <div class="form-group">
-            <label for="details">Question for Selection</label>
-            <div class="ipnut-detail" name="" id="">Where are you from?</div>
-          </div>
-
-          <div class="form-group">
-            <label for="details">Answer for Selection</label>
-            <textarea class="ipnut-question" placeholder="Your answer:" v-model="userAnswer"></textarea>
-          </div>
-
-          <div class="agreement-container">
-            <!-- 체크박스와 텍스트 -->
-            <label class="agreement-label">
-              As a rule, all payments should be made directly to the host on-site.
-            </label>
-            <label class="agreement-label">
-              I have read the basic
-              <span @click="openPopup" class="usage-rules-link">usage rules</span>
-              of HiFor, and I agree with that.
-              <input type="checkbox" v-model="isChecked" class="agreement-checkbox" />
-              <span class="checkbox-custom"></span>
-            </label>
-            <!-- Join Now 버튼 -->
-            <button type="submit" class="join-now-button" :disabled="!isChecked">Submit event</button>
-          </div>
-
-        </form>
+      <div class="enter-card">
+        <EventCard
+            :event="event"
+        />
       </div>
 
-    </div>
+      <p class="card-detail text-center">
+        <br>
+        Event fees are paid by the host on site.
+      </p>
+
+      <!-- 방참가 -->
+      <div class="login-container">
+
+        <div class="row create-image">
+          <div class="col-2 sub-icon">
+            <img src="../../assets/img/icon_CreateEvent.png" alt="">
+          </div>
+          <div class="col sub-icon-text">
+            <p class="sub-title">Host’s Question</p>
+            <p class="sub-text">Answer the following questions to help the host select the guests for the event!</p>
+          </div>
+        </div>
+
+        <div class="create-form">
+          <form  @submit.prevent="submitEvent">
+
+            <div class="form-group">
+              <label for="details">Question for Selection</label>
+              <div class="ipnut-detail" name="" id="">Where are you from?</div>
+            </div>
+
+            <div class="form-group">
+              <label for="details">Answer for Selection</label>
+              <textarea class="ipnut-question" placeholder="Your answer:" v-model="userAnswer"></textarea>
+            </div>
+
+            <div class="agreement-container">
+              <!-- 체크박스와 텍스트 -->
+              <label class="agreement-label">
+                As a rule, all payments should be made directly to the host on-site.
+              </label>
+              <label class="agreement-label">
+                I have read the basic
+                <span @click="openPopup" class="usage-rules-link">usage rules</span>
+                of HiFor, and I agree with that.
+                <input type="checkbox" v-model="isChecked" class="agreement-checkbox" />
+                <span class="checkbox-custom"></span>
+              </label>
+              <!-- Join Now 버튼 -->
+              <button type="submit" class="join-now-button" :disabled="!isChecked">Submit event</button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
     </template>
     <!-- 호스트 질문이 없는 경우 -->
     <template v-else>
-    <!-- banner -->
-    <div class="banner">
-      <p class="banner-text1">Join event</p>
-      <p class="banner-title">Join event</p>
-      <p class="banner-text2">Your next great adventure starts here!</p>
-    </div>
+      <!-- banner -->
+      <div class="banner">
+        <p class="banner-text1">Join event</p>
+        <p class="banner-title">Join event</p>
+        <p class="banner-text2">Your next great adventure starts here!</p>
+      </div>
 
-    <EventCard
-      :event="event"
-    />
+      <EventCard
+          :event="event"
+      />
 
-    <p class="card-detail text-center">
-      <br>
-      Event fees are paid by the host on site.
-    </p>
+      <p class="card-detail text-center">
+        <br>
+        Event fees are paid by the host on site.
+      </p>
 
-    <!-- 방참가 -->
+      <!-- 방참가 -->
       <form @submit.prevent="submitEvent">
         <div class="login-container-op2">
 
           <div class="create-form-op2">
 
-              <div class="agreement-container">
-                <!-- 체크박스와 텍스트 -->
-                <label class="agreement-label">
-                  I have read the basic
-                  <span @click="openPopup" class="usage-rules-link">usage rules</span>
-                  of HiFor, and I agree with that.
-                  <input type="checkbox" v-model="isChecked" class="agreement-checkbox" />
-                  <span class="checkbox-custom"></span>
-                </label>
-                <!-- Join Now 버튼 -->
-                <button type="submit" class="join-now-button-op2" :disabled="!isChecked" >Submit event</button>
-              </div>
+            <div class="agreement-container">
+              <!-- 체크박스와 텍스트 -->
+              <label class="agreement-label">
+                I have read the basic
+                <span @click="openPopup" class="usage-rules-link">usage rules</span>
+                of HiFor, and I agree with that.
+                <input type="checkbox" v-model="isChecked" class="agreement-checkbox" />
+                <span class="checkbox-custom"></span>
+              </label>
+              <!-- Join Now 버튼 -->
+              <button type="submit" class="join-now-button-op2" :disabled="!isChecked" >Submit event</button>
+            </div>
           </div>
 
         </div>
@@ -118,8 +120,6 @@
 import {  onMounted, ref } from 'vue';
 import EventCard from '@/components/gathering/EventCard.vue';
 import axios from 'axios';
-import { useRouter } from 'vue-router';
-const router = useRouter(); // Vue Router에 접근
 //import { useStore } from 'vuex';
 //const store = useStore();
 const userId =  sessionStorage.getItem('userId');
@@ -222,49 +222,70 @@ const openPopup = () => {
       </head>
       <body>
         <h2>Usage Rules</h2>
-        <h3>1. 개인정보 수집 및 이용 동의서 (필수)</h3>
+
+        <h3>1. Platform Usage Rules</h3>
         <ul>
-          <li>개인정보 수집 항목</li>
-          <p>필수 항목: 이름, 생년월일, 국적, 이메일 주소, 비밀번호</p>
-          <p>선택 항목: 학교, 관심 있는 소모임/이벤트 카테고리, 프로필 사진</p>
-          <li>수집 목적</li>
-          <ul>
-            <li>플랫폼 이용을 위한 기본 정보 관리</li>
-            <li>회원 식별 및 인증</li>
-            <li>소모임/이벤트 등록 및 참여 관리</li>
-            <li>사용자 맞춤형 서비스 제공</li>
-          </ul>
-          <li>개인정보 보유 및 이용 기간</li>
-          <p>회원 탈퇴 시 즉시 파기</p>
-          <p>단, 법령에 따라 보관해야 하는 경우 아래 기준에 따릅니다:</p>
-          <ul>
-            <li>계약 또는 청약 철회 기록: 5년</li>
-            <li>대금 결제 및 재화 공급 기록: 5년</li>
-            <li>소비자 불만 또는 분쟁 처리 기록: 3년</li>
-          </ul>
-          <li>개인정보 제공 및 위탁</li>
-          <p>개인정보는 원칙적으로 외부에 제공하지 않습니다.</p>
-          <li>동의 거부 시 불이익</li>
-          <p>필수 항목에 대한 동의를 거부할 경우 서비스 이용이 제한될 수 있습니다.</p>
+            <li>General Rules</li>
+            <p>Event content and participation activities must comply with all legal and ethical standards.</p>
+            <p>Users must communicate with respect and consideration for each other; discriminatory or violent behavior is strictly prohibited.</p>
+            <p>HiFor relies on mutual trust between hosts and guests to ensure the smooth running of events and gatherings.</p>
         </ul>
-        <h3>2. 광고성 이메일 수신 동의서 (선택)</h3>
+
+        <h3>2. Event Rules</h3>
         <ul>
-          <li>수집 및 이용 목적</li>
-          <p>소모임/이벤트 관련 추천 정보 제공</p>
-          <li>보유 및 이용 기간</li>
-          <p>회원 탈퇴 시 즉시 파기</p>
-          <li>수신 거부 권리</li>
-          <p>사용자는 언제든지 광고성 이메일 수신을 거부할 수 있습니다.</p>
+            <li>Host Responsibilities</li>
+            <p>Event hosts must provide accurate information (schedule, location, participation conditions, etc.) and are responsible for any issues caused by incorrect information.</p>
+            <li>Participant Responsibilities</li>
+            <p>Event participants must maintain the reliability of their registered information and should avoid canceling without notice.</p>
+            <li>Prohibited Activities</li>
+            <p>Illegal activities or commercial promotions during events are strictly prohibited.</p>
         </ul>
+
+        <h3>3. Privacy Protection</h3>
+        <ul>
+            <li>Personal Data Security</li>
+            <p>The platform securely manages users' personal information and does not share it with third parties without consent.</p>
+            <li>User Responsibility</li>
+            <p>Users must handle their information carefully and must not infringe on the privacy of others.</p>
+        </ul>
+
+        <h3>4. Limitation of Liability</h3>
+        <ul>
+            <li>Event Responsibility</li>
+            <p>The platform is not legally responsible for accidents or issues occurring within events hosted or attended by users.</p>
+            <li>Voluntary Participation</li>
+            <p>Participation in events is entirely voluntary, and the host and participants bear direct responsibility.</p>
+        </ul>
+
+        <h3>5. Participation Fees and Refund Policy</h3>
+        <ul>
+            <li>Refund Policy</li>
+            <p>For events with participation fees, refunds may not be guaranteed due to the lack of a formal refund policy.</p>
+            <p>In the absence of a clear refund policy, hosts are encouraged to communicate refund terms directly to participants before confirming their participation.</p>
+            <li>Platform Role</li>
+            <p>The platform will provide support for communication between hosts and participants regarding refunds but does not bear any responsibility for refund disputes.</p>
+        </ul>
+
+        <h3>6. Dispute Resolution</h3>
+        <ul>
+            <li>User Conflict Mediation</li>
+            <p>In the event of conflicts between users, the platform may mediate from a neutral standpoint but does not bear ultimate responsibility.</p>
+            <li>Legal Compliance</li>
+            <p>Legal issues will be resolved according to the applicable local laws.</p>
+            <li>Trust & Safety</li>
+            <p>These rules aim to minimize foreseeable problems during platform usage and to establish a trustworthy environment for all users.</p>
+        </ul>
+
         <button class="close-btn" onclick="window.close()">Close</button>
-      </body>
+    </body>
+
     </html>
   `;
 
   const popupWindow = window.open(
-    "",
-    "Usage Rules",
-    "width=600,height=700,scrollbars=yes,resizable=yes"
+      "",
+      "Usage Rules",
+      "width=600,height=700,scrollbars=yes,resizable=yes"
   );
 
   popupWindow.document.write(popupContent);
@@ -272,9 +293,9 @@ const openPopup = () => {
 };
 
 // 결제하기
-const submitEvent =  async ()  => {
+const submitEvent = async () => {
   try {
-    console.log(event.value.id,userId,userAnswer.value)
+    console.log(event.value.id, userId, userAnswer.value)
     const response = await axios.post('http://localhost:3000/gathering/createParticipant', {
       eventId: event.value.id,
       userId: userId,
@@ -283,14 +304,12 @@ const submitEvent =  async ()  => {
 
     if (response.status === 201) {
       alert('Registration successful!');
-      router.push('/'); // 로그인 후 메인 페이지로 이동
     }
   } catch (error) {
     console.error('Error during registration:', error);
     alert('Failed to register for the event. Please try again.');
   }
 };
-
 
 
 onMounted(() => {
@@ -303,31 +322,37 @@ onMounted(() => {
 <!-- css -->
 <style scoped>
 /* 반응형 모바일 css */
-@media screen and (max-width:768px){}
+@media screen and (max-width: 768px) {
+}
+
 /* 웹 */
-@media screen and (min-width:769px){
+@media screen and (min-width: 769px) {
   /* header */
-  .header-space{
+  .header-space {
     padding: 15px;
     max-width: 100%;
     width: 100%;
     justify-self: center;
   }
-  .header-logo{
+
+  .header-logo {
     max-width: 50%;
     font-size: 28px;
     font-weight: bold;
     color: #58C3FF;
   }
-  .logo-hifor{
+
+  .logo-hifor {
     width: 100px;
     margin-top: -20px;
   }
-  .header-nav{
+
+  .header-nav {
     max-width: 50%;
     text-align: right;
   }
-  .header-nav-text{
+
+  .header-nav-text {
     font-size: 18px;
     color: #58C3FF;
     padding: 15px;
@@ -335,7 +360,8 @@ onMounted(() => {
     opacity: 1;
     transition: all 0.3s ease;
   }
-  .header-nav-text:hover{
+
+  .header-nav-text:hover {
     font-size: 18px;
     color: #58C3FF;
     padding: 15px;
@@ -343,7 +369,8 @@ onMounted(() => {
     opacity: 1;
     font-weight: 700;
   }
-  .header-nav-btn{
+
+  .header-nav-btn {
     font-size: 18px;
     color: #58C3FF;
     text-decoration: none;
@@ -355,7 +382,8 @@ onMounted(() => {
     opacity: 1;
     transition: all 0.3s ease;
   }
-  .header-nav-btn:hover{
+
+  .header-nav-btn:hover {
     font-size: 18px;
     color: #58C3FF;
     text-decoration: none;
@@ -369,27 +397,38 @@ onMounted(() => {
   }
 
   /* banner */
-  .banner{
+  .banner {
     padding: 75px 150px;
   }
-  .banner-text1{
+
+  .banner-text1 {
     color: #4457FF;
     font-size: 16px;
     font-weight: 400;
     text-align: center;
     margin: 0px;
   }
-  .banner-text2{
+
+  .banner-text2 {
     color: #5F687A;
     font-size: 16px;
     font-weight: 400;
     text-align: center;
   }
-  .banner-title{
+
+  .banner-title {
     color: #333;
     font-size: 54px;
     font-weight: bold;
     text-align: center;
+  }
+
+  /* card */
+  .enter-card {
+    width: 100%;
+    padding: 10px 0px;
+    max-width: 344px;
+    justify-self: center;
   }
 
   /* 방생성 */
@@ -533,7 +572,6 @@ onMounted(() => {
   }
 
   /* Join Now 버튼 스타일 */
-
   .join-now-button {
     background-color: #4a68ff;
     width: 100%;
@@ -622,29 +660,35 @@ onMounted(() => {
     padding: 40px;
   }
 
-  .code-btn-box{
+  .code-btn-box {
     align-content: end;
   }
-  .code-btn{
+
+  .code-btn {
     background-color: #58C3FF;
     border: none;
     color: #FFFFFF;
     padding: 13px 26px;
     border-radius: 12px;
   }
-  .sub-icon{
+
+  .sub-icon {
     text-align: center;
   }
-  .sub-title{
+
+  .sub-title {
     font-size: 30px;
     font-weight: 600;
   }
-  .sub-text{
+
+  .sub-text {
     color: #5F687A;
   }
-  .ipnut-detail{
+
+  .ipnut-detail {
   }
-  .ipnut-question{
+
+  .ipnut-question {
     height: 120px !important;
     padding: 15px !important;
   }
@@ -674,24 +718,24 @@ onMounted(() => {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   }
 
-  .card-body .col-6{
+  .card-body .col-6 {
     padding: 0px;
   }
 
-  .card-title{
+  .card-title {
     font-size: 1.75rem;
     font-weight: 500;
     text-align: left;
     margin: 0px;
   }
 
-  .card-detail{
+  .card-detail {
     text-align: left;
     font-size: 15px;
     font-weight: 300;
   }
 
-  .card-price{
+  .card-price {
     text-align: left;
   }
 
@@ -705,25 +749,26 @@ onMounted(() => {
     border-radius: 8px;
   }
 
-  .card-info-text{
+  .card-info-text {
     padding: 0px 5px;
   }
-  .card-icon-heart{
+
+  .card-icon-heart {
     margin: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   }
 
-  .card-info-text{
+  .card-info-text {
     text-align: left;
     font-weight: 300;
   }
 
-  .card-info-icon{
+  .card-info-icon {
     width: 20px !important;
     height: 20px !important;
   }
 
-  .icon_tema{
+  .icon_tema {
     width: min-content;
     background-color: #5870FF;
     color: #FFFFFF;
@@ -732,7 +777,8 @@ onMounted(() => {
     margin: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   }
-  .icon_type{
+
+  .icon_type {
     width: min-content;
     background-color: #58C3FF;
     color: #FFFFFF;
@@ -741,7 +787,8 @@ onMounted(() => {
     margin: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   }
-  .participants{
+
+  .participants {
     width: max-content;
     background-color: #FFFFFF;
     color: #5870FF;

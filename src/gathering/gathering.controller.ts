@@ -10,7 +10,7 @@ import {
   Patch,
   Post,
   Query, Req,
-  UploadedFile,
+  UploadedFile, UseGuards,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
@@ -20,6 +20,7 @@ import {
   SearchEventDto,
 } from './gathering.dto';
 import { GatheringService } from './gathering.service';
+import { SessionAuthGuard } from '../auth/auth.guard';
 
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -62,6 +63,7 @@ import { extname } from 'path';
   }
 
   @Post('submit')
+  //@UseGuards(SessionAuthGuard)
     async createEvent(@Body() createEventDto: CreateEventDto) {
       try {
         const event = await this.gatheringService.createEvent(createEventDto);
@@ -136,6 +138,7 @@ import { extname } from 'path';
       return event;
     }
     @Post(':eventId/like')
+    //@UseGuards(SessionAuthGuard)
     async toggleLike(@Param('eventId', ParseIntPipe) eventId: number, @Body('userId') userId: string) {
       const updatedLikes = await this.gatheringService.toggleLike(eventId, userId);
       return { likesLen: updatedLikes };
@@ -151,6 +154,7 @@ import { extname } from 'path';
       return { isLiked };
     }
     @Post('createParticipant')
+    //@UseGuards(SessionAuthGuard)
     async createParticipant(@Body() createParticipantDto: CreateParticipantDto) {
       const { eventId, userId, answer } = createParticipantDto;
       console.log(userId)
@@ -215,5 +219,11 @@ import { extname } from 'path';
       await this.gatheringService.cancelParticipation(userId, eventId);
       return { message: 'Participation canceled successfully.' };
     }
+
+  // 요청 본문에서 email 필드만 추출합니다.
+  @Post('subscribe')
+  async subscribe(@Body('email') email: string) {
+    return await this.gatheringService.subscribe(email);
+  }
   }
   

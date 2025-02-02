@@ -93,8 +93,8 @@
                 </select>
               </div>
               <div class="col-6">
-                <label for="EventType"></label>
-                <input type="text" v-model="form.locationDetail" placeholder="The exact address" required />
+                <label for="EventType">The Exact Address</label>
+                <input type="text" v-model="form.locationDetail" placeholder="" required />
               </div>
             </div>
           </div>
@@ -135,21 +135,21 @@
 
             <!-- 파일 입력 -->
             <input
-              type="file"
-              id="file-upload"
-              multiple
-              accept="image/*"
-              @change="handleFileUpload"
-              style="display: none;"
+                type="file"
+                id="file-upload"
+                multiple
+                accept="image/*"
+                @change="handleFileUpload"
+                style="display: none;"
             />
 
             <!-- 클릭 가능한 업로드 박스 -->
             <div
-              id="upload-box"
-              @click="triggerFileInput"
-              @dragover.prevent
-              @drop.prevent="handleDrop"
-              style="border: 2px dashed #ccc; padding: 20px; text-align: center; cursor: pointer;"
+                id="upload-box"
+                @click="triggerFileInput"
+                @dragover.prevent
+                @drop.prevent="handleDrop"
+                style="border: 2px dashed #ccc; padding: 20px; text-align: center; cursor: pointer;"
             >
               <span>Click to upload or drag and drop files here</span>
             </div>
@@ -158,14 +158,14 @@
             <ul id="file-list" style="margin-top: 10px; list-style: none; padding: 0;">
               <li v-for="(file, index) in uploadedFiles" :key="index">
                 <img
-                  :src="file.preview"
-                  alt="Preview"
-                  style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;"
+                    :src="file.preview"
+                    alt="Preview"
+                    style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;"
                 />
                 {{ file.name }}
                 <button
-                  @click="removeFile(index)"
-                  style="margin-left: 10px; cursor: pointer; color: red;"
+                    @click="removeFile(index)"
+                    style="margin-left: 10px; cursor: pointer; color: red;"
                 >
                   Remove
                 </button>
@@ -202,24 +202,24 @@
 
             <div class="create-form-op2">
 
-                <div class="agreement-container">
-                  <!-- 체크박스와 텍스트 -->
-                  <label class="agreement-label">
-                    Notice: Once an event post is published, it cannot be edited
-                  </label>
-                  <label class="agreement-label">
-                    I agree to include all additional fees in the event details and understand that failing to do so may result in penalties
-                  </label>
-                  <label class="agreement-label">
-                    I have read the basic
-                    <span @click="openPopup" class="usage-rules-link">usage rules</span>
-                    of HiFor, and I agree with that.
-                    <input type="checkbox" v-model="isChecked" class="agreement-checkbox" />
-                    <span class="checkbox-custom"></span>
-                  </label>
-                  <!-- Join Now 버튼 -->
-                  <button type="submit" class="join-now-button-op2" :disabled="!isChecked">Submit event</button>
-                </div>
+              <div class="agreement-container">
+                <!-- 체크박스와 텍스트 -->
+                <label class="agreement-label">
+                  Notice: Once an event post is published, it cannot be edited
+                </label>
+                <label class="agreement-label">
+                  I agree to include all additional fees in the event details and understand that failing to do so may result in penalties
+                </label>
+                <label class="agreement-label">
+                  I have read the basic
+                  <span @click="openPopup" class="usage-rules-link">usage rules</span>
+                  of HiFor, and I agree with that.
+                  <input type="checkbox" v-model="isChecked" class="agreement-checkbox" />
+                  <span class="checkbox-custom"></span>
+                </label>
+                <!-- Join Now 버튼 -->
+                <button type="submit" class="join-now-button-op2" :disabled="!isChecked">Submit event</button>
+              </div>
 
             </div>
 
@@ -318,19 +318,19 @@ const postEvent = async () => {
 
       console.log('formdata:',formData)
       const uploadResponse = await axios.post(
-        "http://localhost:3000/gathering/upload-image-postEvent",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+          "http://localhost:3000/gathering/upload-image-postEvent",
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
       );
       uploadedImageUrls.push(uploadResponse.data.imageUrl);
     }
 // `uploadedFiles.value`에서 데이터를 분리
     const mainImage =
-      uploadedImageUrls.length > 0 ? uploadedImageUrls[0] : null; // 첫 번째 파일
+        uploadedImageUrls.length > 0 ? uploadedImageUrls[0] : null; // 첫 번째 파일
     const images =
-      uploadedImageUrls.length > 1 ? uploadedImageUrls.slice(1) : []; // 나머지 파일들
+        uploadedImageUrls.length > 1 ? uploadedImageUrls.slice(1) : []; // 나머지 파일들
     const eventData = {
       category: form.value.category,
       type: form.value.type,
@@ -352,15 +352,24 @@ const postEvent = async () => {
       userId: userId
     };
 
-    // Axios를 이용한 POST 요청
-    const response = await axios.post("http://localhost:3000/gathering/submit", enrichedFormData);
+    try {
+      // withCredentials 옵션은 쿠키 전송이 필요한 경우 사용합니다.
+      const response = await axios.post("http://localhost:3000/gathering/submit", enrichedFormData);
+      console.log("Event created successfully:", response.data);
+      await router.push(`/events/${response.data.event.id}`);
+    } catch (error) {
+      // 에러 객체에 response가 있고, 상태 코드가 401이면 로그인 필요
+      if (error.response && error.response.status === 401) {
+        alert("로그인이 필요합니다.");
+        // 로그인 페이지로 리다이렉트 (절대 URL 사용)
+        window.location.href = "http://localhost:8080/logIn/";
+      } else {
+        console.error("Error creating event:", error);
+      }
+    }
 
-    // 성공적으로 전송된 경우
-    console.log("Event created successfully:", response.data);
 
-    // 성공 메시지 표시 (필요에 따라 구현)
-    alert("Event created successfully!");
-    await router.push(`/events/${response.data.event.id}`);
+
 
 
     // 폼 초기화
@@ -458,9 +467,9 @@ const openPopup = () => {
   `;
 
   const popupWindow = window.open(
-    "",
-    "Usage Rules",
-    "width=600,height=700,scrollbars=yes,resizable=yes"
+      "",
+      "Usage Rules",
+      "width=600,height=700,scrollbars=yes,resizable=yes"
   );
 
   popupWindow.document.write(popupContent);

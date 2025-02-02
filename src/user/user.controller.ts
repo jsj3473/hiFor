@@ -7,13 +7,14 @@ import {
   Put,
   Delete,
   BadRequestException,
-  NotFoundException, UseInterceptors, HttpException, UploadedFile, HttpStatus,
+  NotFoundException, UseInterceptors, HttpException, UploadedFile, HttpStatus, UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './user.dto';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import {SessionAuthGuard} from "../auth/auth.guard";
 
 
 
@@ -74,6 +75,7 @@ export class UserController {
     return { username: user.userId, message: '아이디 찾기가 완료되었습니다.' };
   }
   @Post('uploadProfileImage/:userId')
+  @UseGuards(SessionAuthGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({

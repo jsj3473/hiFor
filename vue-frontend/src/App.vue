@@ -13,8 +13,8 @@
         <div class="header-nav main-page">
           <router-link class="header-nav-text" to="/">Home</router-link>
           <router-link class="header-nav-text" to="/allEvents">All Events</router-link>
-          <router-link class="header-nav-text" to="/fnq">F&Q</router-link>
-          <router-link class="header-nav-text" to="/notice">Notice</router-link>
+          <router-link class="header-nav-text" to="/fnq">Help</router-link>
+          <router-link class="header-nav-text" to="/notice">Blogs</router-link>
           <router-link v-if="!isLoggedIn" class="header-nav-btn" to="/logIn">SignIn/SignUp</router-link>
           <router-link v-if="isLoggedIn" class="header-nav-btn" :to="`/userPage/${userId}`">My Page</router-link>
           <router-link v-if="isLoggedIn" class="header-nav-btn" to="/postEvent">Create Event</router-link>
@@ -29,8 +29,8 @@
         <div class="header-nav">
           <router-link class="header-nav-text" to="/">Home</router-link>
           <router-link class="header-nav-text" to="/allEvents">All Events</router-link>
-          <router-link class="header-nav-text" to="/fnq">F&Q</router-link>
-          <router-link class="header-nav-text" to="/notice">Notice</router-link>
+          <router-link class="header-nav-text" to="/fnq">Help</router-link>
+          <router-link class="header-nav-text" to="/notice">Blogs</router-link>
           <router-link v-if="!isLoggedIn" class="header-nav-btn" to="/logIn">SignIn/SignUp</router-link>
           <router-link v-if="isLoggedIn" class="header-nav-btn" :to="`/userPage/${userId}`">My Page</router-link>
           <router-link v-if="isLoggedIn" class="header-nav-btn" to="/postEvent">Create Event</router-link>
@@ -52,7 +52,7 @@
         <div class="col-12">
           <!-- Buttons -->
           <div class="button-row">
-            <button class="cta-button primary-button">Post a event</button>
+            <button class="cta-button primary-button">Post an event</button>
             <button class="cta-button secondary-button">Browse events</button>
           </div>
         </div>
@@ -66,7 +66,7 @@
               <img src="@/assets/img/icon_Facebook.png" alt=""> Facebook
             </p>
             <p class="follow-youtube">
-              <img src="@/assets/img/icon_YouTube.png" alt=""> YouTube
+              <img src="@/assets/img/icon_KakaoTalk.png" alt=""> KakaoTalk
             </p>
           </div>
         </div>
@@ -77,17 +77,18 @@
                 <img src="@/assets/img/icon_SendMail.png" alt="" />
               </div>
               <div>
-                <h3 class="newsletter-title">Subscribe to our newsletter</h3>
-                <p class="newsletter-description">Lorem ipsum dolor sit amet consectetur velit.</p>
+                <h3 class="newsletter-title">Stay Ahead with Our Latest Updates!</h3>
+                <p class="newsletter-description">Receive the latest updates and exclusive benefits. Be the first to know and never miss out!</p>
               </div>
             </div>
             <div class="col-6 newsletter-input-container">
               <input
-                type="email"
-                class="newsletter-input"
-                placeholder="Enter your email..."
+                  v-model="email"
+                  type="email"
+                  class="newsletter-input"
+                  placeholder="Enter your email..."
               />
-              <button class="newsletter-button">Subscribe</button>
+              <button class="newsletter-button" @click="subscribe">Subscribe</button>
             </div>
           </div>
         </div>
@@ -106,6 +107,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import "dropzone/dist/dropzone.css";
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
@@ -119,15 +121,37 @@ const isLoggedIn = computed(() => store.getters.isLoggedIn);
 //const token = computed(() => store.getters.token);
 const userId = computed(() => store.getters.userId);
 
+const clearToken = () => store.commit('clearToken');
 const setToken = (token) => store.commit('setToken', token);
 const setUserId = (userId) => store.commit('setUserId', userId);
 
 const logout = () => {
-  // Vuex 상태 및 sessionStorage 초기화
-  store.commit('resetState');
+  // 로그아웃 버튼 클릭 시 Vuex에서 토큰 삭제 및 로그인 상태 갱신
+  clearToken();
   router.push('/');
 };
+const email = ref('');
 
+const subscribe = async () => {
+  // 이메일 형식 검증을 위한 정규표현식 (간단한 예시)
+  console.log(email.value)
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailPattern.test(email.value)) {
+    alert('Please enter a valid email.');
+    return;
+  }
+
+  try {
+    await axios.post('http://localhost:3000/gathering/subscribe',{ email: email.value });
+    alert('Subscription successful')
+    // 구독 성공 처리 (예: 성공 메시지 표시)
+  } catch (error) {
+    console.error('Subscription error:', error);
+    alert('Subscription error')
+    // 에러 처리 (예: 에러 메시지 표시)
+  }
+};
 
 onMounted(() => {
   // 일반 사용자 로그인 상태 복원 (세션 스토리지에서 JWT 토큰 가져오기)
@@ -142,21 +166,21 @@ onMounted(() => {
     axios.get('http://localhost:3000/auth/profile', {
       withCredentials: true, // 쿠키를 함께 전송
     })
-      .then(response => {
-        const user = response.data.user;
-        setUserId(user.userId); // 세션 스토리지 사용을 위해 setUserId 사용
-        setToken(user.jwtToken);
-        sessionStorage.setItem('token', user.jwtToken);
-        document.cookie = 'access_token=; Max-Age=0; path=/;';
-        //alert('Google 로그인이 완료되었습니다!');
-        location.reload();
+        .then(response => {
+          const user = response.data.user;
+          setUserId(user.userId); // 세션 스토리지 사용을 위해 setUserId 사용
+          setToken(user.jwtToken);
+          sessionStorage.setItem('token', user.jwtToken);
+          document.cookie = 'access_token=; Max-Age=0; path=/;';
+          //alert('Google 로그인이 완료되었습니다!');
+          location.reload();
 
-        router.push('/'); // 홈 페이지로 리다이렉트
-      })
-      .catch(error => {
-        console.error('로그인 상태 확인 오류:', error);
-        alert('로그인 상태 확인 중 오류가 발생했습니다. 다시 시도해주세요.');
-      });
+          router.push('/'); // 홈 페이지로 리다이렉트
+        })
+        .catch(error => {
+          console.error('로그인 상태 확인 오류:', error);
+          alert('로그인 상태 확인 중 오류가 발생했습니다. 다시 시도해주세요.');
+        });
   }
 });
 </script>

@@ -14,7 +14,6 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto, SignInUserDto } from 'src/user/user.dto';
 import {
-  AuthenticatedGuard,
   GoogleAuthGuard,
   signInGuard,
   JwtAuthGuard
