@@ -231,4 +231,18 @@ export class EmailService {
       throw error;
     }
   }
+
+  async sendEventDeletionEmail(email: string, reason: string): Promise<void> {
+    try {
+      await this.transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email, // 수신자 이메일
+        subject: 'Event Deletion Notification',
+        text: `The event you were registered for has been deleted for the following reason:\n\n${reason}\n\nWe apologize for the inconvenience.`,
+      });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      throw new Error('Failed to send email.');
+    }
+  }
 }

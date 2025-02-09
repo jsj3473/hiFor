@@ -46,7 +46,9 @@
           </div>
   
           <div class="agreement-container">
-            <button class="delete-button" :disabled="isDeleteDisabled" type="submit">Delete</button>
+            <button class="delete-button" :disabled="isLoading || isDeleteDisabled" type="submit">
+              {{ isLoading ? "Processing..." : "Delete" }}
+            </button>
             <button class="cancel-button" type="button" @click="cancel">Cancel and go back</button>
           </div>
         </form>
@@ -57,7 +59,13 @@
   <script setup>
   import { ref, computed } from "vue";
   import axios from "axios";
-  
+  import { useRoute } from 'vue-router';
+
+  const route = useRoute();
+  const eventId = parseInt(window.location.pathname.split('/').pop());// 🔥 eventId를 ref로 저장
+  // 🔥 URL에서 이벤트 ID 가져오기
+
+
   const form = ref({
     reason: "",
     otherReason: "",
@@ -68,21 +76,42 @@
     return form.value.reason === "" || (form.value.reason === "Other" && form.value.otherReason.trim() === "");
   });
 
+  const isLoading = ref(false);
+
   const sendMessage = async () => {
+    console.log(eventId); // 디버깅 로그로 eventId 확인
+    isLoading.value = true;
+
     try {
       const message = form.value.reason === "Other" ? form.value.otherReason : form.value.reason;
       if (!message) {
         alert("Please provide a reason before submitting.");
         return;
       }
-  
-      await axios.post("http://localhost:3000/mail/contactUs", { message });
-      alert("Your message has been sent successfully!");
+
+      // POST 요청
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/mail/deleteEvent/${eventId}`,
+        { message },
+        { withCredentials: true }
+      );
+      console.log("Notification sent successfully");
+      // DELETE 요청
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/gathering/${eventId}`, { withCredentials: true });
+      console.log("Event deleted successfully");
+
+
+
+      alert("Event successfully deleted and notification sent!");
     } catch (error) {
-      console.error("Error sending message:", error);
-      alert("Failed to send your message. Please try again.");
+      console.error("Error during request:", error);
+      alert("Failed to complete the request. Please try again.");
+    } finally {
+      isLoading.value = false;
     }
   };
+
+
 
   const cancel = () => {
     window.history.back();

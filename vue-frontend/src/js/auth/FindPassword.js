@@ -12,11 +12,17 @@ export default {
 
     const submitForm = async () => {
       try {
-        // 백엔드에 아이디와 이메일 전송하여 비밀번호 초기화 요청
-        const response = await axios.post('http://localhost:3000/mail/findPassword', {
-          userId: userId.value,
-          email: email.value,
-        });
+        const response = await axios.post(
+            `${import.meta.env.VITE_API_BASE_URL}/mail/findPassword`,
+            {
+              userId: userId.value,
+              email: email.value,
+            },
+            {
+              withCredentials: true, // 인증 정보를 포함
+            }
+        );
+
         if (response.data.pwChangeSuccess) {
           
           userId.value = '';

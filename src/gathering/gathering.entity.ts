@@ -56,10 +56,10 @@ export class HiforEvent {
   @OneToMany(() => Image, (image) => image.event, { cascade: true })
   images: Image[];
 
-  @OneToMany(() => Participant, (participant) => participant.event)
+  @OneToMany(() => Participant, (participant) => participant.event,{ cascade: true })
   participants: Participant[]; // 이벤트에 연결된 참가자 목록
 
-  @OneToMany(() => Like, (like) => like.event)
+  @OneToMany(() => Like, (like) => like.event, { cascade: true })
   likes: Like[]; // 이벤트와 연결된 좋아요 목록
 
 }
@@ -111,7 +111,7 @@ export class Image {
   @Column({ type: 'text' })
   url: string; // 이미지 파일 URL
 
-  @ManyToOne(() => HiforEvent, (event) => event.images)
+  @ManyToOne(() => HiforEvent, (event) => event.images, { onDelete: 'CASCADE' })
   event: HiforEvent;
 }
 

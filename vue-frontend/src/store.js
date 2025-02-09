@@ -13,6 +13,7 @@ export default createStore({
     clearToken(state) {
       state.token = null;
       sessionStorage.removeItem('token');
+      sessionStorage.removeItem("userId");
     },
     setUserId(state, userId) {
       state.userId = userId;

@@ -1,6 +1,6 @@
 import {
   Body,
-  Controller,
+  Controller, Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -220,10 +220,19 @@ import { extname } from 'path';
       return { message: 'Participation canceled successfully.' };
     }
 
-  // 요청 본문에서 email 필드만 추출합니다.
-  @Post('subscribe')
-  async subscribe(@Body('email') email: string) {
-    return await this.gatheringService.subscribe(email);
-  }
+    // 요청 본문에서 email 필드만 추출합니다.
+    @Post('subscribe')
+    async subscribe(@Body('email') email: string) {
+      return await this.gatheringService.subscribe(email);
+    }
+
+    @Delete(':eventId')
+    async deleteEvent(@Param('eventId') eventId: number) {
+      const deleted = await this.gatheringService.deleteEvent(eventId);
+      if (!deleted) {
+        throw new HttpException('Event not found or failed to delete', HttpStatus.NOT_FOUND);
+      }
+      return { message: 'Event successfully deleted' };
+    }
   }
   

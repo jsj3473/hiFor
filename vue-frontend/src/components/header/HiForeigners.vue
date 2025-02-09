@@ -34,7 +34,7 @@
                             <option value="">Tips</option>
                             <option value="">News</option>
                             <option value="">Blog</option>
-                        </select>
+                        </select>`
                     </div>
                     <div class="col-6">
                         <label for="">Search</label>
@@ -261,7 +261,7 @@
   
       .card-img {
           height: 180px; /* 이미지 높이 조정 */
-          background-image: url('@/assets/img/img_LogInBanner1.png');
+          background-image: url('/assets/img/img_LogInBanner1.png');
           background-size: cover;
           background-position: center;
           border-bottom: 1px solid #ddd;
@@ -489,7 +489,7 @@
         }
   
         .card-img {
-            background-image: url('@/assets/img/img_LogInBanner1.png');
+            background-image: url('/assets/img/img_LogInBanner1.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;

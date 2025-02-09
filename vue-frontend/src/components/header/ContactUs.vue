@@ -90,12 +90,18 @@ const sendMessage = async () => {
       formData.append("file", form.value.file);
     }
 
-    // 백엔드로 요청 보내기
-    const response = await axios.post("http://localhost:3000/mail/contactUs", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+// 백엔드로 요청 보내기
+    const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/mail/contactUs`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true, // 인증 정보를 포함
+        }
+    );
+
 
     // 성공 처리
     alert("Your message has been sent successfully!");

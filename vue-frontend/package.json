@@ -3,17 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint --ext .vue,.js,.ts src/"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.0",
+    "@vitejs/plugin-vue": "^5.2.1",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "^0.25.13",
     "core-js": "^3.8.3",
     "dropzone": "^6.0.0-beta.2",
     "jwt-decode": "^4.0.0",
+    "vite": "^6.1.0",
     "vue": "^3.2.13",
     "vue-router": "^4.4.5",
     "vue-upload-component": "^2.8.23",
@@ -22,9 +25,6 @@
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3"
   },

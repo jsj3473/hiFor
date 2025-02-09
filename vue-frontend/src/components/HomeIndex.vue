@@ -1,5 +1,7 @@
 
 <template>
+
+  <!-- 데스크탑 -->
   <div class="Web">
     <div class="home-banner">
       <!-- 메인 -->
@@ -20,14 +22,12 @@
         </div>
       </div>
     </div>
-
     <!-- Buttons -->
     <div class="allevent-btn-box">
       <router-link to="/allEvents">
-        <button class="allevent-btn">Browse events</button>
+        <button class="allevent-btn">Browse Events</button>
       </router-link>
     </div>
-
 
     <!-- explain section -->
     <div class="contaienr ex-con">
@@ -43,8 +43,8 @@
       </div>
       <div class="row">
         <div class="col ex-box">
-          <img class="ex-icon1" src="../assets/img/icon_HowTo1.png" alt=""><br>
-          <img class="ex-num1" src="../assets/img/icon_Num1.png" alt=""><br>
+          <img class="ex-icon1" src="../../public/assets/img/icon_HowTo1.png" alt=""><br>
+          <img class="ex-num1" src="../../public/assets/img/icon_Num1.png" alt=""><br>
           <p class="ex-text2">
             Search for events<br>
             interests you
@@ -54,8 +54,8 @@
           </p>
         </div>
         <div class="col ex-box">
-          <img class="ex-icon2" src="../assets/img/icon_HowTo2.png" alt=""><br>
-          <img class="ex-num2" src="../assets/img/icon_Num2.png" alt=""><br>
+          <img class="ex-icon2" src="../../public/assets/img/icon_HowTo2.png" alt=""><br>
+          <img class="ex-num2" src="../../public/assets/img/icon_Num2.png" alt=""><br>
           <p class="ex-text2">
             Create any events<br>you want!
           </p>
@@ -64,8 +64,8 @@
           </p>
         </div>
         <div class="col ex-box">
-          <img class="ex-icon3" src="../assets/img/icon_HowTo3.svg" alt=""><br>
-          <img class="ex-num3" src="../assets/img/icon_Num3.png" alt=""><br>
+          <img class="ex-icon3" src="../../public/assets/img/icon_HowTo3.svg" alt=""><br>
+          <img class="ex-num3" src="../../public/assets/img/icon_Num3.png" alt=""><br>
           <p class="ex-text2">
             Enjoy an event and<br> connect with people
           </p>
@@ -80,7 +80,7 @@
     <div class="container why-con">
       <div class="row">
         <div class="col-6 why-box">
-          <img src="../assets/img/img_MeetUp.png" alt="">
+          <img src="../../public/assets/img/img_MeetUp.png" alt="">
         </div>
         <div class="col-6 why-box">
           <p class="wc-text1">Why HiFor</p>
@@ -89,14 +89,24 @@
             Creating Value
           </p>
           <p class="wc-text2">
-            HiFor is a global community platform that connects people and businesses.We offer meaningful connections based on interests, culture, and goals—not just casual gatherings.Through HiFor, you can engage with people from diverse backgrounds and stories, creating new experiences and value together.
+            HiFor is a global community platform that connects people and businesses.We offer meaningful connections based on interests, culture, and goals—not just casual gatherings. <br>
+            Through HiFor, you can engage with people from diverse backgrounds and stories, creating new experiences and value together.
           </p>
-          <router-link to="/">
-            <button class="wc-btn">Post an Event</button>
-          </router-link>
+
+          <button  v-if="isLoggedIn" class="wc-btn">
+            <router-link  to="/postEvent">
+              Create Event
+            </router-link>
+          </button>
+          <button v-else class="wc-btn">
+            <router-link class="wc-btn"  to="/logIn">
+              Create Event
+            </router-link>
+          </button>
         </div>
       </div>
     </div>
+
     <!-- our values -->
     <div class="row ov-con">
       <p class="rc-text1">Our values</p>
@@ -106,84 +116,84 @@
       </p>
       <div class="col-4">
         <div class="value-card">
-          <img src="../assets/img/icon_OurValue1.png" alt="">
+          <img src="../../public/assets/img/icon_OurValue1.png" alt="">
           <p class="value-title">Inclusivity</p>
           <p class="value-text">HiFor welcomes everyone,<br>fostering a sense of belonging.</p>
         </div>
       </div>
       <div class="col-4">
         <div class="value-card">
-          <img src="../assets/img/icon_OurValue2.png" alt="">
+          <img src="../../public/assets/img/icon_OurValue2.png" alt="">
           <p class="value-title">Growth</p>
           <p class="value-text">Guided by feedback and data,<br>we improve to support growth.</p>
         </div>
       </div>
       <div class="col-4">
         <div class="value-card">
-          <img src="../assets/img/icon_OurValue3.png" alt="">
+          <img src="../../public/assets/img/icon_OurValue3.png" alt="">
           <p class="value-title">Innovation</p>
           <p class="value-text">AI-driven services transform<br>experiences with personalization.</p>
         </div>
       </div>
       <div class="col-4">
         <div class="value-card">
-          <img src="../assets/img/icon_OurValue4.png" alt="">
+          <img src="../../public/assets/img/icon_OurValue4.png" alt="">
           <p class="value-title">Connection</p>
           <p class="value-text">HiFor connects people through <br>shared interests and events.</p>
         </div>
       </div>
       <div class="col-4">
         <div class="value-card">
-          <img src="../assets/img/icon_OurValue5.png" alt="">
+          <img src="../../public/assets/img/icon_OurValue5.png" alt="">
           <p class="value-title">Support</p>
           <p class="value-text">We empower individuals with <br>language learning and networking.</p>
         </div>
       </div>
       <div class="col-4">
         <div class="value-card">
-          <img src="../assets/img/icon_OurValue6.png" alt="">
+          <img src="../../public/assets/img/icon_OurValue6.png" alt="">
           <p class="value-title">Accessibility</p>
           <p class="value-text">Affordable services ensure <br>easy participation for all.</p>
         </div>
       </div>
     </div>
+
     <!-- user say -->
     <div class="review-con">
       <p class="rc-text1">Testimonials</p>
       <p class="rc-title">What our users say about us</p>
       <p class="rc-text2">
-        Lorem ipsum dolor sit amet consectetur elit cursus bibendum pharetra <br>
-        integer pharetra eu sollicitudin ipsum sit id mi vulputate quis vel.
+        See what ours users saying about their unique expereiences with HiFor!
       </p>
     </div>
     <!-- Testimonials Cards1 -->
     <div class="testimonials-grid review-row1">
       <!-- Testimonial 1 -->
       <div class="testimonial-card">
-        <p class="testimonial-text">
-          Fames in metus ipsum nisi atibus id mauris lectus non semper nisi elementum.
-        </p>
+        <div class="testimonial-text">
+          "Mình đã cố gắng quan tâm đến những người đến một mình, nhưng khi thấy họ hòa nhập dễ dàng với mọi người, mình cảm thấy yên tâm. Có vẻ như các hoạt động mình chuẩn bị với vai trò người tổ chức đã hiệu quả."
+        </div>
       </div>
 
       <!-- Testimonial 2 -->
       <div class="testimonial-card">
-        <p class="testimonial-text">
-          Lorem ipsum dolor sit amet ipsum non consectetur adipiscing elit hendrerit elit at a at cursus nibh lorem aliquam.
-        </p>
+        <div class="testimonial-text">
+          "ผู้เข้าร่วมบอกว่าจะทำกลุ่มแชทและติดต่อกันต่อไปหลังงานจบ รู้สึกดีมาก เพราะมันไม่ใช่แค่เจอกันครั้งเดียว แต่เหมือนเป็นโอกาสที่ทำให้ความสัมพันธ์ยังคงต่อไป"
+        </div>
       </div>
 
       <!-- Testimonial 3 -->
       <div class="testimonial-card">
-        <p class="testimonial-text">
-          Eu tempus viverra mi porttitor ut at neque at nisl sed pharetra sodales ultrices volutpat tincidunt dictum ut.
-        </p>
+        <div class="testimonial-text">
+          “참가비도 부담 없고 진행도 깔끔했어요. 외국인 친구들이랑 자연스럽게 대화도 할 수 있어서 오히려 기대 이상이었어요.”
+        </div>
       </div>
 
       <!-- Testimonial 4 -->
       <div class="testimonial-card">
-        <p class="testimonial-text">
-          Lorem ipsum dolor sit amet consectetu adipiscing elit nisi id at felis risus commodo elit ut ultrices.
-        </p>
+        <div class="testimonial-text">
+          "是通过朋友推荐参加这个活动的，气氛真的很好。一开始以为大家会很尴尬，但很快就变得熟悉了，最后一起去吃饭了！"
+        </div>
       </div>
 
       <!-- Add more testimonial cards as needed -->
@@ -193,30 +203,30 @@
     <div class="testimonials-grid review-row2">
       <!-- Testimonial 1 -->
       <div class="testimonial-card">
-        <p class="testimonial-text">
-          Fames in metus ipsum nisi atibus id mauris lectus non semper nisi elementum.
-        </p>
+        <div class="testimonial-text">
+          "After the event, some participants came up to thank me, and it really motivated me. Now I’m even more eager to create better events in the future."
+        </div>
       </div>
 
       <!-- Testimonial 2 -->
       <div class="testimonial-card">
-        <p class="testimonial-text">
-          Lorem ipsum dolor sit amet ipsum non consectetur adipiscing elit hendrerit elit at a at cursus nibh lorem aliquam.
-        </p>
+        <div class="testimonial-text">
+          "I went there at first just to watch, but there were more fun activities than I expected, so I lost track of time. Even people who came alone were able to mingle easily."
+        </div>
       </div>
 
       <!-- Testimonial 3 -->
       <div class="testimonial-card">
-        <p class="testimonial-text">
-          Eu tempus viverra mi porttitor ut at neque at nisl sed pharetra sodales ultrices volutpat tincidunt dictum ut.
-        </p>
+        <div class="testimonial-text">
+          "参与者们很快就变得熟络，后来还建立了一个微信群，大家一直保持联系。我很喜欢这不仅仅是一个活动，而是能够继续维持关系的机会。"
+        </div>
       </div>
 
       <!-- Testimonial 4 -->
       <div class="testimonial-card">
-        <p class="testimonial-text">
-          Lorem ipsum dolor sit amet consectetu adipiscing elit nisi id at felis risus commodo elit ut ultrices.
-        </p>
+        <div class="testimonial-text">
+          "イベントに一度参加しただけですが、非常に多様なことを学びました。韓国語だけでなく、他の国の友達とも話ができて、言語力が向上した気がします。"
+        </div>
       </div>
 
       <!-- Add more testimonial cards as needed -->
@@ -224,8 +234,17 @@
 
     <!-- Buttons -->
     <div class="button-row">
-      <button class="cta-button primary-button">Post an event</button>
-      <button class="cta-button secondary-button">Browse events</button>
+      <button  v-if="isLoggedIn" class="wc-btn">
+        <router-link  to="/postEvent">
+          Create Event
+        </router-link>
+      </button>
+      <button v-else class="wc-btn">
+        <router-link class="wc-btn"  to="/logIn">
+          Create Event
+        </router-link>
+      </button>
+      <button class="cta-button secondary-button wc-btn"><router-link to="/allEvents">Browse Events</router-link></button>
     </div>
 
     <!-- 컨택어스 -->
@@ -235,12 +254,12 @@
         <div class="col-6">
           <div class="row c-img-box">
             <div class="col-6 c-img-box1">
-              <img class="c-img1" src="../assets/c-img1.png" alt="">
-              <img class="c-img2" src="../assets/c-img2.png" alt="">
+              <img class="c-img1" src="../../public/assets/c-img1.png" alt="">
+              <img class="c-img2" src="../../public/assets/c-img2.png" alt="">
             </div>
             <div class="col-6 c-img-box2">
-              <img class="c-img3" src="../assets/c-img3.png" alt="">
-              <img class="c-img4" src="../assets/c-img4.png" alt="">
+              <img class="c-img3" src="../../public/assets/c-img3.png" alt="">
+              <img class="c-img4" src="../../public/assets/c-img4.png" alt="">
             </div>
           </div>
         </div>
@@ -252,25 +271,231 @@
             Make your own ideas or <br>
             whatever you want an event on HiFor and enjoy it!
           </p>
-          <button class="contact-btn" type="button">Post an event</button>
+          <button  v-if="isLoggedIn" class="wc-btn">
+            <router-link  to="/postEvent">
+              Create Event
+            </router-link>
+          </button>
+          <button v-else class="wc-btn">
+            <router-link class="wc-btn"  to="/logIn">
+              Create Event
+            </router-link>
+          </button>
         </div>
       </div>
     </div>
   </div>
+  
+  <!-- 모바일 -->
+  <div class="Mobile">
+
+    <!-- 배너 Title -->
+    <div class="m-banner">
+      <div class="m-banner-title">
+        Start real <br>
+        Korean Life <br>
+        from the <span style="color: #58C3FF;">HiFor.</span>
+      </div>
+    </div>
+    <!-- All Events -->
+    <div class="m-events-container">
+      <div class="m-box">
+        <p class="m-title">
+          Hot Events
+        </p>
+      </div>
+      <!-- Event Cards -->
+      <div class="m-card-box">
+        <div class="m-card" v-for="(event, index) in hotEvents.slice(0, 6)" :key="index">
+          <EventCard :event="event" />
+        </div>
+      </div>
+      <!-- 페이지네이션 버튼 -->
+      <div class="allevent-btn-box">
+        <router-link to="/allEvents">
+          <button class="allevent-btn">Browse Events</button>
+        </router-link>
+      </div>
+    </div>
+    <!-- explain section -->
+    <div class="ex-con">
+      <p class="ex-text1">
+        How it works
+      </p>
+      <p class="ex-title">
+        Learn How <br> 
+        the Experience Works
+      </p>
+      <div class="ex-box">
+        <img class="ex-icon1" src="../../public/assets/img/icon_HowTo1.png" alt=""><br>
+        <img class="ex-num1" src="../../public/assets/img/icon_Num1.png" alt=""><br>
+        <p class="ex-text2">
+          Search for events<br>
+          interests you
+        </p>
+        <p class="ex-text3">
+          Search for a topic <br> you're interested in and<br> find a event you want!
+        </p>
+      </div>
+      <div class="ex-box">
+        <img class="ex-icon2" src="../../public/assets/img/icon_HowTo2.png" alt=""><br>
+        <img class="ex-num2" src="../../public/assets/img/icon_Num2.png" alt=""><br>
+        <p class="ex-text2">
+          Create any events<br>you want!
+        </p>
+        <p class="ex-text3">
+          If you don't like anything <br> or have a good idea,<br>make your own event!
+        </p>
+      </div>
+      <div class="ex-box">
+        <img class="ex-icon3" src="../../public/assets/img/icon_HowTo3.svg" alt=""><br>
+        <img class="ex-num3" src="../../public/assets/img/icon_Num3.png" alt=""><br>
+        <p class="ex-text2">
+          Enjoy an event and<br> connect with people
+        </p>
+        <p class="ex-text3">
+          Enjoy the event and <br> have a new meeting with<br> new people at HiFor!
+        </p>
+      </div>
+    </div>
+    <!-- why hifor -->
+    <div class="container why-con">
+      <div class="row">
+        <div class="col-12 why-box">
+          <img src="../../public/assets/img/img_MeetUp.png" alt="">
+        </div>
+        <div class="col-12 why-box">
+          <p class="ex-text1">Why HiFor</p>
+          <p class="ex-title">Connecting Worlds, <br> Creating Value</p>
+          <p class="ex-text3">
+            HiFor is a global community platform <br> that connects people and businesses. <br>
+            We offer meaningful connections based on <br> interests, culture, and goals—not just casual gatherings. <br>
+            <br>
+            Through HiFor, you can engage with people <br> from diverse backgrounds and stories, <br> creating new experiences and value together.
+          </p>
+          <button  v-if="isLoggedIn" class="wc-btn">
+            <router-link  to="/postEvent">
+              Create Event
+            </router-link>
+          </button>
+          <button v-else class="wc-btn">
+            <router-link class="wc-btn"  to="/logIn">
+              Create Event
+            </router-link>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- our values -->
+    <div class="ov-con">
+      <p class="ex-text1">Our values</p>
+      <p class="ex-title">
+        The values that drive<br>
+        everything we do
+      </p>
+      <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+          <div class="value-card">
+            <p class="ex-text2">
+              <img src="../../public/assets/img/icon_OurValue1.png" alt="">Inclusivity
+            </p>
+            <p class="ex-text3">HiFor welcomes everyone,<br>fostering a sense of belonging.</p>
+          </div>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-10">
+          <div class="value-card">
+            <p class="ex-text2">
+              <img src="../../public/assets/img/icon_OurValue2.png" alt="">Growth
+            </p>
+            <p class="ex-text3">Guided by feedback and data,<br>we improve to support growth.</p>
+          </div>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-10">
+          <div class="value-card">
+            <p class="ex-text2">
+              <img src="../../public/assets/img/icon_OurValue3.png" alt="">Innovation
+            </p>
+            <p class="ex-text3">AI-driven services transform<br>experiences with personalization.</p>
+          </div>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-10">
+          <div class="value-card">
+            <p class="ex-text2">
+              <img src="../../public/assets/img/icon_OurValue4.png" alt="">Connection
+            </p>
+            <p class="ex-text3">HiFor connects people through <br>shared interests and events.</p>
+          </div>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-10">
+          <div class="value-card">
+            <p class="ex-text2">
+              <img src="../../public/assets/img/icon_OurValue5.png" alt="">Support
+            </p>
+            <p class="ex-text3">We empower individuals with <br>language learning and networking.</p>
+          </div>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        <div class="col-10">
+          <div class="value-card">
+            <p class="ex-text2">
+              <img src="../../public/assets/img/icon_OurValue6.png" alt="">Accessibility
+            </p>
+            <p class="ex-text3">Affordable services ensure <br>easy participation for all.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Contact Us -->
+    <div class="cu-con">
+      <div class="cu-box">
+        <p class="cu-title">
+          Create the next <br>event you want!
+        </p>
+        <p class="cu-text">
+          Make your own ideas or <br>
+          whatever you want an event <br> 
+          on HiFor and enjoy it!
+        </p>
+        <div class="cu-btn-box">
+          <button  v-if="isLoggedIn" class="wc-btn">
+            <router-link  to="/postEvent">
+              Create Event
+            </router-link>
+          </button>
+          <button v-else class="wc-btn">
+            <router-link class="wc-btn"  to="/logIn">
+              Create Event
+            </router-link>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-//import { useStore } from 'vuex';
+import {ref, onMounted, computed} from 'vue';
+import { useStore } from 'vuex';
 import axios from 'axios';
 import EventCard from './gathering/EventCard.vue'; // EventCard 컴포넌트 가져오기
 
 
 const events = ref([]); // 이벤트 데이터
 const hotEvents = ref([]); // 캐러셀 이벤트
-//const store = useStore();
-
-
+const store = useStore();
+const isLoggedIn = computed(() => store.getters.isLoggedIn);
 const mapEventData = (event) => ({
   id: event.id,
   mainImage: event.mainImage,
@@ -290,9 +515,14 @@ const mapEventData = (event) => ({
 // 통합된 fetchEvents 함수
 const fetchEvents = async (fetchType, params = {}) => {
   try {
-    const response = await axios.get('http://localhost:3000/gathering', {
-      params: { fetchType, ...params }, // type을 쿼리 파라미터에 추가
-    });
+    const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/gathering`,
+        {
+          params: { fetchType, ...params }, // 쿼리 파라미터 추가
+          withCredentials: true, // 인증 정보를 포함
+        }
+    );
+
     return response.data.map(mapEventData); // 데이터 매핑 후 반환
   } catch (error) {
     console.error(`Failed to fetch events for type "${fetchType}":`, error);
@@ -324,15 +554,215 @@ onMounted(async () => {
 
 
 <style scoped>
+
 /* 반응형 모바일 css */
-@media screen and (max-width:768px){
+@media screen and (max-width:989px){
   .Web{display: none;}
   .Mobile{display: block;}
+
+  /* banner */
+  .m-banner{
+    background-image: url('../../public/assets/img/img_HomeBanner.png');
+    background-size: cover;
+    background-position: center;
+    height: 650px;
+    padding-top: 50px;
+  }
+  .m-events-container{
+    margin-top: -150px;
+  }
+  .m-banner-title {
+    font-size: 48px;
+    font-weight: bold;
+    color: #FFFFFF;
+    padding: 0px 30px;
+    padding-top: 150px;
+    padding-bottom: 120px;
+    text-align: left;
+  }
+  .m-box{
+    padding: 0px 30px;
+  }
+  .m-title{
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: 600;
+    margin-top: 15px;
+    margin-bottom: 5px;
+  }
+  .allevent-btn-box{
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  .allevent-btn{
+    width: max-content;
+    font-size: 14px;
+    border-radius: 100px;
+    background-color: #FFFFFF;
+    color: #58C3FF;
+    border: 1px solid #58C3FF;
+    transition: all 0.3s ease;
+    padding: 10px 20px;
+  }
+  .ex-con{
+    width: 100%;
+    padding: 30px;
+    margin-top: 60px;
+    text-align: center;
+    background-color: #F8F8FB;
+  }
+  .ex-title{
+    padding: 10px 0px;
+    line-height: 28px;
+    font-size: 24px;
+    font-weight: bold;
+    mask-image: linear-gradient(to bottom, rgb(0 0 0), rgb(0 0 0));
+  }
+  .ex-text1{
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0px;
+    color: #5870FF;
+    mask-image: linear-gradient(to bottom, rgb(0 0 0), rgb(0 0 0));
+    margin: 0px;
+  }
+  .ex-text2{
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 600;
+    padding: 5px 0px;
+    margin-bottom: 0px;
+  }
+  .ex-text3{
+    font-size: 12px;
+  }
+  .ex-icon1{
+    width: 99px;
+    margin-bottom: 10px;
+  }
+  .ex-num1{
+    width: 28px;
+  }
+  .ex-icon2{
+    width: 99px;
+    margin-bottom: 10px;
+  }
+  .ex-num2{
+    width: 28px;
+  }
+  .ex-icon3{
+    width: 139px;
+    margin-bottom: 10px;
+    margin-left:-20px;
+    margin-bottom: -15px;
+  }
+  .ex-num3{
+    width: 28px;
+  }
+  .why-con{
+    margin: 30px 0px;
+    padding: 0px 30px;
+    justify-self: center;
+  }
+  .why-box{
+    text-align: center;
+  }
+  .why-box img{
+    z-index: 0;
+    width: 100%;
+    mask-image: linear-gradient(to bottom, rgba(1, 1, 1, 1), rgba(0, 0, 0, 0));
+    margin-bottom: -90px;
+  }
+  .wc-btn{
+    width: max-content;
+    font-size: 14px;
+    border-radius: 100px;
+    background-color: #58C3FF;
+    color: #FFFFFF;
+    border: 1px solid #58C3FF;
+    transition: all 0.3s ease;
+    padding: 10px 20px;
+  }
+  .ov-con{
+    width: 100%;
+    padding: 30px 10px;
+    margin-top: 60px;
+    text-align: center;
+    background-color: #F8F8FB;
+  }
+  .value-card{
+    text-align: left;
+    background-color: #FFFFFF;
+    border-radius: 24px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  .value-card .ex-text2{
+    font-size: 16px;
+    margin: 0px;
+  }
+  .value-card .ex-text3{
+    padding: 3px 6px;
+    margin: 0px;
+    font-size: 12px;
+  }
+  .value-card img{
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+    margin-top: -5px;
+  }
+  .vc-icon-box{
+    background-color: #FFFFFF;
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 15px;
+  }
+  .vc-icon{
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0px !important;
+  }
+  .cu-con{
+    height: max-content;
+  }
+  .cu-box{
+    margin: 30px;
+    background-color: #5870FF;
+    border-radius: 24px;
+    padding: 20px;
+  }
+  .cu-title{
+    color: #F8F8FB;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 36px;
+    margin-bottom: 10px;
+  }
+  .cu-text{
+    color: #f1f1f1;
+    font-size: 14px;
+  }
+  .cu-btn-box{
+    text-align: right;
+    margin-top: -20px;
+  }
+  .cu-btn{
+    width: max-content;
+    font-size: 14px;
+    border-radius: 100px;
+    background-color: #0C1830;
+    color: #f1f1f1;
+    border: 1px solid #0C1830;
+    transition: all 0.3s ease;
+    padding: 10px 20px;
+  }
 }
-/* 웹 */
-@media screen and (min-width:769px){
 
-
+/* 데스크탑 */
+@media screen and (min-width:990px){
   .Web{display: block;}
   .Mobile{display: none;}
   /* 고정 */
@@ -346,7 +776,7 @@ onMounted(async () => {
 
   /* banner */
   .home-banner{
-    background-image: url('@/assets/img/img_HomeBanner.png');
+    background-image: url('/assets/img/img_HomeBanner.png');
     background-size: cover;
     background-position: center;
     height: 900px;
@@ -550,6 +980,7 @@ onMounted(async () => {
   .wc-title{
     font-size: 40px;
     font-weight: bold;
+    line-height: 54px;
   }
   .wc-btn{
     width: 180px;
@@ -612,6 +1043,7 @@ onMounted(async () => {
     text-align: center;
     font-size: 40px;
     font-weight: bold;
+    line-height: 54px;
   }
   .rc-text1{
     text-align: center;
@@ -641,6 +1073,9 @@ onMounted(async () => {
   .testimonial-text {
     font-size: 14px;
     color: #555;
+    text-align: center;
+    height: 100%;
+    align-content: center;
   }
 
   .button-row {
@@ -747,7 +1182,7 @@ onMounted(async () => {
     color: #ffffff;
     font-size: 50px;
     font-weight: 600;
-    line-height: 64px;
+    line-height: 54px;
   }
   .c-text{
     color: #f1f1f1;
@@ -770,5 +1205,12 @@ onMounted(async () => {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
 }
+
+/* 공통 */
+.row{
+  justify-self: center;
+  width: 100%;
+}
+
 </style>
 

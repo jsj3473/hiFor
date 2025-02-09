@@ -13,7 +13,7 @@ dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: 'http://localhost:8080',  // 프론트엔드 주소
+    origin: 'http://localhost:8081',  // 프론트엔드 주소
     credentials: true,                // 쿠키를 사용하려면 true로 설정
   });
   app.useGlobalPipes(new ValidationPipe({

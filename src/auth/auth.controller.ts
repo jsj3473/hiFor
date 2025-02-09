@@ -106,11 +106,11 @@ export class AuthController {
 
     if (completeUser && completeUser.nationality) {
       // 회원가입 완료된 경우 홈으로 리다이렉트
-      res.redirect('http://localhost:8080/');
+      res.redirect('http://localhost:8081/');
       return;
     }
     // 회원가입 페이지로 리다이렉트
-    res.redirect(`http://localhost:8080/googleSignUp?token=${jwtToken.access_token}`);
+    res.redirect(`http://localhost:8081/googleSignUp?token=${jwtToken.access_token}`);
   }  
   
   @Post('googleSignUp')

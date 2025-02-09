@@ -5,12 +5,13 @@ import {
   BadRequestException,
   NotFoundException,
   UseInterceptors,
-  UploadedFile, HttpException, HttpStatus, UseGuards,
+  UploadedFile, HttpException, HttpStatus, UseGuards, Param,
 } from '@nestjs/common';
 import { EmailService } from './mail.service'; // 이메일 전송을 담당하는 서비스
 import { CacheService } from './cache.service'; // 인증번호 저장을 담당하는 서비스 (예: Redis)
 import { UserService } from '../user/user.service';
 import { FindPasswordDto } from 'src/user/user.dto';
+import { GatheringService } from '../gathering/gathering.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ContactDto } from './mail.dto';
 import {SessionAuthGuard} from "../auth/auth.guard";
@@ -21,6 +22,7 @@ export class VerificationController {
     private readonly emailService: EmailService,
     private readonly cacheService: CacheService,
     private readonly userService: UserService,
+    private readonly gatheringService: GatheringService,
   ) {}
 
   @Post('sendVerification')
@@ -83,25 +85,41 @@ export class VerificationController {
     return { message: 'Email verification has been completed.' };
   }
 
-  @Post('contactUs')
-  @UseGuards(SessionAuthGuard)
-  @UseInterceptors(FileInterceptor('file'))
-  async sendMessage(
-    @Body() contactDto: ContactDto,
-    @UploadedFile() file: Express.Multer.File,
+  @Post('deleteEvent/:id') // 이벤트 ID를 URL 파라미터로 받음
+  async sendDeleteEventEmail(
+      @Param('id') eventId: number,
+      @Body('message') message: string,
   ): Promise<{ message: string }> {
     try {
-      // DTO 필드 추출 및 서비스 호출
-      const { title, phone, email, message } = contactDto;
-      await this.emailService.sendContactEmail(title, phone, email, message, file);
+      // 이벤트 ID로 참가자 조회
+      const participants = await this.gatheringService.getParticipantsByEventId(eventId);
 
-      return { message: 'Your message has been sent successfully!' };
+      if (!participants || participants.length === 0) {
+        throw new HttpException(
+            'No participants found for this event.',
+            HttpStatus.NOT_FOUND,
+        );
+      }
+
+      // 참가자들에게 이메일 전송
+      await Promise.all(
+          participants.map((participant) =>
+              this.emailService.sendEventDeletionEmail(
+                  participant.email, // 참가자의 이메일
+                  message, // 삭제 이유
+              ),
+          ),
+      );
+
+      return { message: 'Email notifications sent successfully!' };
     } catch (error) {
+      console.error('Error sending email notifications:', error);
       throw new HttpException(
-        'Failed to send your message. Please try again.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+          'Failed to send email notifications. Please try again.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
+
 
 }

@@ -283,6 +283,28 @@ export class GatheringService {
         'likes',
         'likes.user',
       ],
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        question: true,
+        maxParticipants: true,
+        type: true,
+        participants: {
+          id: true,
+          status: true,
+          user: {
+            userId: true,
+            username: true,
+            profileImage: true,
+          },
+          answer: true, 
+        },
+        createdBy: {
+          id: true,
+          username: true,
+        },
+      },
     });
 
     if (!event) {
@@ -294,6 +316,7 @@ export class GatheringService {
       event.participants?.filter(
         (participant) => participant.status !== 'Rejected',
       ) || [];
+      console.log(JSON.stringify(event, null, 2)); // 이벤트 데이터를 JSON 형식으로 출력
 
     return event;
   }
@@ -576,13 +599,13 @@ export class GatheringService {
   ): Promise<Participant> {
     const event = await this.eventRepository.findOne({
       where: { id: eventId },
+      relations: ['createdBy'],
     });
     if (!event) {
       throw new Error('Event not found');
     }
     const user = await this.userRepository.findOne({
       where: { userId: _userId },
-      relations: ['createdBy'],
     });
     if (!user) {
       throw new Error('User not found');
@@ -770,4 +793,56 @@ export class GatheringService {
     const adEmail = this.adEmailRepository.create({ email });
     return await this.adEmailRepository.save(adEmail);
   }
+
+  async deleteEvent(eventId: number): Promise<boolean> {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
+      // 참가자 데이터 삭제
+      await queryRunner.manager.delete('participant', { event: { id: eventId } });
+
+      // 좋아요 데이터 삭제
+      await queryRunner.manager.delete('likes', { event: { id: eventId } });
+
+      // 이벤트 삭제
+      await queryRunner.manager.delete('hifor_event', { id: eventId });
+
+      await queryRunner.commitTransaction();
+      return true;
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      await queryRunner.rollbackTransaction();
+      return false;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+
+  async getParticipantsByEventId(eventId: number): Promise<{ email: string }[]> {
+    try {
+      const event = await this.eventRepository.findOne({
+        where: { id: eventId },
+        relations: ['participants','participants.user'], // 참가자와의 관계를 로드
+      });
+
+      if (!event) {
+        throw new HttpException('Event not found.', HttpStatus.NOT_FOUND);
+      }
+
+      return event.participants.map((participant) => ({
+        email: participant.user.email, // 참가자의 이메일 반환
+      }));
+    } catch (error) {
+      console.error('Error fetching participants:', error);
+      throw new HttpException(
+          'Failed to fetch participants. Please try again.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
 }

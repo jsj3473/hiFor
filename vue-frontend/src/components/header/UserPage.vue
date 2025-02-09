@@ -7,6 +7,7 @@
           <div
             class="profile-img"
             @click="triggerFileInput"
+            :class="{ 'hover-enabled': currentUserId == wantShowUserId }"
             :style="{ backgroundImage: `url(${user.profileImage})` }"
           >
             <input
@@ -17,6 +18,7 @@
               @change="handleFileChange"
               style="display: none"
             />
+            <img v-if="currentUserId==wantShowUserId" src="/assets/img/icon_UserCamera.png" alt="">
           </div>
 
           <p class="profile-name">{{ user.username }}</p>
@@ -73,7 +75,7 @@
                       <router-link :to="`/userPage/${event.hostId}`">
                         <img
                           class="mp-host-icon"
-                          src="../../assets/img/img_LogInBanner2.png"
+                          src="../../../public/assets/img/img_LogInBanner2.png"
                           alt="Host"
                         />
                         {{ event.host }}
@@ -102,7 +104,7 @@
                       <router-link :to="`/userPage/${event.hostId}`">
                         <img
                           class="mp-host-icon"
-                          src="../../assets/img/img_LogInBanner2.png"
+                          src="../../../public/assets/img/img_LogInBanner2.png"
                           alt="Host"
                         />
                         {{ event.host }}
@@ -160,12 +162,14 @@ const handleFileChange = async (event) => {
   try {
     // 서버로 이미지 업로드
     const response = await axios.post(
-      `http://localhost:3000/user/uploadProfileImage/${user.userId}`,
-      formData,
-      {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      }
+        `${import.meta.env.VITE_API_BASE_URL}/user/uploadProfileImage/${user.userId}`,
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' }, // 파일 업로드를 위한 헤더 설정
+          withCredentials: true, // 인증 정보를 포함
+        }
     );
+
 
     // 서버에서 반환된 이미지 URL로 업데이트
     if (response.data.imageUrl) {
@@ -182,7 +186,12 @@ const handleFileChange = async (event) => {
 // 유저 데이터 가져오기
 const getUser = async (userId) => {
   try {
-    const response = await axios.get(`http://localhost:3000/user/getUser/${userId}`);
+    const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/user/getUser/${userId}`,
+        {
+          withCredentials: true, // 인증 정보를 포함
+        }
+    );
     const userData = response.data;
 
     // user 상태 업데이트
@@ -200,6 +209,7 @@ const getUser = async (userId) => {
     console.error('Failed to fetch user:', error);
   }
 };
+
 // 탭별 이벤트 데이터
 const hostEvents = ref([]);
 const participatedEvents = ref([]);
@@ -221,25 +231,29 @@ const fetchAllEvents = async () => {
   try {
     // Host 이벤트 가져오기
     const hostResponse = await axios.get(
-      `http://localhost:3000/gathering/getEventsByHostId/${wantShowUserId}`
+        `${import.meta.env.VITE_API_BASE_URL}/gathering/getEventsByHostId/${wantShowUserId}`,
+        { withCredentials: true }
     );
     hostEvents.value = hostResponse.data.map(mapEventData);
 
     // Participated 이벤트 가져오기
     const participatedResponse = await axios.get(
-      `http://localhost:3000/gathering/getParticipatedEvent/${wantShowUserId}`
+        `${import.meta.env.VITE_API_BASE_URL}/gathering/getParticipatedEvent/${wantShowUserId}`,
+        { withCredentials: true }
     );
     participatedEvents.value = participatedResponse.data.map(mapEventData);
 
     // Liked 이벤트 가져오기
     const likedResponse = await axios.get(
-      `http://localhost:3000/gathering/getLikedEvent/${wantShowUserId}`
+        `${import.meta.env.VITE_API_BASE_URL}/gathering/getLikedEvent/${wantShowUserId}`,
+        { withCredentials: true }
     );
     likedEvents.value = likedResponse.data.map(mapEventData);
   } catch (error) {
     console.error('Error fetching events:', error);
   }
 };
+
 
 // Participants 총합 계산 함수
 const getParticipantsTotal = () => {
@@ -286,6 +300,21 @@ onMounted(() => {
   width: 200px;
   margin: 0 auto;
   border-radius: 50%;
+  text-align: center;
+  fill-opacity: 0.5;
+}
+.profile-img.hover-enabled:hover {
+  filter: brightness(0.8);
+}
+.profile-img img{
+  display: none;
+  transition: all 0.3s ease;
+  filter: none;
+}
+.profile-img:hover img{
+  display: block;
+  padding: 45px 50px;
+  filter: none;
 }
 
 .profile-name {
@@ -345,7 +374,7 @@ onMounted(() => {
 }
 
 .mp-event-img {
-  background-image: url('@/assets/img/img_LogInBanner1.png');
+  background-image: url('/assets/img/img_LogInBanner1.png');
   background-size: cover;
   background-position: center;
   height: 80px;

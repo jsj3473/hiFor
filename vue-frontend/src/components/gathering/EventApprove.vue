@@ -15,7 +15,7 @@
 
     <div class="row create-image">
       <div class="sub-icon">
-        <img src="@/assets/img/icon_CreateEvent.png" alt="">
+        <img src="/assets/img/icon_CreateEvent.png" alt="">
       </div>
       <div class="col sub-icon-text">
         <p class="sub-title">Guest’s Answer</p>
@@ -32,7 +32,9 @@
         <!-- 답변 -->
         <div class="form-group">
           <label class="guest-name">
-            <img class="guest-icon" :src="participant.avatar || '@/assets/images/default-avatar.png'" alt=""> {{participant.user.username}}
+            <router-link :to="`/userPage/${participant.user.userId}`" >
+              <img class="guest-icon" :src="participant.user.profileImage || '/assets/images/default-avatar.png'" alt=""> {{participant.user.username}}
+            </router-link>
           </label>
           <div class="guest-answer">
             {{ participant.answer }}
@@ -55,7 +57,7 @@
 
     <div class="row create-image">
       <div class="sub-icon">
-        <img src="@/assets/img/icon_CreateEvent.png" alt="">
+        <img src="/assets/img/icon_CreateEvent.png" alt="">
       </div>
       <div class="col sub-icon-text">
         <p class="sub-title">Guests list</p>
@@ -74,8 +76,8 @@
         <!-- 답변 -->
         <div class="form-group" v-for="participant in participants" :key="participant.id">
           <label class="guest-name">
-            <router-link to="/">
-              <img class="guest-icon" :src="participant.avatar || '@/assets/images/default-avatar.png'" alt=""> {{participant.user.username}}
+            <router-link :to="`/userPage/${participant.user.userId}`" >
+              <img class="guest-icon" :src="participant.user.profileImage || '/assets/images/default-avatar.png'" alt=""> {{participant.user.username}}
             </router-link>
           </label>
           <div class="guest-answer">
@@ -126,12 +128,15 @@ const pendingParticipants = computed(() => {
 // API 호출 함수
 const loadEventDetails = async () => {
   try {
-    const response = await axios.get(`http://localhost:3000/gathering/getEventForPending/${eventId}`);
+    const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/gathering/getEventForPending/${eventId}`,
+        { withCredentials: true } // 인증 정보를 포함
+    );
+
     event.value = response.data;
     maxParticipants.value = event.value.maxParticipants || 0;
-    currentCount.value = event.value.participants?.filter(
-      (p) => p.status === "Approved"
-    ).length || 0;
+    currentCount.value =
+        event.value.participants?.filter((p) => p.status === "Approved").length || 0;
     eventQuestion.value = event.value.question; // 질문 데이터 (설명 필드 사용)
     participants.value = event.value.participants;
     eventType.value = event.value.type;
@@ -140,19 +145,29 @@ const loadEventDetails = async () => {
   }
 };
 
+
 const updateParticipantStatus = async (participantId, status) => {
   try {
-    await axios.patch(`http://localhost:3000/gathering/${participantId}/status`, {
-      status,
-      eventId: event.value.id, });
+    await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/gathering/${participantId}/status`,
+        {
+          status,
+          eventId: event.value.id,
+        },
+        {
+          withCredentials: true, // 인증 정보를 포함
+        }
+    );
+
     await loadEventDetails(); // 업데이트 후 다시 로드
     currentCount.value = participants.value.filter(
-      (p) => p.status === "Approved"
+        (p) => p.status === "Approved"
     ).length;
   } catch (error) {
     console.error("Error updating participant status:", error);
   }
 };
+
 
 // 컴포넌트 로드시 데이터 로드
 onMounted(async () => {

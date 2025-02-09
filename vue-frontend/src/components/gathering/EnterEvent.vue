@@ -1,7 +1,5 @@
 <template>
 
-  <div class="Web">
-
     <!-- 호스트 질문이 있는경우 -->
     <template v-if="event.question">
       <!-- banner -->
@@ -27,7 +25,7 @@
 
         <div class="row create-image">
           <div class="col-2 sub-icon">
-            <img src="../../assets/img/icon_CreateEvent.png" alt="">
+            <img src="../../../public/assets/img/icon_CreateEvent.png" alt="">
           </div>
           <div class="col sub-icon-text">
             <p class="sub-title">Host’s Question</p>
@@ -111,7 +109,6 @@
 
       </form>
     </template>
-  </div>
 
 </template>
 
@@ -147,7 +144,13 @@ const event = ref({
 const isChecked = ref(false);
 const fetchEvent = async (eventId) => {
   try {
-    const response = await axios.get(`http://localhost:3000/gathering/getEvents/${eventId}`);
+    const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/gathering/getEvents/${eventId}`,
+        {
+          withCredentials: true, // 인증 정보를 포함
+        }
+    );
+
     const eventData = response.data;
     // 데이터 매핑 및 변환
     event.value = {
@@ -170,7 +173,7 @@ const fetchEvent = async (eventId) => {
       createdBy: {
         id: eventData.createdBy?.userId || 0,
         name: eventData.createdBy?.username || "Unknown",
-        //profileImage: eventData.createdBy?.profileImage || "@/assets/images/default-host.png",
+        //profileImage: eventData.createdBy?.profileImage || "/assets/images/default-host.png",
       },
       price: eventData.price,
       type: eventData.type,
@@ -295,12 +298,19 @@ const openPopup = () => {
 // 결제하기
 const submitEvent = async () => {
   try {
-    console.log(event.value.id, userId, userAnswer.value)
-    const response = await axios.post('http://localhost:3000/gathering/createParticipant', {
-      eventId: event.value.id,
-      userId: userId,
-      answer: userAnswer.value || ''
-    });
+    console.log(event.value.id, userId, userAnswer.value);
+
+    const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/gathering/createParticipant`,
+        {
+          eventId: event.value.id,
+          userId: userId,
+          answer: userAnswer.value || '',
+        },
+        {
+          withCredentials: true, // 인증 정보를 포함
+        }
+    );
 
     if (response.status === 201) {
       alert('Registration successful!');
@@ -310,6 +320,7 @@ const submitEvent = async () => {
     alert('Failed to register for the event. Please try again.');
   }
 };
+
 
 
 onMounted(() => {
@@ -322,8 +333,179 @@ onMounted(() => {
 <!-- css -->
 <style scoped>
 /* 반응형 모바일 css */
+/* 반응형 모바일 css */
 @media screen and (max-width: 768px) {
+  /* 기본 레이아웃 조정 */
+  .login-container, .login-container-op2 {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .create-image {
+    width: 100%;
+    height: auto;
+    padding: 20px 0;
+    text-align: center;
+  }
+
+  .create-form, .create-form-op2 {
+    width: 100%;
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  /* 배너 */
+  .banner {
+    text-align: center;
+    padding: 20px 5px;
+  }
+  .banner-text1 {
+    font-size: 14px;
+    color: #4457FF;
+    margin: 0px;
+  }
+  .banner-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0;
+  }
+  .banner-text2 {
+    font-size: 14px;
+    color: #5F687A;
+    line-height: 1.5;
+  }
+  .sub-icon{
+    display: none;
+  }
+  .sub-title{
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  /* 폼 그룹 */
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .form-group label {
+    font-size: 14px;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 10px;
+  }
+
+  .form-group textarea {
+    height: 120px;
+  }
+
+  /* 카드 디자인 */
+  .enter-card {
+    width: 100%;
+    padding: 10px;
+    justify-self: center;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  /* 드롭다운 조정 */
+  .form-group select {
+    width: 100%;
+    height: 45px;
+  }
+
+  /* Dropzone 스타일 조정 */
+  #upload-box {
+    border: 2px dashed #ccc;
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  #file-list img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+  }
+
+  /* 버튼 */
+
+  
+  .join-now-button {
+    background-color: #4a68ff;
+    color: white;
+    width: 300px;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 40px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .join-now-button:disabled {
+    background-color: #d6d6d6;
+    cursor: not-allowed;
+  }
+
+  .join-now-button:hover:not(:disabled) {
+    background-color: #4457FF;
+  }
+
+  /* 하단 텍스트 */
+  .agreement-label {
+    width: 100%;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  /* 체크박스 스타일 */
+  .agreement-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .usage-rules-link {
+    color: #4457FF;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* 카드 내부 텍스트 크기 조정 */
+  .card-title {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .card-detail {
+    font-size: 14px;
+    text-align: center;
+  }
+
+  /* 참가자 수 입력 필드 크기 조정 */
+  .form-group .half-input-row {
+    flex-direction: column;
+  }
+  .form-group .half-input-row .col-6 {
+    width: 100%;
+  }
 }
+
 
 /* 웹 */
 @media screen and (min-width: 769px) {
@@ -740,7 +922,7 @@ onMounted(() => {
   }
 
   .card-img {
-    background-image: url('@/assets/img/img_LogInBanner1.png');
+    background-image: url('/assets/img/img_LogInBanner1.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

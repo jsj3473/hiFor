@@ -1,9 +1,6 @@
 
 <template>
 
-  <div class="Web">
-
-
     <!-- banner -->
     <div class="banner">
       <p class="banner-text1">New EVENT!</p>
@@ -16,7 +13,7 @@
 
       <div class="row create-image">
         <div class="col-2 sub-icon">
-          <img src="../../assets/img/icon_CreateEvent.png" alt="">
+          <img src="../../../public/assets/img/icon_CreateEvent.png" alt="">
         </div>
         <div class="col sub-icon-text">
           <p class="sub-title">Event information</p>
@@ -131,7 +128,9 @@
           <!-- Dropzone 수정된 부분 -->
           <div class="form-group">
             <label for="file-upload">Event Images</label>
-            <p>The first image will be the main image of the event.<br>Drop files here or click to upload.</p>
+            <p>
+              The first image will be the main image of the event. (Up to 5 photos)
+            </p>
 
             <!-- 파일 입력 -->
             <input
@@ -230,8 +229,6 @@
       </div>
     </div>
 
-  </div>
-
 </template>
 
 <script setup>
@@ -307,21 +304,15 @@ const postEvent = async () => {
     const uploadedImageUrls = [];
     for (const fileObj of uploadedFiles.value) {
       const rawFile = toRaw(fileObj.file); // Proxy 객체 제거
-      console.log('Raw File:', rawFile);
-      console.log('Type of Raw File:', typeof rawFile); // 타입 확인
-      console.log('Is File Instance:', rawFile instanceof File); // File 객체인지 확인
-      console.log('File Type:', rawFile.type); // 파일의 MIME 타입 (예: image/jpeg)
 
       const formData = new FormData();
       formData.append('file', rawFile);
-
-
-      console.log('formdata:',formData)
       const uploadResponse = await axios.post(
-          "http://localhost:3000/gathering/upload-image-postEvent",
+          `${import.meta.env.VITE_API_BASE_URL}/gathering/upload-image-postEvent`,
           formData,
           {
-            headers: { "Content-Type": "multipart/form-data" },
+            headers: { "Content-Type": "multipart/form-data" }, // 파일 업로드 헤더 설정
+            withCredentials: true, // 인증 정보를 포함
           }
       );
       uploadedImageUrls.push(uploadResponse.data.imageUrl);
@@ -354,15 +345,21 @@ const postEvent = async () => {
 
     try {
       // withCredentials 옵션은 쿠키 전송이 필요한 경우 사용합니다.
-      const response = await axios.post("http://localhost:3000/gathering/submit", enrichedFormData);
-      console.log("Event created successfully:", response.data);
+      const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/gathering/submit`,
+          enrichedFormData,
+          {
+            withCredentials: true, // 인증 정보를 포함
+          }
+      );
+
       await router.push(`/events/${response.data.event.id}`);
     } catch (error) {
       // 에러 객체에 response가 있고, 상태 코드가 401이면 로그인 필요
       if (error.response && error.response.status === 401) {
-        alert("로그인이 필요합니다.");
+        alert("Login is required.");
         // 로그인 페이지로 리다이렉트 (절대 URL 사용)
-        window.location.href = "http://localhost:8080/logIn/";
+        window.location.href = `${import.meta.env.VITE_BASE_URL}/logIn/`;
       } else {
         console.error("Error creating event:", error);
       }
@@ -427,42 +424,63 @@ const openPopup = () => {
       </head>
       <body>
         <h2>Usage Rules</h2>
-        <h3>1. 개인정보 수집 및 이용 동의서 (필수)</h3>
+
+        <h3>1. Platform Usage Rules</h3>
         <ul>
-          <li>개인정보 수집 항목</li>
-          <p>필수 항목: 이름, 생년월일, 국적, 이메일 주소, 비밀번호</p>
-          <p>선택 항목: 학교, 관심 있는 소모임/이벤트 카테고리, 프로필 사진</p>
-          <li>수집 목적</li>
-          <ul>
-            <li>플랫폼 이용을 위한 기본 정보 관리</li>
-            <li>회원 식별 및 인증</li>
-            <li>소모임/이벤트 등록 및 참여 관리</li>
-            <li>사용자 맞춤형 서비스 제공</li>
-          </ul>
-          <li>개인정보 보유 및 이용 기간</li>
-          <p>회원 탈퇴 시 즉시 파기</p>
-          <p>단, 법령에 따라 보관해야 하는 경우 아래 기준에 따릅니다:</p>
-          <ul>
-            <li>계약 또는 청약 철회 기록: 5년</li>
-            <li>대금 결제 및 재화 공급 기록: 5년</li>
-            <li>소비자 불만 또는 분쟁 처리 기록: 3년</li>
-          </ul>
-          <li>개인정보 제공 및 위탁</li>
-          <p>개인정보는 원칙적으로 외부에 제공하지 않습니다.</p>
-          <li>동의 거부 시 불이익</li>
-          <p>필수 항목에 대한 동의를 거부할 경우 서비스 이용이 제한될 수 있습니다.</p>
+            <li>General Rules</li>
+            <p>Event content and participation activities must comply with all legal and ethical standards.</p>
+            <p>Users must communicate with respect and consideration for each other; discriminatory or violent behavior is strictly prohibited.</p>
+            <p>HiFor relies on mutual trust between hosts and guests to ensure the smooth running of events and gatherings.</p>
         </ul>
-        <h3>2. 광고성 이메일 수신 동의서 (선택)</h3>
+
+        <h3>2. Event Rules</h3>
         <ul>
-          <li>수집 및 이용 목적</li>
-          <p>소모임/이벤트 관련 추천 정보 제공</p>
-          <li>보유 및 이용 기간</li>
-          <p>회원 탈퇴 시 즉시 파기</p>
-          <li>수신 거부 권리</li>
-          <p>사용자는 언제든지 광고성 이메일 수신을 거부할 수 있습니다.</p>
+            <li>Host Responsibilities</li>
+            <p>Event hosts must provide accurate information (schedule, location, participation conditions, etc.) and are responsible for any issues caused by incorrect information.</p>
+            <li>Participant Responsibilities</li>
+            <p>Event participants must maintain the reliability of their registered information and should avoid canceling without notice.</p>
+            <li>Prohibited Activities</li>
+            <p>Illegal activities or commercial promotions during events are strictly prohibited.</p>
         </ul>
+
+        <h3>3. Privacy Protection</h3>
+        <ul>
+            <li>Personal Data Security</li>
+            <p>The platform securely manages users' personal information and does not share it with third parties without consent.</p>
+            <li>User Responsibility</li>
+            <p>Users must handle their information carefully and must not infringe on the privacy of others.</p>
+        </ul>
+
+        <h3>4. Limitation of Liability</h3>
+        <ul>
+            <li>Event Responsibility</li>
+            <p>The platform is not legally responsible for accidents or issues occurring within events hosted or attended by users.</p>
+            <li>Voluntary Participation</li>
+            <p>Participation in events is entirely voluntary, and the host and participants bear direct responsibility.</p>
+        </ul>
+
+        <h3>5. Participation Fees and Refund Policy</h3>
+        <ul>
+            <li>Refund Policy</li>
+            <p>For events with participation fees, refunds may not be guaranteed due to the lack of a formal refund policy.</p>
+            <p>In the absence of a clear refund policy, hosts are encouraged to communicate refund terms directly to participants before confirming their participation.</p>
+            <li>Platform Role</li>
+            <p>The platform will provide support for communication between hosts and participants regarding refunds but does not bear any responsibility for refund disputes.</p>
+        </ul>
+
+        <h3>6. Dispute Resolution</h3>
+        <ul>
+            <li>User Conflict Mediation</li>
+            <p>In the event of conflicts between users, the platform may mediate from a neutral standpoint but does not bear ultimate responsibility.</p>
+            <li>Legal Compliance</li>
+            <p>Legal issues will be resolved according to the applicable local laws.</p>
+            <li>Trust & Safety</li>
+            <p>These rules aim to minimize foreseeable problems during platform usage and to establish a trustworthy environment for all users.</p>
+        </ul>
+
         <button class="close-btn" onclick="window.close()">Close</button>
-      </body>
+    </body>
+
     </html>
   `;
 
@@ -481,7 +499,167 @@ const openPopup = () => {
 <!-- css -->
 <style scoped>
 /* 반응형 모바일 css */
-@media screen and (max-width:768px){}
+/* 반응형 모바일 css */
+@media screen and (max-width: 768px) {
+  /* 기본 컨테이너 조정 */
+  .login-container {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .create-image {
+    width: 100%;
+    height: auto;
+    padding: 20px 0;
+    text-align: center;
+  }
+
+  .create-form {
+    width: 100%;
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  /* 배너 */
+  .banner {
+    text-align: center;
+    padding: 20px 5px;
+  }
+  .banner-text1 {
+    font-size: 14px;
+    color: #4457FF;
+    margin: 0px;
+  }
+  .banner-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0;
+  }
+  .banner-text2 {
+    font-size: 14px;
+    color: #5F687A;
+    line-height: 1.5;
+  }
+  .sub-icon{
+    display: none;
+  }
+  .sub-title{
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  /* 폼 그룹 */
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .form-group label {
+    font-size: 14px;
+  }
+  .form-group p {
+    font-size: 12px;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 10px;
+  }
+
+  .form-group textarea {
+    height: 150px;
+  }
+
+  .form-group input[type="file"] {
+    padding: 5px;
+    font-size: 14px;
+  }
+
+  /* Dropzone 스타일 조정 */
+  #upload-box {
+    border: 2px dashed #ccc;
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  #file-list img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+  }
+
+  /* 버튼 */
+  .join-now-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 24px;
+    margin-top: 10px;
+    background-color: #4457FF;
+    border: 1px solid #4457FF;
+    color: #FFFFFF;
+  }
+
+  /* 하단 텍스트 */
+  .agreement-label {
+    width: 100%;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  /* 체크박스 스타일 */
+  .agreement-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .usage-rules-link {
+    color: #4457FF;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* 제출 버튼 */
+  
+  .join-now-button-op2 {
+    background-color: #4a68ff;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 40px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .join-now-button-op2:disabled {
+    background-color: #d6d6d6;
+    cursor: not-allowed;
+  }
+
+  .join-now-button-op2:hover:not(:disabled) {
+    background-color: #4457FF;
+  }
+
+  /* 참가자 수 입력 필드 크기 조정 */
+  .form-group .half-input-row {
+    flex-direction: column;
+  }
+  .form-group .half-input-row .col-6 {
+    width: 100%;
+  }
+}
+
 /* 웹 */
 @media screen and (min-width:769px){
   /* header */
@@ -601,6 +779,11 @@ const openPopup = () => {
     display: block;
     font-size: 14px;
     margin-bottom: 5px;
+    color: #333;
+  }
+
+  .form-group p {
+    font-size: 12px;
     color: #333;
   }
 

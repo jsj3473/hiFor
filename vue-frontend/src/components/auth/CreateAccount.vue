@@ -21,7 +21,7 @@
 
                 <div class="form-group">
                     <div class="row half-input-row">
-                        <div class="col-6">
+                        <div class="col-6 email-box">
                             <label for="email">Email</label>
                             <input type="email" v-model="user.email" @input="checkEmailAvailability" placeholder="Email" required />
                         </div>
@@ -37,7 +37,7 @@
 
                 <div class="form-group" v-if="showVerificationInput">
                     <div class="row half-input-row">
-                        <div class="col-6">
+                        <div class="col-6 email-box">
                             <label for="code">Verification Code</label>
                           <input type="text" v-model="verificationCodeInput" id="verificationCode" required />
                         </div>
@@ -87,6 +87,7 @@
               <div>
                 <!-- 통합 검색 입력 필드 -->
                 <div class="form-group">
+                  <label for="">Nationality</label>
                   <input
                     type="text"
                     v-model="searchQuery"
@@ -112,34 +113,33 @@
               </div>
 
 
-              <!-- 동의 section -->
+              <!-- 체크박스 동의 영역 -->
               <div class="row agree-box">
-
                 <div class="col-12">
                   <button type="button" class="agree-all" @click="toggleAllCheckboxes">Accept All</button>
                 </div>
-                <!-- 각 체크박스와 텍스트 -->
-                <div v-for="(checkbox, index) in checkboxes" :key="index" class="row">
-                  <div class="col-11">
-                    <button class="agree-text1">{{ checkbox.label }}</button>
-                  </div>
-                  <div class="col-1 agree-cb-box">
-                    <input
-                      class="agree-cb"
-                      type="checkbox"
-                      v-model="checkbox.checked"
-                    />
-                  </div>
+      
+                <div v-for="(checkbox, index) in checkboxes" :key="index" class="checkbox-item">
+                  <label>
+                    <span v-if="index === 0">
+                      I accept and agree to the <span class="popup-link" @click="openPopup(0)">Terms of use</span> (Required)
+                    </span>
+                    <span v-else-if="index === 1">
+                      I accept and agree to the <span class="popup-link" @click="openPopup(1)">Privacy policy.</span> (Required)
+                    </span>
+                    <span v-else-if="index === 2">
+                      I agree <span class="popup-link" @click="openPopup(2)">to collect and use personal information for the purpose of receiving and promoting marketing.</span> (Optional)
+                    </span>
+                  </label>
+                  <input type="checkbox" v-model="checkbox.checked" />
                 </div>
               </div>
-
-                <button type="submit" class="btn-primary">Sign up</button>
+              <button type="submit" class="btn-primary" :disabled="!requiredChecked">Sign up</button>
 
             </form>
         </div>
 
     </div>
-
 </template>
 
 <script setup>
@@ -388,20 +388,11 @@ const router = useRouter(); // Vue Router에 접근
     const buttonText = ref('Send Code');
     const isTimerRunning = ref(false);
     const timeLeft = ref(300);
+    // 체크박스 리스트 (모든 체크박스를 "Accept All"에 포함)
     const checkboxes = ref([
-      {
-        label: "I accept and agree to the Terms of use(Required)",
-        checked: false,
-      },
-      {
-        label: "I accept and agree to the Privacy policy(Required)",
-        checked: false,
-      },
-      {
-        label:
-          "I agree to collect and use personal information for the purpose of receiving and promoting marketing. (Optional)",
-        checked: false,
-      },
+      { label: "Notice: Once an event post is published, it cannot be edited", checked: false },
+      { label: "I agree to include all additional fees in the event details and understand that failing to do so may result in penalties", checked: false },
+      { label: "I have read the basic usage rules of HiFor, and I agree with that.", checked: false },
     ]);
 
     let timerInterval = null;
@@ -438,7 +429,11 @@ const router = useRouter(); // Vue Router에 접근
     const checkUserIdAvailability = debounce(async () => {
       if (user.userId) {
         try {
-          const response = await fetch(`http://localhost:3000/user/isUserId/${user.userId}`);
+          const response = await fetch(
+              `${import.meta.env.VITE_API_BASE_URL}/user/isUserId/${user.userId}`,
+              { credentials: 'include' } // 인증 정보를 포함
+          );
+
           const data = await response.json();
           userIdAvailable.value = data.available;
         } catch (error) {
@@ -450,7 +445,11 @@ const router = useRouter(); // Vue Router에 접근
     const checkEmailAvailability = debounce(async () => {
       if (user.email) {
         try {
-          const response = await fetch(`http://localhost:3000/user/isEmail/${user.email}`);
+          const response = await fetch(
+              `${import.meta.env.VITE_API_BASE_URL}/user/isEmail/${user.email}`,
+              { credentials: 'include' } // 인증 정보를 포함
+          );
+
           const data = await response.json();
           emailAvailable.value = data.available;
         } catch (error) {
@@ -465,10 +464,16 @@ const router = useRouter(); // Vue Router에 접근
         return;
       }
       try {
-        //console.log('123123')
-        const response = await axios.post('http://localhost:3000/mail/sendVerification', {
-          email: user.email,
-        });
+        const response = await axios.post(
+            `${import.meta.env.VITE_API_BASE_URL}/mail/sendVerification`,
+            {
+              email: user.email,
+            },
+            {
+              withCredentials: true, // 인증 정보를 포함
+            }
+        );
+
         if (response.status === 200 || response.status === 201) {
           showVerificationInput.value = true;
           buttonText.value = 'Resend';
@@ -483,10 +488,17 @@ const router = useRouter(); // Vue Router에 접근
 
     const verifyCode = async () => {
       try {
-        const response = await axios.post('http://localhost:3000/mail/verifyCode', {
-          email: user.email,
-          code: verificationCodeInput.value,
-        });
+        const response = await axios.post(
+            `${import.meta.env.VITE_API_BASE_URL}/mail/verifyCode`,
+            {
+              email: user.email,
+              code: verificationCodeInput.value,
+            },
+            {
+              withCredentials: true, // 인증 정보를 포함
+            }
+        );
+
         if (response.status === 200 || response.status === 201) {
           isVerified.value = true;
           alert('Email verification has been completed.');
@@ -498,17 +510,6 @@ const router = useRouter(); // Vue Router에 접근
     };
 
     const handleRegister = async () => {
-      const requiredCheckboxes = checkboxes.value.filter((cb, index) => index < 2);
-      const allRequiredChecked = requiredCheckboxes.every((cb) => cb.checked);
-
-      if (!allRequiredChecked) {
-        alert('You must agree to the required terms to sign up.');
-        return;
-      }
-      if (user.userId.length < 6 || user.userId.length > 20) {
-        alert('The username must be between 6 and 20 characters.');
-        return;
-      }
 
       const idRegex = /^[a-zA-Z0-9]+$/;
       if (!idRegex.test(user.userId)) {
@@ -543,8 +544,14 @@ const router = useRouter(); // Vue Router에 접근
       }
 
       try {
-        const response = await axios.post('http://localhost:3000/auth/signUp', user);
-        console.log('Sign-up response:', response.data);
+        await axios.post(
+            `${import.meta.env.VITE_API_BASE_URL}/auth/signUp`,
+            user,
+            {
+              withCredentials: true, // 인증 정보를 포함
+            }
+        );
+
         alert('Sign-up completed!');
         router.push('/logIn'); // 로그인 후 메인 페이지로 이동
       } catch (error) {
@@ -553,12 +560,161 @@ const router = useRouter(); // Vue Router에 접근
       }
     };
 
-    const toggleAllCheckboxes = () => {
-      const allChecked = checkboxes.value.every((cb) => cb.checked);
-      checkboxes.value.forEach((cb) => {
-        cb.checked = !allChecked;
-      });
-    };
+   // 필수 체크박스(첫 번째 & 두 번째)가 선택되었는지 확인하는 computed property (버튼 활성화 조건)
+  const requiredChecked = computed(() => checkboxes.value.slice(0, 2).every(cb => cb.checked));
+  
+  // "Accept All" 버튼 클릭 시 모든 체크박스 선택/해제
+  const toggleAllCheckboxes = () => {
+    const allChecked = checkboxes.value.every(cb => cb.checked);
+    checkboxes.value.forEach(cb => cb.checked = !allChecked);
+  };
+  
+  // 팝업 띄우기 기능 (index에 따라 다른 내용 표시)
+  const openPopup = (index) => {
+    const popupContents = [
+      `<h1>Terms of Service</h1>
+      <h3>Article 1 (Purpose)</h3>
+      <p>
+        The purpose of these terms is to regulate the conditions, procedures, rights, obligations, and other necessary matters related to the use of the HiFor website (hereinafter referred to as the "Service").
+      </p>
+      <h3>Article 2 (Effect and Modification of Terms)</h3>
+      <p>
+        These terms apply to all users who wish to use the Service.<br>
+        The Service may modify these terms, and any changes will be announced in advance through a notice. The modified terms will take effect after the notice.<br>
+        If a user does not agree with the modified terms, they may discontinue the use of the Service and delete their account.<br>
+      </p>
+      <h3>Article 3 (Provision and Restriction of Service)</h3>
+      <p>
+        The Service operates without generating profit, and certain features (e.g., event participation, group <br>management, etc.) are only available to registered users.<br>
+        The Service may restrict or suspend part of the Service due to technical defects, system maintenance, or other operational needs.<br>
+      </p>
+      <h3>Article 4 (User’s Obligations)</h3>
+      <p>
+        Users must not engage in the following actions:<br>
+        •	Using or stealing another person’s information<br>
+        •	Disrupting the operation of the Service or posting malicious content<br>
+        •	Violating relevant laws or these terms and conditions<br>
+        Users must comply with these terms and cooperate in the normal operation of the Service.<br>
+      </p>
+      <h3>Article 5 (User’s Content Responsibility and Copyright)</h3>
+      <p>
+        The copyright of the content posted by users on the Service belongs to the user. <br>
+        Users guarantee that their content does not infringe the rights of others, and any violations will be the user’s responsibility.<br>
+        The Service may modify or delete content without prior notice for operational reasons.<br>
+      </p>
+      <h3>Article 6 (Privacy Protection)</h3>
+      <p>
+        The Service will protect users' personal information in accordance with its privacy policy.<br>
+        Users' personal information will only be used for the purpose of providing the Service, improving operations, and complying with legal obligations.<br>
+      </p>
+      <h3>Article 7 (Limitation of Liability)</h3>
+      <p>
+        The Service is not responsible for damages caused by technical defects, system errors, or data loss.<br>
+        The Service does not directly intervene in communication or activities between users and is not responsible for any disputes arising from them.<br>
+        The Service is not responsible for problems arising from third-party platforms or external links.<br>
+      </p>
+      <h3>Article 8 (Account Management and Withdrawal)</h3>
+      <p>
+        Users may delete their accounts at any time, and upon withdrawal, all user data will be deleted in accordance with the Service’s policies.<br>
+        The Service may delete inactive accounts after prior notice.<br>
+      </p>
+      <h3>Article 9 (Governing Law and Jurisdiction)</h3>
+      <p>
+        All disputes related to these terms will be governed by the laws of the Republic of Korea.<br>
+        In case of disputes, the Seoul Central District Court will have jurisdiction.<br>
+      </p>
+      <h3>Article 10 (Agreement Process)</h3>
+      <p>
+        By signing up as a member, users agree to these terms and the collection and use of personal information, thereby forming a service contract.<br>
+        If a user withdraws consent to these terms during the use of the Service, they must delete their account.
+      </p>
+        `,
+  
+      `<h1>Supplementary Provisions</h1>
+      <h3>These terms and conditions will be effective from Feb 16, 2025.</h3>
+      <h3>Personal Information Agreement (Required)</h3>
+      <p>
+        Personal Information Collected <br>
+        Required Information:<br>
+        • Name, Date of Birth, Nationality, Email Address, Password<br>
+        Optional Information:<br>
+        • School, Interests in Groups/Events Categories, Profile Picture<br>
+        Purpose of Collection<br>
+        • Managing basic user information for platform use<br>
+        • User identification and authentication<br>
+        • Managing group/event registrations and participation<br>
+        • Providing personalized services<br>
+        • Managing groups and events<br>
+        o Allowing hosts to view approved participants’ names and profile pictures<br>
+        o Verifying eligibility for age-restricted events<br>
+        o Recommending school-based groups and supporting interactions<br>
+        • Service operation and improvement<br>
+        o Analyzing user statistics and enhancing services for multinational users<br>
+        o Providing group and event recommendations<br>
+        • Compliance with legal obligations<br>
+        o Preventing misuse, resolving disputes, and meeting legal requirements<br>
+        Retention and Use Period of Personal Information<br>
+        • Personal information will be destroyed immediately upon account deletion.<br>
+        • However, if required by law, the following retention periods apply:<br>
+        o Records of contracts or withdrawal of offers: 5 years<br>
+        o Records of payment and supply of goods: 5 years<br>
+        o Records of consumer complaints or dispute resolution: 3 years<br>
+        Provision and Delegation of Personal Information<br>
+        • In principle, personal information is not shared with external parties.<br>
+        • However, with the user’s consent, it may be provided to third parties in the following cases:<br>
+        o When event hosts request the names and profile pictures of approved participants<br>
+        o Delegation to third parties for platform operations (e.g., email authentication services)<br>
+        Consequences of Refusal to Consent<br>
+        • Refusal to consent to required items may result in limitations on service usage.<br>
+        • Refusal to consent to optional items will not affect service usage.<br>
+      </p>
+      `,
+  
+      `<h1>Consent to Receive Promotional Emails (Optional)</h1>
+      <h3>Purpose of Collection and Use</h3>
+      <p>
+        • Providing recommendations for groups/events <br>
+        • Announcing platform service updates and benefits<br>
+        • Delivering promotions, discounts, and event information<br>
+      </p>
+      <h3>Retention and Use Period</h3>
+      <p>
+        • Promotional emails will cease immediately upon account deletion or upon request for unsubscribing.
+      </p>
+      <h3>Right to Opt-Out</h3>
+      <p>
+        • Users may opt out of receiving promotional emails at any time. <br>
+        How to Opt-Out:<br>
+        • Click the "Unsubscribe" button at the bottom of the email or contact Customer Support to request.<br>
+      </p>
+      <h3>References to Applicable Laws</h3>
+      <p>
+        • Referenced laws: Personal Information Protection Act, Articles 15 and 17, etc.
+      </p>
+      `,
+    ];
+  
+    const popupWindow = window.open("", "Popup", "width=500,height=300,scrollbars=yes");
+    popupWindow.document.write(`
+      <html>
+        <head>
+          <title>Popup</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.5; }
+            h2 { color: #333; }
+            p { margin-bottom: 10px; }
+            button { margin-top: 20px; padding: 10px 20px; border: none; background-color: #007bff; color: white; border-radius: 5px; cursor: pointer; }
+            button:hover { background-color: #0056b3; }
+          </style>
+        </head>
+        <body>
+          ${popupContents[index]}
+          <button onclick="window.close()">Close</button>
+        </body>
+      </html>
+    `);
+    popupWindow.document.close();
+  };
 
 
 
@@ -568,14 +724,128 @@ const router = useRouter(); // Vue Router에 접근
 <!-- css -->
 <style scoped>
     /* 반응형 모바일 css */
-    @media screen and (max-width:768px){}
+    @media screen and (max-width:768px){
+      .create-image{
+        display: none;
+      }
+      .login-container{
+        padding: 15px;
+        padding-top: 30px;
+        justify-items: center;
+      }
+      .create-form h1{
+        color: #58C3FF;
+        text-align: center;
+      }
+      .create-form p{
+        color: #555;
+        text-align: center;
+        padding: 5px 50px;
+      }
+      .create-form label{
+        font-size: 14px;
+        color: #555;
+        width: 100%;
+      }
+      .create-form input{
+        width: 100%;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 10px;
+      }
+      .create-form select{
+        width: 100%;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 10px;
+      }
+      .email-box{
+        width: 60%;
+      }
+      .code-btn-box{
+        align-content: end;
+        width: 40%;
+      }
+      .code-btn{
+        background-color: #58C3FF;
+        border: none;
+        color: #FFFFFF;
+        padding: 10px 8px;
+        border-radius: 12px;
+        font-size: 14px;
+      }
+      .agree-box{
+        margin-top: 30px;
+      }
+      .agree-all {
+        background-color: #58C3FF;
+        border: none;
+        border-radius: 16px;
+        font-size: 15px;
+        color: #fff;
+        padding: 3px;
+        padding-left: 9px;
+        padding-right: 9px;
+        margin-bottom: 16px;
+      }
+      .agree-text1 {
+        background: none;
+        border: none;
+        font-size: 14px;
+        color: #5F687A;
+        text-align: left;
+        text-decoration: underline;
+      }
+      .agree-cb-box{
+        padding: 0px;
+        align-content: center;
+      }
+      .agree-cb{
+        width: 12px;
+        height: 12px;
+      }
+      .btn-primary {
+        background-color: #58C3FF;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        width: 100%;
+        height: 50px;
+        font-size: 16px;
+        border-radius: 12px;
+        cursor: pointer;
+        margin: 20px 0px;
+        transition: all 0.3s ease;
+      }
+      .popup-link{
+        text-decoration: underline;
+      }
+      .checkbox-item{
+        align-items: center;
+      }
+      .checkbox-item label{
+        width: 90%;
+      }
+      .checkbox-item input{
+        width: 14px;
+      }
+    }
     /* 웹 */
     @media screen and (min-width:769px){
+      .checkbox-item label{
+        width: min-content;
+        min-width: 420px;
+      }
+      .checkbox-item input{
+        width: 15px;
+        height: 100%;
+      }
         .login-container {
             display: flex;
             background: #fff;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             width: 100%;
             min-height: 680px;
@@ -691,7 +961,7 @@ const router = useRouter(); // Vue Router에 접근
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image: url('@/assets/img/img_LogInBanner2.png');
+            background-image: url('/assets/img/img_LogInBanner2.png');
             width: 100%;
             background-repeat: no-repeat;
             background-size: cover;
@@ -763,6 +1033,14 @@ const router = useRouter(); // Vue Router에 접근
         padding-left: 48px;
         padding-right: 48px;
         color: #fff;
+      }
+      .dropdown-list{
+        position: absolute;
+        background-color: #fff;
+      }
+      .popup-link{
+        text-decoration: underline;
+        cursor: pointer;
       }
     }
 </style>

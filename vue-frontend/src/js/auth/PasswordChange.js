@@ -17,10 +17,17 @@ export default {
 
     const checkCurrentPassword = async () => {
       try {
-        const response = await axios.post('http://localhost:3000/auth/checkCurrentPassword', {
-          userId: userId.value,
-          password: currentPassword.value,
-        });
+        const response = await axios.post(
+            `${import.meta.env.VITE_API_BASE_URL}/auth/checkCurrentPassword`,
+            {
+              userId: userId.value,
+              password: currentPassword.value,
+            },
+            {
+              withCredentials: true, // 인증 정보를 포함
+            }
+        );
+
 
         if (response.data.valid) {
           isCurrentPasswordValid.value = true;
@@ -45,10 +52,17 @@ export default {
       }
 
       try {
-        await axios.patch('http://localhost:3000/auth/updatePassword', {
-          userId: userId.value,
-          password: newPassword.value,
-        });
+        await axios.patch(
+            `${import.meta.env.VITE_API_BASE_URL}/auth/updatePassword`,
+            {
+              userId: userId.value,
+              password: newPassword.value,
+            },
+            {
+              withCredentials: true, // 인증 정보를 포함
+            }
+        );
+
         alert('The password has been successfully updated.');
       } catch {
         alert('An error occurred while changing the password.');

@@ -30,7 +30,7 @@
                 </div>
 
                 <button type="button" class="btn-google" @click="handleGoogleLogin">
-                    <img src="@/assets/img/icon_Google.png" alt="Google Icon" />
+                    <img src="/assets/img/icon_Google.png" alt="Google Icon" />
                     Sign in with Google
                 </button>
 
@@ -73,7 +73,14 @@ export default {
     const handleLogin = async () => {
       try {
         // 로그인 처리 로직 (Axios를 사용해 백엔드 API 호출)
-        const response = await axios.post('http://localhost:3000/auth/signIn', form.value);
+        const response = await axios.post(
+            `${import.meta.env.VITE_API_BASE_URL}/auth/signIn`,
+            form.value,
+            {
+              withCredentials: true, // 인증 정보를 포함
+            }
+        );
+
 
         // JWT 토큰 저장 (localStorage 또는 sessionStorage에 저장 가능)
         store.commit('setToken', response.data.access_token); // Vuex 상태에 저장
@@ -97,7 +104,8 @@ export default {
     };
 
     const handleGoogleLogin = () => {
-      window.location.href = 'http://localhost:3000/auth/to-google';
+      window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/to-google`;
+
     };
 
     const handleFindUsername = () => {
@@ -119,7 +127,97 @@ export default {
 <!-- css -->
 <style scoped>
     /* 반응형 모바일 css */
-    @media screen and (max-width:768px){}
+    @media screen and (max-width:768px){
+
+      .banner-image{
+        display: none;
+      }
+      .banner-title{
+        display: none;
+      }
+      .login-container{
+        padding: 15px;
+        padding-top: 30px;
+        justify-items: center;
+      }
+      .login-form{
+        width: 100%;
+      }
+      .login-form h1{
+        color: #58C3FF;
+        text-align: center;
+        font-size: px;
+      }
+      .login-form p{
+        color: #555;
+        text-align: center;
+        padding: 5px 50px;
+      }
+      .form-group label{
+        font-size: 14px;
+        color: #555;
+        width: 100%;
+      }
+      .form-group input{
+        width: 100%;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 10px;
+      }
+      .form-group select{
+        width: 100%;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 10px;
+      }
+      .form-options{
+        font-size: 14px;
+        color: #555;
+        padding: 10px 0px;
+      }
+      .btn-primary {
+        background-color: #58C3FF;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        width: 100%;
+        height: 50px;
+        font-size: 16px;
+        border-radius: 12px;
+        cursor: pointer;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+      }
+      .btn-google{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 100%;
+        height: 50px;
+        font-size: 14px;
+        border-radius: 12px;
+        margin-top: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .btn-google img{
+        width: 20px;
+        height: 20px;
+      }
+      .divider{
+        text-align: center;
+      }
+      .create-account{
+        margin-top: 15px;
+        text-align: center;
+      }
+    }
     /* 웹 */
     @media screen and (min-width:769px){
         .login-container {
@@ -206,7 +304,6 @@ export default {
             font-size: 16px;
             border-radius: 12px;
             cursor: pointer;
-            margin-bottom: 20px;
             transition: all 0.3s ease;
         }
 
@@ -261,11 +358,10 @@ export default {
 
         .create-account a {
             color: #4a5efc;
-            text-decoration: none;
         }
 
         .create-account a:hover {
-            text-decoration: underline;
+            text-decoration: underline !important;
         }
 
         .login-image {
@@ -273,7 +369,7 @@ export default {
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image: url('@/assets/img/img_LogInBanner2.png');
+            background-image: url('/assets/img/img_LogInBanner2.png');
             width: 100%;
             background-repeat: no-repeat;
             background-size: cover;

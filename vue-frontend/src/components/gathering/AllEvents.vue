@@ -1,5 +1,6 @@
 
 <template>
+
   <div class="Web">
     <div class="home-banner">
       <!-- 메인 -->
@@ -15,7 +16,7 @@
             <!-- Search Text -->
             <div class="col-6 search-text">
               <button type="submit">
-                <img src="@/assets/img/icons_search.png" alt="">
+                <img src="/assets/img/icons_search.png" alt="">
               </button>
               <input type="text" class="search-text-box" v-model="searchQuery" placeholder="Search...">
             </div>
@@ -28,7 +29,7 @@
             <!-- Search Location -->
             <div class="col-2 search-location">
               <select v-model="searchLocation">
-                <option disabled hidden selected>Location</option>
+                <option value="" selected disabled hidden>Location</option>
                 <option value="Jongno-gu">Jongno-gu</option>
                 <option value="Jung-gu">Jung-gu</option>
                 <option value="Yongsan-gu">Yongsan-gu</option>
@@ -61,7 +62,7 @@
             <!-- Search Type -->
             <div class="col-2 search-type">
               <select v-model="searchType">
-                <option disabled hidden selected>Type</option>
+                <option value="" selected disabled hidden>Event Type</option>
                 <option value="FirstCome">First come</option>
                 <option value="Register">Register</option>
               </select>
@@ -72,7 +73,7 @@
 
       <!-- 카테고리 분류 -->
       <div class="category-row">
-        <p class="title">Top categories</p>
+        <p class="title">Categories</p>
         <div class="row">
           <div
               class="col category-box"
@@ -114,6 +115,105 @@
     </div>
 
   </div>
+
+  <div class="Mobile">
+    <div class="m-banner">
+
+      <!-- 배너 Title -->
+      <div class="m-banner-title">
+        Start real <br> 
+        Korean Life <br>
+        from the <span style="color: #58C3FF;">HiFor.</span>
+      </div>
+
+      <div class="m-search-box">
+        <!-- 검색어 -->
+        <input type="text" class="search-text-box" v-model="searchQuery" placeholder="Search...">
+        <!-- 지역 -->
+        <select v-model="searchLocation">
+          <option value="" selected disabled hidden>Location</option>
+          <option value="Jongno-gu">Jongno-gu</option>
+          <option value="Jung-gu">Jung-gu</option>
+          <option value="Yongsan-gu">Yongsan-gu</option>
+          <option value="Seongdong-gu">Seongdong-gu</option>
+          <option value="Gwangjin-gu">Gwangjin-gu</option>
+          <option value="Dongdaemun-gu">Dongdaemun-gu</option>
+          <option value="Jungnang-gu">Jungnang-gu</option>
+          <option value="Seongbuk-gu">Seongbuk-gu</option>
+          <option value="Gangbuk-gu">Gangbuk-gu</option>
+          <option value="Dobong-gu">Dobong-gu</option>
+          <option value="Nowon-gu">Nowon-gu</option>
+          <option value="Eunpyeong-gu">Eunpyeong-gu</option>
+          <option value="Seodaemun-gu">Seodaemun-gu</option>
+          <option value="Mapo-gu">Mapo-gu</option>
+          <option value="Yangcheon-gu">Yangcheon-gu</option>
+          <option value="Gangseo-gu">Gangseo-gu</option>
+          <option value="Guro-gu">Guro-gu</option>
+          <option value="Geumcheon-gu">Geumcheon-gu</option>
+          <option value="Yeongdeungpo-gu">Yeongdeungpo-gu</option>
+          <option value="Dongjak-gu">Dongjak-gu</option>
+          <option value="Gwanak-gu">Gwanak-gu</option>
+          <option value="Seocho-gu">Seocho-gu</option>
+          <option value="Gangnam-gu">Gangnam-gu</option>
+          <option value="Songpa-gu">Songpa-gu</option>
+          <option value="Gangdong-gu">Gangdong-gu</option>
+          <option value="etc">etc</option>
+        </select>
+        <!-- 이벤트 타입 -->
+        <select v-model="searchType">
+          <option value="" selected disabled hidden>Event Type</option>
+          <option value="FirstCome">First come</option>
+          <option value="Register">Register</option>
+        </select>
+        <!-- 검색버튼 -->
+        <button type="submit">
+          Search
+        </button>
+      </div>
+
+      <!-- 카테고리 -->
+      <div class="category-row">
+        <p class="m-title">
+          <span style="color: #FFFFFF;">Categories</span>
+        </p>
+        <div class="category-scroll-container" @wheel="handleScroll">
+          <div class="category-box" v-for="category in categories" :key="category.name" @click="fetchEventsByCategory(category.name)">
+            <img :src="category.icon" :alt="category.name" />
+            <p>{{ category.displayName }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- All Events -->
+      <div class="m-events-container">
+        <div class="m-box">
+          <p class="m-title">
+            Events
+            <select class="m-event-sort" v-model="selectedSort" @change="handleSortChange">
+              <option disabled hidden value="">Sort</option>
+              <option value="Latest">Latest</option>
+              <option value="Hot">Hot</option>
+              <option value="Upcoming">Upcoming</option>
+            </select>
+          </p>
+        </div>
+        <!-- Event Cards -->
+        <div class="m-card-box">
+          <div class="m-card" v-for="event in visibleEvents" :key="event.id">
+            <EventCard :event="event" />
+          </div>
+        </div>
+        <!-- 페이지네이션 버튼 -->
+        <div class="m-pagination">
+          <button @click="prevPage" :disabled="currentPage === 1">Prev</button>
+          <span>{{ currentPage }} / {{ totalPages }}</span>
+          <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </template>
 
 <script setup>
@@ -144,15 +244,15 @@ const itemsPerPage = 12;
 const totalItems = computed(() => events.value.length);
 
 const categories = ref([
-  { name: "All", displayName: "ALL", icon: require('@/assets/img/icon_All.png') },
-  { name: "Social", displayName: "SOCIAL", icon: require('@/assets/img/icon_Social.png') },
-  { name: "Food", displayName: "FOOD", icon: require('@/assets/img/icon_Food.png') },
-  { name: "Games", displayName: "GAMES", icon: require('@/assets/img/icon_Games.png') },
-  { name: "Growth", displayName: "GROWTH", icon: require('@/assets/img/icon_Growth.png') },
-  { name: "Sports", displayName: "SPORTS", icon: require('@/assets/img/icon_Sports.png') },
-  { name: "Trip", displayName: "TRIP", icon: require('@/assets/img/icon_Trip.png') },
-  { name: "Artfasion", displayName: "ART/FASHION", icon: require('@/assets/img/icon_ArtFasion.png') },
-  { name: "Others", displayName: "OTHERS", icon: require('@/assets/img/icon_Others.png') },
+  { name: "All", displayName: "ALL", icon: "/assets/img/icon_All.png" },
+  { name: "Social", displayName: "SOCIAL", icon: "/assets/img/icon_Social.png" },
+  { name: "Food", displayName: "FOOD", icon: "/assets/img/icon_Food.png" },
+  { name: "Games", displayName: "GAMES", icon: "/assets/img/icon_Games.png" },
+  { name: "Growth", displayName: "LEARNING", icon: "/assets/img/icon_Growth.png" },
+  { name: "Sports", displayName: "ACTIVITIES", icon: "/assets/img/icon_Sports.png" },
+  { name: "Trip", displayName: "TRIP", icon: "/assets/img/icon_Trip.png" },
+  { name: "Artfasion", displayName: "ART/FASHION", icon: "/assets/img/icon_ArtFasion.png" },
+  { name: "Others", displayName: "OTHERS", icon: "/assets/img/icon_Others.png" },
 ]);
 
 // 계산된 속성
@@ -194,9 +294,14 @@ const mapEventData = (event) => ({
 // 통합된 fetchEvents 함수
 const fetchEvents = async (fetchType, params = {}) => {
   try {
-    const response = await axios.get('http://localhost:3000/gathering', {
-      params: { fetchType, ...params }, // type을 쿼리 파라미터에 추가
-    });
+    const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/gathering`,
+        {
+          params: { fetchType, ...params }, // type을 쿼리 파라미터에 추가
+          withCredentials: true, // 인증 정보를 포함
+        }
+    );
+
     return response.data.map(mapEventData); // 데이터 매핑 후 반환
   } catch (error) {
     console.error(`Failed to fetch events for type "${fetchType}":`, error);
@@ -220,7 +325,6 @@ const fetchHotEvents = async () => {
 };
 
 const fetchUpcomingEvents = async () => {
-  console.log('업커밍입니다')
   events.value = await fetchEvents('upcoming');
 };
 
@@ -233,6 +337,7 @@ const searchEvents = async () => {
     type: searchType.value || undefined,
   };
   events.value = await fetchEvents('search', params);
+  currentPage.value =1;
 };
 
 // 카테고리별 이벤트 가져오기
@@ -263,93 +368,251 @@ onMounted(async () => {
 
 
 <!-- css -->
-<style scoped>
-/* 반응형 모바일 css */
-@media screen and (max-width:768px){
-  .Web{display: none;}
-  .Mobile{display: block;}
-}
-/* 웹 */
-@media screen and (min-width:769px){
-
-
-  .Web{display: block;}
-  .Mobile{display: none;}
-  /* 고정 */
-  .title{
-    font-size: 36px;
-    font-weight: bold;
-    color: #FFFFFF;
-    text-align: left;
-    padding: 0px 30px;
-  }
+  <style scoped>
+  /* 반응형 설정 */
+@media screen and (max-width: 768px) {
+  .Web { display: none; }
+  .Mobile { display: block; }
 
   /* banner */
-  .home-banner{
-    background-image: url('@/assets/img/img_HomeBanner.png');
+  .m-banner{
+    background-image: url('/assets/img/img_HomeBanner.png');
+    background-size: cover;
+    background-position: center;
+    height: 650px;
+    padding-top: 50px;
+  }
+  .m-banner-title {
+    font-size: 40px;
+    font-weight: bold;
+    color: #FFFFFF;
+    padding: 30px;
+  }
+  .m-search-box{
+    padding: 0px 20px;
+  }
+  .m-search-box input{
+    width: 100%;
+    color: #FFFFFF;
+    font-size: 14px;
+    border: 1px solid #777;
+    border-radius: 12px;
+    padding: 10px;
+    background-color: #55555585;
+    margin-bottom: 7px;
+  }
+  .m-search-box input::placeholder{
+    color: #FFFFFF;
+  }
+  .m-search-box select{
+    width: 100%;
+    color: #FFFFFF;
+    font-size: 14px;
+    border: 1px solid #777;
+    border-radius: 12px;
+    padding: 10px;
+    background-color: #55555585;
+    margin-bottom: 7px;
+  }
+  .m-search-box button{
+    width: 100%;
+    color: #FFFFFF;
+    font-size: 14px;
+    border: 1px solid #777;
+    border-radius: 12px;
+    padding: 10px;
+    background-color: #58c2ff98;
+    margin-bottom: 7px;
+    transition: all 0.3s ease;
+  }
+  .m-search-box button:hover{
+    background-color: #58c2ff;
+  }
+  .m-box{
+    padding: 0px 30px;
+  }
+  .m-title{
+    font-size: 24px;
+    font-weight: 500;
+    margin-top: 15px;
+    margin-bottom: 5px;
+  }
+  /* 가로 스크롤 가능하도록 스타일 적용 */
+  .category-scroll-container {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px 0;
+    scrollbar-width: none; /* Firefox 스크롤바 숨김 */
+    -ms-overflow-style: none; /* IE 및 Edge 스크롤바 숨김 */
+  }
+  .category-scroll-container::-webkit-scrollbar {
+    display: none; /* 크롬, 사파리, 엣지 스크롤바 숨김 */
+  }
+  .category-row{
+    padding: 15px;
+  }
+  .category-row .m-title{
+    padding: 0px 15px;
+  }
+  .category-box {
+    flex: 0 0 auto;
+    width: min-content;
+    text-align: center;
+    margin: 0 10px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+  }
+  .category-box:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  .category-box p{
+    color: #FFFFFF;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+  }
+  .category-scroll-container {
+    overflow-x: scroll;
+    padding: 5px;
+  }
+  .category-box img {
+    width: 36px;
+    height: 36px;
+  }
+  /* 카드들 */
+  .m-events-container .m-title{
+    width: max-content;
+  }
+  .m-event-sort{
+    font-size: 14px;
+    font-weight: 300;
+    color: #555;
+    width: min-content;
+    border: none;
+    padding: 0px;
+  }
+  /* 페이지네이션 */
+  .m-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+
+  .m-pagination button {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 24px;
+    background: #58C3FF;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 20px 0px;
+    margin-bottom: 40px;
+  }
+  .m-pagination span {
+    margin: 20px 0px;
+    margin-bottom: 40px;
+  }
+
+  .m-pagination button:hover {
+    background: #5870FF;
+  }
+
+  .m-pagination button:disabled {
+    background: #ccc;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .Web { display: block; }
+  .Mobile { display: none; }
+
+  /* 배너 */
+  .home-banner {
+    background-image: url('/assets/img/img_HomeBanner.png');
     background-size: cover;
     background-position: center;
     height: 900px;
   }
-  .banner-title{
+
+  .banner-title {
     font-size: 72px;
     font-weight: bold;
     color: #FFFFFF;
-    padding: 150px;
-    padding-top: 120px;
-    padding-bottom: 30px;
+    padding: 120px 150px 30px;
   }
-  .search-box{
+
+  /* 검색 */
+  .search-box {
     max-width: 100%;
-    height: fit-content;
     margin: 30px 150px;
     padding: 10px 15px;
     background-color: #FFFFFF69;
     border-radius: 15px;
-    align-content: center;
     text-align: center;
   }
-  .search-box button{
+
+  .search-box button {
     background: none;
     border: none;
   }
+
   .search-box input{
-    background:none;
-    border: none;
-    color: #FFFFFF;
-    height: 42px;
-    color-scheme: white;
-    margin: 0px 5px;
-    width: 10rem;
-  }
-  .search-box input[type='date']{
-    color: #FFFFFF;
-  }
-  .search-box select{
-    background:none;
+    background: none;
     border: none;
     color: #FFFFFF;
     height: 42px;
     margin: 0px 5px;
+    width: 85%;
+  }
+  .search-box input::placeholder {
+    color: #FFFFFF;
+  }
+
+  .search-box select {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    height: 42px;
+    margin: 0px 5px;
     width: 10rem;
   }
-  .search-text-box{
-    width: 85% !important;
+
+  .search-date input{
+    background: url('/assets/img/icon_SearchDate.png') no-repeat right 5px center;
   }
-  /* category */
-  .category-row{
+  .search-date input[type="date"]::-webkit-calendar-picker-indicator,
+  .search-date input[type="date"]::-webkit-inner-spin-button { opacity: 0; appearance: none; }
+
+  /* 카테고리 */
+  .category-row {
     padding: 30px 150px;
     text-align: center;
   }
-  .category-box{
+
+  .title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #FFFFFF;
+    text-align: left;
+  }
+
+  .category-box {
     margin: 0px 20px;
     color: #FFFFFF;
     opacity: 0.7;
     transition: all 0.3s ease;
   }
-  .category-box:hover{
-    margin: 0px 20px;
-    color: #FFFFFF;
+
+  .category-box:hover {
     opacity: 1;
     border-bottom: 1px solid #FFFFFF;
     cursor: pointer;
@@ -357,42 +620,34 @@ onMounted(async () => {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   }
 
-  .eventcontainer-title{
-    font-size: 36px;
-    font-weight: bold;
-    color: #0C1830;
-    text-align: left;
-    padding: 0px 30px;
-  }
-
-
-  /* all Events */
-  .hot-event{
+  /* 이벤트 섹션 */
+  .hot-event {
     margin-top: -210px;
   }
-  .hot-event-title{
+
+  .hot-event-title {
     font-size: 36px;
     font-weight: bold;
     color: #FFFFFF;
     text-align: left;
-    padding: 0px 30px;
     width: min-content;
   }
-  .event-sort{
+
+  .event-sort {
     width: 118px;
     background: none;
     border: none;
     color: #FFFFFF;
     height: 25px;
-    color-scheme: white;
     margin-top: 20px;
   }
 
-  /* all events */
-  .events-container{
+  /* 이벤트 카드 */
+  .events-container {
     padding: 30px 150px;
   }
-  /* pagenation */
+
+  /* 페이지네이션 */
   .pagination {
     display: flex;
     justify-content: center;
@@ -404,11 +659,10 @@ onMounted(async () => {
   .pagination button {
     padding: 8px 16px;
     border: none;
-    border-radius: 4px;
+    border-radius: 24px;
     background: #58C3FF;
     color: #fff;
     cursor: pointer;
-    border-radius: 24px;
     transition: all 0.3s ease;
   }
 
@@ -419,308 +673,6 @@ onMounted(async () => {
   .pagination button:disabled {
     background: #ccc;
   }
-
-  /* how to works */
-  .ex-con{
-    height:800px;
-    align-content:center;
-    background-color: #F8F8FB;
-    border-radius: 40px;
-    padding: 0px 150px;
-  }
-  .ex-text1{
-    text-align:center;
-    color: #58C3FF;
-    font-weight: 500;
-  }
-  .ex-title{
-    text-align:center;
-    font-size: 40px;
-    font-weight: bold;
-    margin-bottom: 30px;
-  }
-  .ex-icon3{
-    margin-top:-10px;
-    margin-left:-40px;
-  }
-  .ex-box{
-    text-align:center;
-    /* filter: grayscale(1); */
-  }
-  /* .ex-box:hover{
-      text-align:center;
-      filter: grayscale(0);
-  } */
-  .ex-icon1{
-    width:150px;
-    margin-top:10px;
-    margin-bottom:40px;
-  }
-  .ex-icon2{
-    width:150px;
-    margin-top:10px;
-    margin-bottom:40px;
-  }
-  .ex-icon3{
-    height:210px;
-  }
-  .ex-text2{
-    font-size: 30px;
-    font-weight: 700;
-    line-height: 40px;
-    text-align: center;
-    margin-top: 30px;
-    text-decoration-skip-ink: none;
-  }
-  .ex-text3{
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 28px;
-    text-align: center;
-    text-decoration-skip-ink: none;
-  }
-  /* why hifor */
-  .why-con{
-    padding: 75px 150px;
-  }
-  .why-box{
-    align-self: center;
-  }
-  .why-box img{
-    width: 100%;
-  }
-  .wc-text1{
-    color: #58C3FF;
-    font-weight: 500;
-  }
-  .wc-text2{
-    font-weight: 300;
-  }
-  .wc-title{
-    font-size: 40px;
-    font-weight: bold;
-  }
-  .wc-btn{
-    width: 180px;
-    height: 60px;
-    text-align: center;
-    align-self: center;
-    border-radius: 96px;
-    border: none;
-    color: #FFFFFF;
-    background-color: #58C3FF;
-    margin-top: 15px;
-    transition: all 0.3s ease;
-  }
-  .wc-btn:hover{
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-
-  /* 우리 가치 */
-  .ov-con{
-    padding: 30px 150px;
-    margin: 30px 0px;
-    background-color: #F8F8FB;
-  }
-  .value-card{
-    margin: 15px;
-    background-color: #FFFFFF;
-    border-radius: 24px;
-    padding: 40px;
-    text-align: center;
-  }
-  .value-title{
-    margin-top: 20px;
-    font-size: 22px;
-    font-weight: 400;
-    color: #0C1830;
-    margin-bottom: 8px;
-  }
-  .value-text{
-    font-size: 16px;
-    font-weight: 400;
-    color: #46526A;
-  }
-
-  /* 사용자 리뷰 */
-  .review-con{
-    padding-left: 150px;
-    padding-right: 150px;
-    padding-top: 30px;
-  }
-  .review-row1{
-    margin-left: -30px !important;
-    margin-right: 30px !important;
-  }
-  .review-row2{
-    margin-left: 30px !important;
-    margin-right: -30px !important;
-  }
-  .rc-title{
-    text-align: center;
-    font-size: 40px;
-    font-weight: bold;
-  }
-  .rc-text1{
-    text-align: center;
-    margin: 0px;
-    color: #58C3FF;
-  }
-  .rc-text2{
-    text-align: center;
-    font-weight: 300;
-  }
-  .testimonials-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-    margin: 40px 0;
-  }
-
-  .testimonial-card {
-    background: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .testimonial-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-  }
-
-  .testimonial-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-  }
-
-  .testimonial-name {
-    font-size: 16px;
-    font-weight: bold;
-  }
-
-  .testimonial-location {
-    font-size: 14px;
-    color: #999;
-  }
-
-  .testimonial-icon {
-    margin-left: auto;
-    width: 20px;
-    height: 20px;
-  }
-
-  .testimonial-text {
-    font-size: 14px;
-    color: #555;
-  }
-
-  .button-row {
-    margin-top: 40px;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
-
-  .cta-button {
-    padding: 12px 20px;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .primary-button {
-    width: 155px;
-    height: 58px;
-    border-radius: 100px;
-    background-color: #58C3FF;
-    color: white;
-    border: none;
-  }
-
-  .secondary-button {
-    width: 155px;
-    height: 58px;
-    background-color: #FFFFFF;
-    border: 1.5px solid #58C3FF;
-    border-radius: 100px;
-    color: #58C3FF;
-  }
-
-  .cta-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Contact-Us */
-  .contact-con{
-    height:630px;
-    background-color:#F8F8FB;
-    border-radius:40px;
-    justify-items: center;
-    padding-top:40px;
-    padding-bottom: 40px;
-    padding-left:125px;
-    padding-right:125px;
-    margin-top: 90px;
-  }
-  .contact-box{
-    background-color:#58C3FF;
-    height:550px;
-    border-radius: 40px;
-  }
-  .c-img-box{
-    height:550px;
-  }
-  .c-img-box1{
-    text-align: right;
-  }
-  .c-img-box2{
-    align-self:end;
-  }
-  .c-img1{
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    margin-bottom:25px;
-  }
-  .c-img3{
-    margin-bottom:25px;
-  }
-  .c-text-box{
-    padding-top:120px;
-    padding-bottom:120px;
-  }
-  .c-title{
-    color: #ffffff;
-    font-size: 50px;
-    font-weight: 600;
-    line-height: 64px;
-  }
-  .c-text{
-    color: #f1f1f1;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 28px;
-  }
-  .contact-btn{
-    width: 155px;
-    height: 58px;
-    background-color: #58C3FF;
-    border: 1.5px solid #FFFFFF;
-    border-radius: 100px;
-    color: #FFFFFF;
-    margin-top: 40px;
-    transition: all 0.3s ease;
-  }
-  .contact-btn:hover{
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
 }
-</style>
+
+  </style>
