@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import * as fs from 'fs';
+import { ConfigService } from '@nestjs/config';
 // 이메일 전송에 필요한 데이터 타입 정의
 export interface CreateParticipantEmailData {
   hostName: string;      // 호스트 이름
@@ -15,7 +16,8 @@ export class EmailService {
   private transporter;
   private mailOptions;
 
-  constructor() {
+  constructor(private readonly configService: ConfigService,) {
+
     // SMTP 설정
     this.transporter = nodemailer.createTransport({
       host: 'smtp.naver.com', // 네이버 SMTP 서버
@@ -118,6 +120,7 @@ export class EmailService {
     },
   ): Promise<void> {
     const { guestName, eventTitle, eventDate, eventLocation, eventId } = emailData;
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
     const mailOptions = {
       ...this.mailOptions,
       to: recipientEmail,
@@ -134,7 +137,7 @@ export class EmailService {
         <p>You're all set! See you at the event.</p>
         <br>
         <p>
-          <a href="http://localhost:8080/gathering/${eventId}" style="padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none;">View Event Details</a>
+          <a href="${frontendUrl}/gathering/${eventId}" style="padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none;">View Event Details</a>
         </p>
         <br>
         <p>Best,<br/>The HiFor Team</p>
@@ -155,6 +158,7 @@ export class EmailService {
     recipientEmail: string,
     emailData: { guestName: string; eventTitle: string },
   ): Promise<void> {
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
     const { guestName, eventTitle } = emailData;
     const mailOptions = {
       ...this.mailOptions,
@@ -166,7 +170,7 @@ export class EmailService {
         <p>Don't worry—there are plenty of other events waiting for you on HiFor.</p>
         <br>
         <p>
-          <a href="http://localhost:8080/allEvents" style="padding: 10px 20px; background-color: #28a745; color: #fff; text-decoration: none;">Find Other Events</a>
+          <a href="${frontendUrl}" style="padding: 10px 20px; background-color: #28a745; color: #fff; text-decoration: none;">Find Other Events</a>
         </p>
         <br>
         <p>Best,<br/>The HiFor Team</p>
@@ -192,7 +196,8 @@ export class EmailService {
     const subject = '[HiFor] A new participant has signed up!';
 
     // 관리 페이지 링크 (프로덕션 URL에 맞게 수정)
-    const manageEventUrl = `http://localhost:8080/gathering/${eventId}`;
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+    const manageEventUrl = `${frontendUrl}/gathering/${eventId}`;
 
     // HTML 포맷의 메일 본문 작성
     const htmlContent = `

@@ -4,14 +4,16 @@ import { Profile, Strategy } from 'passport-google-oauth20';
 import { User } from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';
 import axios from 'axios';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService,
+              private configService: ConfigService, ) {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:3000/auth/google',
+      callbackURL: `${configService.get<string>('BASE_URL')}/auth/google`,
       scope: [
         'email',
         'profile'

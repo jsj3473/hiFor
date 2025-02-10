@@ -20,7 +20,7 @@ import {
   SearchEventDto,
 } from './gathering.dto';
 import { GatheringService } from './gathering.service';
-import { SessionAuthGuard } from '../auth/auth.guard';
+import { ConfigService } from '@nestjs/config';
 
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -31,7 +31,8 @@ import { extname } from 'path';
 
 @Controller('gathering')
   export class GatheringController {
-    constructor(private readonly gatheringService: GatheringService) {}
+    constructor(    private readonly gatheringService: GatheringService,
+                    private readonly configService: ConfigService, ) {}
 
   @Post('upload-image-postEvent')
   @UseInterceptors(
@@ -115,7 +116,8 @@ import { extname } from 'path';
       }),
     )
     uploadFile(@UploadedFile() file: Express.Multer.File) {
-      const fileUrl = `http://localhost:3000/uploads/${file.filename}`; // 저장된 파일의 URL 생성
+    const baseUrl = this.configService.get<string>('BASE_URL'); // 환경 변수에서 BASE_URL 가져오기
+    const fileUrl = `${baseUrl}/uploads/${file.filename}`; // 저장된 파일의 URL 생성
       return {
         success: true,
         url: fileUrl, // 클라이언트에 반환할 URL

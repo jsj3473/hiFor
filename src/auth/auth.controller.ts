@@ -20,12 +20,13 @@ import {
 } from './auth.guard';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
-
+import { ConfigService } from '@nestjs/config';
 @Controller('auth') 
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private readonly configService: ConfigService,
   ) {} 
 
 
@@ -79,13 +80,11 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   async googleAuthRedirect(@Request() req, @Response() res) {
     const { user } = req;
-  
+
     // 사용자 데이터 확인 (DB에서 다시 조회)
     const completeUser = await this.userService.findByEmail(user.email);
-    console.log('cuser:',completeUser)
-  
+    console.log('cuser:', completeUser);
 
-  
     // Google 사용자 정보를 포함한 JWT 생성
     const jwtToken = await this.authService.googleGenerateJwtToken({
       id: user.id,
@@ -96,22 +95,26 @@ export class AuthController {
       gender: user.gender,
       nationality: user.nationality,
     });
-    
+
     // JWT를 쿠키로 설정
     res.cookie('access_token', jwtToken.access_token, {
       httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
+      secure: this.configService.get<string>('NODE_ENV') === 'production',
       maxAge: 3600000, // 1시간
     });
 
+    // 환경 변수에서 프론트엔드 URL 가져오기
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+
     if (completeUser && completeUser.nationality) {
       // 회원가입 완료된 경우 홈으로 리다이렉트
-      res.redirect('http://localhost:8081/');
+      res.redirect(`${frontendUrl}/`);
       return;
     }
+
     // 회원가입 페이지로 리다이렉트
-    res.redirect(`http://localhost:8081/googleSignUp?token=${jwtToken.access_token}`);
-  }  
+    res.redirect(`${frontendUrl}/googleSignUp?token=${jwtToken.access_token}`);
+  }
   
   @Post('googleSignUp')
   async handleGoogleSignUp(@Body() body: any) {
@@ -121,13 +124,11 @@ export class AuthController {
     try {
       // 서비스 호출
       const user = await this.userService.findByEmail(email);
-      console.log('수정전 유저:',user);
       user.username = username;
       user.dob = dob;
       user.gender = gender;
       user.nationality = nationality;
       await this.userService.updateUser(user);
-      console.log('수정후 유저:',user);
       // JWT 토큰 생성
       const jwtToken = await this.authService.generateJwtToken(user);
     

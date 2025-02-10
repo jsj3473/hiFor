@@ -12,8 +12,9 @@ dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8081'; // 환경변수에서 읽기
   app.enableCors({
-    origin: 'http://localhost:8081',  // 프론트엔드 주소
+    origin: frontendUrl,  // 프론트엔드 주소
     credentials: true,                // 쿠키를 사용하려면 true로 설정
   });
   app.useGlobalPipes(new ValidationPipe({
@@ -33,6 +34,6 @@ async function bootstrap() {
     }),
   );
   app.use(passport.initialize());
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

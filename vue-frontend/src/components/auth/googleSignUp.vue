@@ -368,7 +368,7 @@ const router = useRouter(); // Vue Router에 접근
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/auth/signUp', user);
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signUp`, user);
       console.log('Sign-up response:', response.data);
       alert('Sign-up completed!');
       router.push('/logIn'); // 로그인 후 메인 페이지로 이동
