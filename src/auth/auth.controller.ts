@@ -83,8 +83,6 @@ export class AuthController {
 
     // 사용자 데이터 확인 (DB에서 다시 조회)
     const completeUser = await this.userService.findByEmail(user.email);
-    console.log('cuser:', completeUser);
-
     // Google 사용자 정보를 포함한 JWT 생성
     const jwtToken = await this.authService.googleGenerateJwtToken({
       id: user.id,

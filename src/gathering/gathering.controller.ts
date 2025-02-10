@@ -116,12 +116,13 @@ import { extname } from 'path';
       }),
     )
     uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const baseUrl = this.configService.get<string>('BASE_URL'); // 환경 변수에서 BASE_URL 가져오기
-    const fileUrl = `${baseUrl}/uploads/${file.filename}`; // 저장된 파일의 URL 생성
-      return {
-        success: true,
-        url: fileUrl, // 클라이언트에 반환할 URL
-      };
+      const baseUrl = this.configService.get<string>('BASE_URL'); // 환경 변수에서 BASE_URL 가져오기
+      console.log(baseUrl)
+      const fileUrl = `${baseUrl}/uploads/${file.filename}`; // 저장된 파일의 URL 생성
+        return {
+          success: true,
+          url: fileUrl, // 클라이언트에 반환할 URL
+        };
     }
     @Get('getEvents/:eventId')
     async getEvent(@Param('eventId') eventId: number) {

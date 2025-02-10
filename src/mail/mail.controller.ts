@@ -101,15 +101,21 @@ export class VerificationController {
         );
       }
 
-      // 참가자들에게 이메일 전송
-      await Promise.all(
-          participants.map((participant) =>
-              this.emailService.sendEventDeletionEmail(
-                  participant.email, // 참가자의 이메일
-                  message, // 삭제 이유
-              ),
-          ),
-      );
+      async function delay(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      for (const participant of participants) {
+        console.log('📧 이메일 전송:', participant.email);
+        try {
+          await this.emailService.sendEventDeletionEmail(participant.email, message);
+          await delay(1000); // 1초(1000ms) 대기 후 다음 이메일 전송
+        } catch (error) {
+          console.error(`❌ 이메일 전송 실패 (${participant.email}):`, error);
+        }
+      }
+
+
 
       return { message: 'Email notifications sent successfully!' };
     } catch (error) {

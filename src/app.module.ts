@@ -13,7 +13,7 @@ import { DataSource } from 'typeorm';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true, // 모든 모듈에서 ConfigService 사용 가능
-      envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'], // 환경에 따라 .env 파일 로드
+      envFilePath: ['.env'], // 환경에 따라 .env 파일 로드
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

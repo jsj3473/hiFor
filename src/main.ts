@@ -4,15 +4,18 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import * as passport from 'passport';
-import * as dotenv from 'dotenv';
 import * as express from 'express';
 import { join } from 'path';
-
-dotenv.config();
+import {ConfigService} from "@nestjs/config";
 
 async function bootstrap() {
+
   const app = await NestFactory.create(AppModule);
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8081'; // 환경변수에서 읽기
+  const configService = app.get(ConfigService);
+  const frontendUrl = configService.get<string>('FRONTEND_URL');
+
+  console.log('FRONTEND_URL1:', frontendUrl);
+
   app.enableCors({
     origin: frontendUrl,  // 프론트엔드 주소
     credentials: true,                // 쿠키를 사용하려면 true로 설정
@@ -34,6 +37,7 @@ async function bootstrap() {
     }),
   );
   app.use(passport.initialize());
+  console.log('FRONTEND_URL2:', configService.get<string>('BASE_URL')); // 디버깅
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

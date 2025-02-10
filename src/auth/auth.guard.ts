@@ -82,9 +82,6 @@ export class SessionAuthGuard implements CanActivate {
 
     // 세션에 userId가 있는지 확인
     if (!request.session || !(request.session as any).userId) {
-      console.log('---------------------')
-      console.log(request.session)
-      console.log((request.session as any).userId)
       response.status(401).json({ message: '로그인이 필요합니다.' });
       return false;
     }

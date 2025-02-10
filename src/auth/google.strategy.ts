@@ -44,7 +44,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       if (!user) {
         // Create a new user without birthday or gender
         user = await this.userService.signUpToGoogle(id, email, fullName);
-        console.log(user)
       }
 
       return user;

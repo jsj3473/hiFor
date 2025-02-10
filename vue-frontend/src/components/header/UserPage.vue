@@ -151,14 +151,8 @@ const triggerFileInput = () => {
 const handleFileChange = async (event) => {
   const file = event.target.files[0]; // 선택된 파일
   if (!file) return;
-  console.log('Raw File:', file);
-  console.log('Type of Raw File:', typeof file); // 타입 확인
-  console.log('Is File Instance:', file instanceof File); // File 객체인지 확인
-  console.log('File Type:', file.type); // 파일의 MIME 타입 (예: image/jpeg)
   const formData = new FormData();
   formData.append('file', file);
-
-  console.log('formdata:',formData)
   try {
     // 서버로 이미지 업로드
     const response = await axios.post(
