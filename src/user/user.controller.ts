@@ -75,7 +75,6 @@ export class UserController {
     return { username: user.userId, message: '아이디 찾기가 완료되었습니다.' };
   }
   @Post('uploadProfileImage/:userId')
-  @UseGuards(SessionAuthGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
