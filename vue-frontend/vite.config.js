@@ -10,11 +10,19 @@ export default defineConfig({
     server: {
         port: 8081, // 개발 서버 실행 포트
         open: true, // 개발 서버 시작 시 브라우저 자동 열기
+        proxy: {
+            // ✅ CORS 문제 방지 (프론트 → 백엔드 요청 프록시)
+            '/api': {
+                target: import.meta.env.VITE_API_BASE_URL || 'https://hifor.onrender.com',
+                changeOrigin: true,
+                secure: true,
+                rewrite: (path) => path.replace(/^\/api/, ''), // '/api' 제거 후 백엔드 요청
+            },
+        },
     },
     resolve: {
         alias: {
             '@': '/src', // ✅ src 폴더를 `@`로 매핑
         },
     },
-
 });
