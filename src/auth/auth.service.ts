@@ -70,6 +70,7 @@ export class AuthService {
     // JWT 페이로드 생성
     const payload = {
       id: user.id,
+      userId: user.userId,
       email: user.email,
       name: user.username,
       dob: user.dob,
