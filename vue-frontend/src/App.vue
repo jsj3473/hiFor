@@ -255,7 +255,7 @@ export default {
 
     // Check Google login status via cookies
     const cookieExists = document.cookie.split('; ').some((cookie) => cookie.startsWith('access_token='));
-    console.log('appvue266',cookieExists)
+    console.log('appvue258',cookieExists)
 
     // Check login status
     const checkLoginStatus = async () => {
@@ -292,7 +292,7 @@ export default {
 
     // Lifecycle hook
     onMounted(() => {
-      //checkLoginStatus();
+      checkLoginStatus();
     });
 
     return {
