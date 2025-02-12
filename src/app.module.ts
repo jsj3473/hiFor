@@ -12,18 +12,18 @@ import { DataSource } from 'typeorm';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // 모든 모듈에서 ConfigService 사용 가능
-      envFilePath: ['.env'], // 환경에 따라 .env 파일 로드
+      isGlobal: true,
+      envFilePath: ['.env'], // 환경 변수 파일 로드
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'sqlite',
-        database: configService.get<string>('DATABASE_NAME', 'default.sqlite'), // 환경 변수에서 DB 이름 가져옴
+        type: 'postgres', // PostgreSQL로 변경
+        url: configService.get<string>('DATABASE_URL'), // 환경 변수에서 URL 가져오기
         autoLoadEntities: true,
-        synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true), // 환경 변수로 동기화 여부 설정
-        logging: configService.get<boolean>('DB_LOGGING', false), // 환경 변수로 로깅 설정
+        synchronize: configService.get<boolean>('DB_SYNCHRONIZE', false), // 운영 환경에서는 false 추천
+        logging: configService.get<boolean>('DB_LOGGING', false),
       }),
     }),
     UserModule,
