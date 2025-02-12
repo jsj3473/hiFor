@@ -119,7 +119,7 @@ export class AuthController {
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production', // 배포 환경에서는 HTTPS에서만 쿠키 저장
       maxAge: 3600000, // 1시간
-      //sameSite: 'None', // CORS 문제 방지 (다른 도메인 간 쿠키 전송 허용)
+      sameSite: 'None', // CORS 문제 방지 (다른 도메인 간 쿠키 전송 허용)
     });
 
 
