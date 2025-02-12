@@ -114,7 +114,7 @@
                   <input type="checkbox" v-model="checkbox.checked" />
                 </div>
               </div>
-              <button type="submit" class="btn-primary" :disabled="!requiredChecked">Sign up</button>
+              <button type="submit" class="btn-primary handel-register-btn" :disabled="!requiredChecked">Sign up</button>
 
             </form>
         </div>
@@ -1017,6 +1017,11 @@ const router = useRouter(); // Vue Router에 접근
       .popup-link{
         text-decoration: underline;
         cursor: pointer;
+      }
+      .handel-register-btn:disabled {
+             background-color: #ccc; /* 비활성화 시 배경 회색 */
+             cursor: not-allowed; /* 마우스 커서 비활성화 */
+             opacity: 0.6; /* 흐리게 */
       }
     }
 </style>

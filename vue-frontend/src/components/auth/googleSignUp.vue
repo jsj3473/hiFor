@@ -1,4 +1,4 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
   <div class="login-container">
 
       <div class="create-image">
@@ -14,6 +14,19 @@
           <p>Your life in Korea becomes more enjoyable here!</p>
 
           <form @submit.prevent="handleRegister">
+            <div class="form-group">
+              <label for="email">User name</label>
+              <input type="text" v-model="name" placeholder="ex.HiFor" readonly />
+
+            </div>
+            <div class="form-group">
+              <div class="row half-input-row">
+                <div class="col-6 email-box">
+                  <label for="email">Email</label>
+                  <input type="email" v-model="user.email" placeholder="Email" readonly />
+                </div>
+              </div>
+            </div>
               <div class="form-group">
                   <label for="email">ID</label>
                   <input type="text" v-model="user.userId" id="name" placeholder="ex.HiFor" required />
@@ -70,7 +83,7 @@
               <div class="col-12">
                 <button type="button" class="agree-all" @click="toggleAllCheckboxes">Accept All</button>
               </div>
-    
+
               <div v-for="(checkbox, index) in checkboxes" :key="index" class="checkbox-item">
                 <label>
                   <span v-if="index === 0">
@@ -86,7 +99,7 @@
                 <input type="checkbox" v-model="checkbox.checked" />
               </div>
             </div>
-            <button type="submit" class="btn-primary" :disabled="!requiredChecked">Sign up</button>
+            <button type="button" class="btn-primary handel-register-btn" :disabled="!requiredChecked" @click="handleRegister">Sign up</button>
 
           </form>
       </div>
@@ -95,431 +108,322 @@
 </template>
 
 <script setup>
+import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
-import { reactive, ref, computed  } from 'vue';
+import { ref, reactive, onMounted, computed } from 'vue';
+import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+
+const user = reactive({
+  email: '',
+  userId: '',
+  dob: '',
+  gender: '',
+  nationality: '',
+});
+const name = ref('');
 
 const searchQuery = ref('');
 const selectedCountry = ref({});
 const showDropdown = ref(false);
 const countries = ref([
-   { code: 'AF', name: 'Afghanistan' },
-   { code: 'AL', name: 'Albania' },
-   { code: 'DZ', name: 'Algeria' },
-   { code: 'AS', name: 'American Samoa' },
-   { code: 'AD', name: 'Andorra' },
-   { code: 'AO', name: 'Angola' },
-   { code: 'AG', name: 'Antigua and Barbuda' },
-   { code: 'AR', name: 'Argentina' },
-   { code: 'AM', name: 'Armenia' },
-   { code: 'AU', name: 'Australia' },
-   { code: 'AT', name: 'Austria' },
-   { code: 'AZ', name: 'Azerbaijan' },
-   { code: 'BS', name: 'Bahamas' },
-   { code: 'BH', name: 'Bahrain' },
-   { code: 'BD', name: 'Bangladesh' },
-   { code: 'BB', name: 'Barbados' },
-   { code: 'BY', name: 'Belarus' },
-   { code: 'BE', name: 'Belgium' },
-   { code: 'BZ', name: 'Belize' },
-   { code: 'BJ', name: 'Benin' },
-   { code: 'BT', name: 'Bhutan' },
-   { code: 'BO', name: 'Bolivia' },
-   { code: 'BA', name: 'Bosnia and Herzegovina' },
-   { code: 'BW', name: 'Botswana' },
-   { code: 'BR', name: 'Brazil' },
-   { code: 'BN', name: 'Brunei' },
-   { code: 'BG', name: 'Bulgaria' },
-   { code: 'BF', name: 'Burkina Faso' },
-   { code: 'BI', name: 'Burundi' },
-   { code: 'CV', name: 'Cabo Verde' },
-   { code: 'KH', name: 'Cambodia' },
-   { code: 'CM', name: 'Cameroon' },
-   { code: 'CA', name: 'Canada' },
-   { code: 'CF', name: 'Central African Republic' },
-   { code: 'TD', name: 'Chad' },
-   { code: 'CL', name: 'Chile' },
-   { code: 'CN', name: 'China' },
-   { code: 'CO', name: 'Colombia' },
-   { code: 'KM', name: 'Comoros' },
-   { code: 'CG', name: 'Congo (Republic)' },
-   { code: 'CD', name: 'Congo (Democratic Republic)' },
-   { code: 'CR', name: 'Costa Rica' },
-   { code: 'CI', name: "Côte d'Ivoire" },
-   { code: 'HR', name: 'Croatia' },
-   { code: 'CU', name: 'Cuba' },
-   { code: 'CY', name: 'Cyprus' },
-   { code: 'CZ', name: 'Czech Republic' },
-   { code: 'DK', name: 'Denmark' },
-   { code: 'DJ', name: 'Djibouti' },
-   { code: 'DM', name: 'Dominica' },
-   { code: 'DO', name: 'Dominican Republic' },
-   { code: 'EC', name: 'Ecuador' },
-   { code: 'EG', name: 'Egypt' },
-   { code: 'SV', name: 'El Salvador' },
-   { code: 'GQ', name: 'Equatorial Guinea' },
-   { code: 'ER', name: 'Eritrea' },
-   { code: 'EE', name: 'Estonia' },
-   { code: 'SZ', name: 'Eswatini' },
-   { code: 'ET', name: 'Ethiopia' },
-   { code: 'FJ', name: 'Fiji' },
-   { code: 'FI', name: 'Finland' },
-   { code: 'FR', name: 'France' },
-   { code: 'GA', name: 'Gabon' },
-   { code: 'GM', name: 'Gambia' },
-   { code: 'GE', name: 'Georgia' },
-   { code: 'DE', name: 'Germany' },
-   { code: 'GH', name: 'Ghana' },
-   { code: 'GR', name: 'Greece' },
-   { code: 'GD', name: 'Grenada' },
-   { code: 'GT', name: 'Guatemala' },
-   { code: 'GN', name: 'Guinea' },
-   { code: 'GW', name: 'Guinea-Bissau' },
-   { code: 'GY', name: 'Guyana' },
-   { code: 'HT', name: 'Haiti' },
-   { code: 'HN', name: 'Honduras' },
-   { code: 'HU', name: 'Hungary' },
-   { code: 'IS', name: 'Iceland' },
-   { code: 'IN', name: 'India' },
-   { code: 'ID', name: 'Indonesia' },
-   { code: 'IR', name: 'Iran' },
-   { code: 'IQ', name: 'Iraq' },
-   { code: 'IE', name: 'Ireland' },
-   { code: 'IL', name: 'Israel' },
-   { code: 'IT', name: 'Italy' },
-   { code: 'JM', name: 'Jamaica' },
-   { code: 'JP', name: 'Japan' },
-   { code: 'JO', name: 'Jordan' },
-   { code: 'KZ', name: 'Kazakhstan' },
-   { code: 'KE', name: 'Kenya' },
-   { code: 'KI', name: 'Kiribati' },
-   { code: 'KP', name: 'North Korea' },
-   { code: 'KR', name: 'South Korea' },
-   { code: 'KW', name: 'Kuwait' },
-   { code: 'KG', name: 'Kyrgyzstan' },
-   { code: 'LA', name: 'Laos' },
-   { code: 'LV', name: 'Latvia' },
-   { code: 'LB', name: 'Lebanon' },
-   { code: 'LS', name: 'Lesotho' },
-   { code: 'LR', name: 'Liberia' },
-   { code: 'LY', name: 'Libya' },
-   { code: 'LI', name: 'Liechtenstein' },
-   { code: 'LT', name: 'Lithuania' },
-   { code: 'LU', name: 'Luxembourg' },
-{ code: "MG", name: "Madagascar" },
-{ code: "MW", name: "Malawi" },
-{ code: "MY", name: "Malaysia" },
-{ code: "MV", name: "Maldives" },
-{ code: "ML", name: "Mali" },
-{ code: "MT", name: "Malta" },
-{ code: "MH", name: "Marshall Islands" },
-{ code: "MR", name: "Mauritania" },
-{ code: "MU", name: "Mauritius" },
-{ code: "MX", name: "Mexico" },
-{ code: "FM", name: "Micronesia" },
-{ code: "MD", name: "Moldova" },
-{ code: "MC", name: "Monaco" },
-{ code: "MN", name: "Mongolia" },
-{ code: "ME", name: "Montenegro" },
-{ code: "MA", name: "Morocco" },
-{ code: "MZ", name: "Mozambique" },
-{ code: "MM", name: "Myanmar" },
-{ code: "NA", name: "Namibia" },
-{ code: "NR", name: "Nauru" },
-{ code: "NP", name: "Nepal" },
-{ code: "NL", name: "Netherlands" },
-{ code: "NZ", name: "New Zealand" },
-{ code: "NI", name: "Nicaragua" },
-{ code: "NE", name: "Niger" },
-{ code: "NG", name: "Nigeria" },
-{ code: "MK", name: "North Macedonia" },
-{ code: "NO", name: "Norway" },
-{ code: "OM", name: "Oman" },
-{ code: "PK", name: "Pakistan" },
-{ code: "PW", name: "Palau" },
-{ code: "PA", name: "Panama" },
-{ code: "PG", name: "Papua New Guinea" },
-{ code: "PY", name: "Paraguay" },
-{ code: "PE", name: "Peru" },
-{ code: "PH", name: "Philippines" },
-{ code: "PL", name: "Poland" },
-{ code: "PT", name: "Portugal" },
-{ code: "QA", name: "Qatar" },
-{ code: "RO", name: "Romania" },
-{ code: "RU", name: "Russia" },
-{ code: "RW", name: "Rwanda" },
-{ code: "KN", name: "Saint Kitts and Nevis" },
-{ code: "LC", name: "Saint Lucia" },
-{ code: "VC", name: "Saint Vincent and the Grenadines" },
-{ code: "WS", name: "Samoa" },
-{ code: "SM", name: "San Marino" },
-{ code: "ST", name: "Sao Tome and Principe" },
-{ code: "SA", name: "Saudi Arabia" },
-{ code: "SN", name: "Senegal" },
-{ code: "RS", name: "Serbia" },
-{ code: "SC", name: "Seychelles" },
-{ code: "SL", name: "Sierra Leone" },
-{ code: "SG", name: "Singapore" },
-{ code: "SK", name: "Slovakia" },
-{ code: "SI", name: "Slovenia" },
-{ code: "SB", name: "Solomon Islands" },
-{ code: "SO", name: "Somalia" },
-{ code: "ZA", name: "South Africa" },
-{ code: "SS", name: "South Sudan" },
-{ code: "ES", name: "Spain" },
-{ code: "LK", name: "Sri Lanka" },
-{ code: "SD", name: "Sudan" },
-{ code: "SR", name: "Suriname" },
-{ code: "SE", name: "Sweden" },
-{ code: "CH", name: "Switzerland" },
-{ code: "SY", name: "Syria" },
-{ code: "TW", name: "Taiwan" },
-{ code: "TJ", name: "Tajikistan" },
-{ code: "TZ", name: "Tanzania" },
-{ code: "TH", name: "Thailand" },
-{ code: "TL", name: "Timor-Leste" },
-{ code: "TG", name: "Togo" },
-{ code: "TO", name: "Tonga" },
-{ code: "TT", name: "Trinidad and Tobago" },
-{ code: "TN", name: "Tunisia" },
-{ code: "TR", name: "Turkey" },
-{ code: "TM", name: "Turkmenistan" },
-{ code: "TV", name: "Tuvalu" },
-{ code: "UG", name: "Uganda" },
-{ code: "UA", name: "Ukraine" },
-{ code: "AE", name: "United Arab Emirates" },
-{ code: "GB", name: "United Kingdom" },
-{ code: "US", name: "United States" },
-{ code: "UY", name: "Uruguay" },
-{ code: "UZ", name: "Uzbekistan" },
-{ code: "VU", name: "Vanuatu" },
-{ code: "VE", name: "Venezuela" },
-{ code: "VN", name: "Vietnam" },
-{ code: "YE", name: "Yemen" },
-{ code: "ZM", name: "Zambia" },
-{ code: "ZW", name: "Zimbabwe" },
-   // 추가 국가 리스트
- ]);
+  { code: 'AF', name: 'Afghanistan' },
+  { code: 'AL', name: 'Albania' },
+  { code: 'DZ', name: 'Algeria' },
+  { code: 'AS', name: 'American Samoa' },
+  { code: 'AD', name: 'Andorra' },
+  { code: 'AO', name: 'Angola' },
+  { code: 'AG', name: 'Antigua and Barbuda' },
+  { code: 'AR', name: 'Argentina' },
+  { code: 'AM', name: 'Armenia' },
+  { code: 'AU', name: 'Australia' },
+  { code: 'AT', name: 'Austria' },
+  { code: 'AZ', name: 'Azerbaijan' },
+  { code: 'BS', name: 'Bahamas' },
+  { code: 'BH', name: 'Bahrain' },
+  { code: 'BD', name: 'Bangladesh' },
+  { code: 'BB', name: 'Barbados' },
+  { code: 'BY', name: 'Belarus' },
+  { code: 'BE', name: 'Belgium' },
+  { code: 'BZ', name: 'Belize' },
+  { code: 'BJ', name: 'Benin' },
+  { code: 'BT', name: 'Bhutan' },
+  { code: 'BO', name: 'Bolivia' },
+  { code: 'BA', name: 'Bosnia and Herzegovina' },
+  { code: 'BW', name: 'Botswana' },
+  { code: 'BR', name: 'Brazil' },
+  { code: 'BN', name: 'Brunei' },
+  { code: 'BG', name: 'Bulgaria' },
+  { code: 'BF', name: 'Burkina Faso' },
+  { code: 'BI', name: 'Burundi' },
+  { code: 'CV', name: 'Cabo Verde' },
+  { code: 'KH', name: 'Cambodia' },
+  { code: 'CM', name: 'Cameroon' },
+  { code: 'CA', name: 'Canada' },
+  { code: 'CF', name: 'Central African Republic' },
+  { code: 'TD', name: 'Chad' },
+  { code: 'CL', name: 'Chile' },
+  { code: 'CN', name: 'China' },
+  { code: 'CO', name: 'Colombia' },
+  { code: 'KM', name: 'Comoros' },
+  { code: 'CG', name: 'Congo (Republic)' },
+  { code: 'CD', name: 'Congo (Democratic Republic)' },
+  { code: 'CR', name: 'Costa Rica' },
+  { code: 'CI', name: "Côte d'Ivoire" },
+  { code: 'HR', name: 'Croatia' },
+  { code: 'CU', name: 'Cuba' },
+  { code: 'CY', name: 'Cyprus' },
+  { code: 'CZ', name: 'Czech Republic' },
+  { code: 'DK', name: 'Denmark' },
+  { code: 'DJ', name: 'Djibouti' },
+  { code: 'DM', name: 'Dominica' },
+  { code: 'DO', name: 'Dominican Republic' },
+  { code: 'EC', name: 'Ecuador' },
+  { code: 'EG', name: 'Egypt' },
+  { code: 'SV', name: 'El Salvador' },
+  { code: 'GQ', name: 'Equatorial Guinea' },
+  { code: 'ER', name: 'Eritrea' },
+  { code: 'EE', name: 'Estonia' },
+  { code: 'SZ', name: 'Eswatini' },
+  { code: 'ET', name: 'Ethiopia' },
+  { code: 'FJ', name: 'Fiji' },
+  { code: 'FI', name: 'Finland' },
+  { code: 'FR', name: 'France' },
+  { code: 'GA', name: 'Gabon' },
+  { code: 'GM', name: 'Gambia' },
+  { code: 'GE', name: 'Georgia' },
+  { code: 'DE', name: 'Germany' },
+  { code: 'GH', name: 'Ghana' },
+  { code: 'GR', name: 'Greece' },
+  { code: 'GD', name: 'Grenada' },
+  { code: 'GT', name: 'Guatemala' },
+  { code: 'GN', name: 'Guinea' },
+  { code: 'GW', name: 'Guinea-Bissau' },
+  { code: 'GY', name: 'Guyana' },
+  { code: 'HT', name: 'Haiti' },
+  { code: 'HN', name: 'Honduras' },
+  { code: 'HU', name: 'Hungary' },
+  { code: 'IS', name: 'Iceland' },
+  { code: 'IN', name: 'India' },
+  { code: 'ID', name: 'Indonesia' },
+  { code: 'IR', name: 'Iran' },
+  { code: 'IQ', name: 'Iraq' },
+  { code: 'IE', name: 'Ireland' },
+  { code: 'IL', name: 'Israel' },
+  { code: 'IT', name: 'Italy' },
+  { code: 'JM', name: 'Jamaica' },
+  { code: 'JP', name: 'Japan' },
+  { code: 'JO', name: 'Jordan' },
+  { code: 'KZ', name: 'Kazakhstan' },
+  { code: 'KE', name: 'Kenya' },
+  { code: 'KI', name: 'Kiribati' },
+  { code: 'KP', name: 'North Korea' },
+  { code: 'KR', name: 'South Korea' },
+  { code: 'KW', name: 'Kuwait' },
+  { code: 'KG', name: 'Kyrgyzstan' },
+  { code: 'LA', name: 'Laos' },
+  { code: 'LV', name: 'Latvia' },
+  { code: 'LB', name: 'Lebanon' },
+  { code: 'LS', name: 'Lesotho' },
+  { code: 'LR', name: 'Liberia' },
+  { code: 'LY', name: 'Libya' },
+  { code: 'LI', name: 'Liechtenstein' },
+  { code: 'LT', name: 'Lithuania' },
+  { code: 'LU', name: 'Luxembourg' },
+  { code: "MG", name: "Madagascar" },
+  { code: "MW", name: "Malawi" },
+  { code: "MY", name: "Malaysia" },
+  { code: "MV", name: "Maldives" },
+  { code: "ML", name: "Mali" },
+  { code: "MT", name: "Malta" },
+  { code: "MH", name: "Marshall Islands" },
+  { code: "MR", name: "Mauritania" },
+  { code: "MU", name: "Mauritius" },
+  { code: "MX", name: "Mexico" },
+  { code: "FM", name: "Micronesia" },
+  { code: "MD", name: "Moldova" },
+  { code: "MC", name: "Monaco" },
+  { code: "MN", name: "Mongolia" },
+  { code: "ME", name: "Montenegro" },
+  { code: "MA", name: "Morocco" },
+  { code: "MZ", name: "Mozambique" },
+  { code: "MM", name: "Myanmar" },
+  { code: "NA", name: "Namibia" },
+  { code: "NR", name: "Nauru" },
+  { code: "NP", name: "Nepal" },
+  { code: "NL", name: "Netherlands" },
+  { code: "NZ", name: "New Zealand" },
+  { code: "NI", name: "Nicaragua" },
+  { code: "NE", name: "Niger" },
+  { code: "NG", name: "Nigeria" },
+  { code: "MK", name: "North Macedonia" },
+  { code: "NO", name: "Norway" },
+  { code: "OM", name: "Oman" },
+  { code: "PK", name: "Pakistan" },
+  { code: "PW", name: "Palau" },
+  { code: "PA", name: "Panama" },
+  { code: "PG", name: "Papua New Guinea" },
+  { code: "PY", name: "Paraguay" },
+  { code: "PE", name: "Peru" },
+  { code: "PH", name: "Philippines" },
+  { code: "PL", name: "Poland" },
+  { code: "PT", name: "Portugal" },
+  { code: "QA", name: "Qatar" },
+  { code: "RO", name: "Romania" },
+  { code: "RU", name: "Russia" },
+  { code: "RW", name: "Rwanda" },
+  { code: "KN", name: "Saint Kitts and Nevis" },
+  { code: "LC", name: "Saint Lucia" },
+  { code: "VC", name: "Saint Vincent and the Grenadines" },
+  { code: "WS", name: "Samoa" },
+  { code: "SM", name: "San Marino" },
+  { code: "ST", name: "Sao Tome and Principe" },
+  { code: "SA", name: "Saudi Arabia" },
+  { code: "SN", name: "Senegal" },
+  { code: "RS", name: "Serbia" },
+  { code: "SC", name: "Seychelles" },
+  { code: "SL", name: "Sierra Leone" },
+  { code: "SG", name: "Singapore" },
+  { code: "SK", name: "Slovakia" },
+  { code: "SI", name: "Slovenia" },
+  { code: "SB", name: "Solomon Islands" },
+  { code: "SO", name: "Somalia" },
+  { code: "ZA", name: "South Africa" },
+  { code: "SS", name: "South Sudan" },
+  { code: "ES", name: "Spain" },
+  { code: "LK", name: "Sri Lanka" },
+  { code: "SD", name: "Sudan" },
+  { code: "SR", name: "Suriname" },
+  { code: "SE", name: "Sweden" },
+  { code: "CH", name: "Switzerland" },
+  { code: "SY", name: "Syria" },
+  { code: "TW", name: "Taiwan" },
+  { code: "TJ", name: "Tajikistan" },
+  { code: "TZ", name: "Tanzania" },
+  { code: "TH", name: "Thailand" },
+  { code: "TL", name: "Timor-Leste" },
+  { code: "TG", name: "Togo" },
+  { code: "TO", name: "Tonga" },
+  { code: "TT", name: "Trinidad and Tobago" },
+  { code: "TN", name: "Tunisia" },
+  { code: "TR", name: "Turkey" },
+  { code: "TM", name: "Turkmenistan" },
+  { code: "TV", name: "Tuvalu" },
+  { code: "UG", name: "Uganda" },
+  { code: "UA", name: "Ukraine" },
+  { code: "AE", name: "United Arab Emirates" },
+  { code: "GB", name: "United Kingdom" },
+  { code: "US", name: "United States" },
+  { code: "UY", name: "Uruguay" },
+  { code: "UZ", name: "Uzbekistan" },
+  { code: "VU", name: "Vanuatu" },
+  { code: "VE", name: "Venezuela" },
+  { code: "VN", name: "Vietnam" },
+  { code: "YE", name: "Yemen" },
+  { code: "ZM", name: "Zambia" },
+  { code: "ZW", name: "Zimbabwe" },
+  // 추가 국가 리스트
+]);
+const store = useStore(); // Vuex store에 접근
+const router = useRouter(); // Vue Router 사용
 
-const router = useRouter(); // Vue Router에 접근
-
-  const user = reactive({
-    username: '',
-    dob: '',
-    gender: '',
-    email: '',
-    userId: '',
-    password: '',
-    confirmPassword: '',
-    nationality: '',
-  });
-  const selectCountry = (country) => {
-    selectedCountry.value = country;
-    searchQuery.value = country.name;
-    user.nationality = country.name; // 선택된 국가의 이름을 user.nationality에 저장
+const checkboxes = ref([
+  {
+    label: "I accept and agree to the Terms of use(Required)",
+    checked: false,
+  },
+  {
+    label: "I accept and agree to the Privacy policy(Required)",
+    checked: false,
+  },
+  {
+    label:
+        "I agree to collect and use personal information for the purpose of receiving and promoting marketing. (Optional)",
+    checked: false,
+  },
+]);
+const selectCountry = (country) => {
+  selectedCountry.value = country;
+  searchQuery.value = country.name;
+  user.nationality = country.name; // 선택된 국가의 이름을 user.nationality에 저장
+  showDropdown.value = false;
+}
+const hideDropdown = () => {
+  setTimeout(() => {
     showDropdown.value = false;
-  }
-  const hideDropdown = () => {
-    setTimeout(() => {
-      showDropdown.value = false;
-    }, 100); // 클릭 이벤트와 blur가 겹치지 않도록 약간의 지연
-  }
+  }, 100); // 클릭 이벤트와 blur가 겹치지 않도록 약간의 지연
+}
 
-  const filteredCountries = computed(() => {
-    return countries.value.filter(country =>
+const filteredCountries = computed(() => {
+  return countries.value.filter(country =>
       country.name.toLowerCase().includes(searchQuery.value.toLowerCase()))
 
-  })
-  const userIdAvailable = ref(true);
-  // 체크박스 리스트 (모든 체크박스를 "Accept All"에 포함)
-  const checkboxes = ref([
-    { label: "Notice: Once an event post is published, it cannot be edited", checked: false },
-    { label: "I agree to include all additional fees in the event details and understand that failing to do so may result in penalties", checked: false },
-    { label: "I have read the basic usage rules of HiFor, and I agree with that.", checked: false },
-  ]);
-
-  const handleRegister = async () => {
-
-    const idRegex = /^[a-zA-Z0-9]+$/;
-    if (!idRegex.test(user.userId)) {
-      alert('The username can only contain letters and numbers.');
-      return;
-    }
-
-    if (!userIdAvailable.value) {
-      alert('The username or email is already in use.');
-      return;
-    }
-
+})
+// JWT 토큰 추출 및 디코딩
+const decodeJwtFromUrl = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+  if (token) {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signUp`, user);
-      console.log('Sign-up response:', response.data);
-      alert('Sign-up completed!');
-      router.push('/logIn'); // 로그인 후 메인 페이지로 이동
+      const decodedToken = jwtDecode(token);
+      user.username = decodedToken.name || '';
+      user.email = decodedToken.email || '';
     } catch (error) {
-      console.error('Error during sign-up:', error);
-      alert('An error occurred during sign-up. Please try again.');
+      console.error('Invalid token:', error);
     }
-  };
+  }
+};
 
- // 필수 체크박스(첫 번째 & 두 번째)가 선택되었는지 확인하는 computed property (버튼 활성화 조건)
-const requiredChecked = computed(() => checkboxes.value.slice(0, 2).every(cb => cb.checked));
+// 필수 체크박스(첫 번째 & 두 번째)가 선택되었는지 확인하는 computed property (버튼 활성화 조건)
+const requiredChecked = computed(() => {
+  const result = checkboxes.value.slice(0, 2).every(cb => cb.checked);
+  console.log('requiredChecked 값:', result); // ✅ 값이 변경되는지 확인
+  return result;
+});
 
-// "Accept All" 버튼 클릭 시 모든 체크박스 선택/해제
+
+// 회원가입 처리 함수
+const handleRegister = async () => {
+
+  console.log(requiredChecked)
+  if (!requiredChecked) {
+    alert('You must agree to the required terms to sign up.');
+    console.log('hihiS')
+    return; // 제출 중단
+  }
+  console.log('핸들레지스터의 유저:',user)
+  try {
+    const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/googleSignUp`, user);
+    console.log('회원가입 응답:', response.data);
+    alert('Sign-up completed!');
+
+    // JWT 토큰 저장
+    store.commit('setToken', response.data.access_token); // Vuex 상태에 저장
+    store.commit('setUserId', user.userId);
+    sessionStorage.setItem('token', response.data.access_token);
+
+    router.push('/');
+  } catch (error) {
+    console.error('회원가입 오류:', error);
+    alert('An error occurred during sign-up. Please try again.');
+  }
+};
+
+// 체크박스 전체 선택/해제
 const toggleAllCheckboxes = () => {
-  const allChecked = checkboxes.value.every(cb => cb.checked);
-  checkboxes.value.forEach(cb => cb.checked = !allChecked);
+  const allChecked = checkboxes.value.every((cb) => cb.checked); // 모든 체크박스가 체크 상태인지 확인
+  checkboxes.value.forEach((cb) => {
+    cb.checked = !allChecked; // 모두 체크/해제 상태로 변경
+  });
 };
 
-// 팝업 띄우기 기능 (index에 따라 다른 내용 표시)
-const openPopup = (index) => {
-  const popupContents = [
-    `<h1>Terms of Service</h1>
-    <h3>Article 1 (Purpose)</h3>
-    <p>
-      The purpose of these terms is to regulate the conditions, procedures, rights, obligations, and other necessary matters related to the use of the HiFor website (hereinafter referred to as the "Service").
-    </p>
-    <h3>Article 2 (Effect and Modification of Terms)</h3>
-    <p>
-      These terms apply to all users who wish to use the Service.<br>
-      The Service may modify these terms, and any changes will be announced in advance through a notice. The modified terms will take effect after the notice.<br>
-      If a user does not agree with the modified terms, they may discontinue the use of the Service and delete their account.<br>
-    </p>
-    <h3>Article 3 (Provision and Restriction of Service)</h3>
-    <p>
-      The Service operates without generating profit, and certain features (e.g., event participation, group <br>management, etc.) are only available to registered users.<br>
-      The Service may restrict or suspend part of the Service due to technical defects, system maintenance, or other operational needs.<br>
-    </p>
-    <h3>Article 4 (User’s Obligations)</h3>
-    <p>
-      Users must not engage in the following actions:<br>
-      •	Using or stealing another person’s information<br>
-      •	Disrupting the operation of the Service or posting malicious content<br>
-      •	Violating relevant laws or these terms and conditions<br>
-      Users must comply with these terms and cooperate in the normal operation of the Service.<br>
-    </p>
-    <h3>Article 5 (User’s Content Responsibility and Copyright)</h3>
-    <p>
-      The copyright of the content posted by users on the Service belongs to the user. <br>
-      Users guarantee that their content does not infringe the rights of others, and any violations will be the user’s responsibility.<br>
-      The Service may modify or delete content without prior notice for operational reasons.<br>
-    </p>
-    <h3>Article 6 (Privacy Protection)</h3>
-    <p>
-      The Service will protect users' personal information in accordance with its privacy policy.<br>
-      Users' personal information will only be used for the purpose of providing the Service, improving operations, and complying with legal obligations.<br>
-    </p>
-    <h3>Article 7 (Limitation of Liability)</h3>
-    <p>
-      The Service is not responsible for damages caused by technical defects, system errors, or data loss.<br>
-      The Service does not directly intervene in communication or activities between users and is not responsible for any disputes arising from them.<br>
-      The Service is not responsible for problems arising from third-party platforms or external links.<br>
-    </p>
-    <h3>Article 8 (Account Management and Withdrawal)</h3>
-    <p>
-      Users may delete their accounts at any time, and upon withdrawal, all user data will be deleted in accordance with the Service’s policies.<br>
-      The Service may delete inactive accounts after prior notice.<br>
-    </p>
-    <h3>Article 9 (Governing Law and Jurisdiction)</h3>
-    <p>
-      All disputes related to these terms will be governed by the laws of the Republic of Korea.<br>
-      In case of disputes, the Seoul Central District Court will have jurisdiction.<br>
-    </p>
-    <h3>Article 10 (Agreement Process)</h3>
-    <p>
-      By signing up as a member, users agree to these terms and the collection and use of personal information, thereby forming a service contract.<br>
-      If a user withdraws consent to these terms during the use of the Service, they must delete their account.
-    </p>
-      `,
-
-    `<h1>Supplementary Provisions</h1>
-    <h3>These terms and conditions will be effective from Feb 16, 2025.</h3>
-    <h3>Personal Information Agreement (Required)</h3>
-    <p>
-      Personal Information Collected <br>
-      Required Information:<br>
-      • Name, Date of Birth, Nationality, Email Address, Password<br>
-      Optional Information:<br>
-      • School, Interests in Groups/Events Categories, Profile Picture<br>
-      Purpose of Collection<br>
-      • Managing basic user information for platform use<br>
-      • User identification and authentication<br>
-      • Managing group/event registrations and participation<br>
-      • Providing personalized services<br>
-      • Managing groups and events<br>
-      o Allowing hosts to view approved participants’ names and profile pictures<br>
-      o Verifying eligibility for age-restricted events<br>
-      o Recommending school-based groups and supporting interactions<br>
-      • Service operation and improvement<br>
-      o Analyzing user statistics and enhancing services for multinational users<br>
-      o Providing group and event recommendations<br>
-      • Compliance with legal obligations<br>
-      o Preventing misuse, resolving disputes, and meeting legal requirements<br>
-      Retention and Use Period of Personal Information<br>
-      • Personal information will be destroyed immediately upon account deletion.<br>
-      • However, if required by law, the following retention periods apply:<br>
-      o Records of contracts or withdrawal of offers: 5 years<br>
-      o Records of payment and supply of goods: 5 years<br>
-      o Records of consumer complaints or dispute resolution: 3 years<br>
-      Provision and Delegation of Personal Information<br>
-      • In principle, personal information is not shared with external parties.<br>
-      • However, with the user’s consent, it may be provided to third parties in the following cases:<br>
-      o When event hosts request the names and profile pictures of approved participants<br>
-      o Delegation to third parties for platform operations (e.g., email authentication services)<br>
-      Consequences of Refusal to Consent<br>
-      • Refusal to consent to required items may result in limitations on service usage.<br>
-      • Refusal to consent to optional items will not affect service usage.<br>
-    </p>
-    `,
-
-    `<h1>Consent to Receive Promotional Emails (Optional)</h1>
-    <h3>Purpose of Collection and Use</h3>
-    <p>
-      • Providing recommendations for groups/events <br>
-      • Announcing platform service updates and benefits<br>
-      • Delivering promotions, discounts, and event information<br>
-    </p>
-    <h3>Retention and Use Period</h3>
-    <p>
-      • Promotional emails will cease immediately upon account deletion or upon request for unsubscribing.
-    </p>
-    <h3>Right to Opt-Out</h3>
-    <p>
-      • Users may opt out of receiving promotional emails at any time. <br>
-      How to Opt-Out:<br>
-      • Click the "Unsubscribe" button at the bottom of the email or contact Customer Support to request.<br>
-    </p>
-    <h3>References to Applicable Laws</h3>
-    <p>
-      • Referenced laws: Personal Information Protection Act, Articles 15 and 17, etc.
-    </p>
-    `,
-  ];
-
-  const popupWindow = window.open("", "Popup", "width=500,height=300,scrollbars=yes");
-  popupWindow.document.write(`
-    <html>
-      <head>
-        <title>Popup</title>
-        <style>
-          body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.5; }
-          h2 { color: #333; }
-          p { margin-bottom: 10px; }
-          button { margin-top: 20px; padding: 10px 20px; border: none; background-color: #007bff; color: white; border-radius: 5px; cursor: pointer; }
-          button:hover { background-color: #0056b3; }
-        </style>
-      </head>
-      <body>
-        ${popupContents[index]}
-        <button onclick="window.close()">Close</button>
-      </body>
-    </html>
-  `);
-  popupWindow.document.close();
-};
-
-
-
+// 컴포넌트가 마운트될 때 실행
+onMounted(() => {
+  decodeJwtFromUrl();
+  const urlParams = new URLSearchParams(window.location.search);
+  user.email = urlParams.get('email') || ''; // 값이 없으면 빈 문자열
+  name.value = urlParams.get('name') || '';   // 값이 없으면 빈 문자열
+});
 
 </script>
 
@@ -843,6 +747,11 @@ const openPopup = (index) => {
     .popup-link{
       text-decoration: underline;
       cursor: pointer;
+    }
+    .handel-register-btn:disabled {
+      background-color: #ccc; /* 비활성화 시 배경 회색 */
+      cursor: not-allowed; /* 마우스 커서 비활성화 */
+      opacity: 0.6; /* 흐리게 */
     }
   }
 </style>

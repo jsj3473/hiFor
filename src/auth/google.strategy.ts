@@ -21,7 +21,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     });
   }
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    const { id, name, emails } = profile;
+    const { name, emails } = profile;
     const email = emails?.[0]?.value;
 
     if (!email) {
@@ -29,13 +29,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     }
 
     try {
-      const fullName = `${name?.familyName || ''} ${name?.givenName || ''}`.trim();
+      const fullName = `${name?.familyName || ''}${name?.givenName || ''}`.trim();
 
       // Check if user already exists
       let user: User;
       try {
         user = await this.userService.findByEmail(email);
-        console.log(user)
+        console.log("구글스트레티지38번줄 구글에서 리턴한 유저",user)
       } catch (error) {
         console.error(`Error finding user by email (${email}):`, error);
         throw new Error('Failed to find user by email');
@@ -43,7 +43,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
 
       if (!user) {
         // Create a new user without birthday or gender
-        user = await this.userService.signUpToGoogle(id, email, fullName);
+        user = await this.userService.signUpToGoogle(email, fullName);
       }
 
       return user;

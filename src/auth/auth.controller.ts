@@ -83,15 +83,32 @@ export class AuthController {
 
     // 사용자 데이터 확인 (DB에서 다시 조회)
     const completeUser = await this.userService.findByEmail(user.email);
-    // Google 사용자 정보를 포함한 JWT 생성
+
+    // 필수 정보가 누락되었는지 확인
+    const isUserComplete =
+        completeUser &&
+        completeUser.dob &&
+        completeUser.gender &&
+        completeUser.nationality;
+
+    // 환경 변수에서 프론트엔드 URL 가져오기
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+
+    if (!isUserComplete) {
+      // 필수 정보가 없으면 JWT 발급 ❌ → 회원가입 페이지로 이동
+      res.redirect(`${frontendUrl}/googleSignUp?email=${user.email}&name=${user.username}`);
+      return;
+    }
+
+    // 모든 정보가 있는 경우에만 JWT 발급
     const jwtToken = await this.authService.googleGenerateJwtToken({
-      id: user.id,
-      userId: user.userId,
-      email: user.email,
-      username: user.username,
-      dob: user.dob,
-      gender: user.gender,
-      nationality: user.nationality,
+      id: completeUser.id,
+      userId: completeUser.userId,
+      email: completeUser.email,
+      username: completeUser.username,
+      dob: completeUser.dob,
+      gender: completeUser.gender,
+      nationality: completeUser.nationality,
     });
 
     // JWT를 쿠키로 설정
@@ -101,28 +118,20 @@ export class AuthController {
       maxAge: 3600000, // 1시간
     });
 
-    // 환경 변수에서 프론트엔드 URL 가져오기
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
-
-    if (completeUser && completeUser.nationality) {
-      // 회원가입 완료된 경우 홈으로 리다이렉트
-      res.redirect(`${frontendUrl}/`);
-      return;
-    }
-
-    // 회원가입 페이지로 리다이렉트
-    res.redirect(`${frontendUrl}/googleSignUp?token=${jwtToken.access_token}`);
+    // 로그인 후 홈으로 리다이렉트
+    res.redirect(`${frontendUrl}/`);
   }
+
   
   @Post('googleSignUp')
   async handleGoogleSignUp(@Body() body: any) {
-    const { email, username, dob, gender, nationality } = body;
+    const { email, userId, dob, gender, nationality } = body;
 
     console.log('googlesignup body',body)
     try {
       // 서비스 호출
       const user = await this.userService.findByEmail(email);
-      user.username = username;
+      user.userId = userId;
       user.dob = dob;
       user.gender = gender;
       user.nationality = nationality;

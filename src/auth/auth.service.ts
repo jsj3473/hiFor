@@ -62,7 +62,7 @@ export class AuthService {
     userId: string;
     email: string;
     username: string;
-    dob?: string | null;
+    dob?: Date | null;
     gender?: string | null;
     nationality?: string | null;
   }) {
