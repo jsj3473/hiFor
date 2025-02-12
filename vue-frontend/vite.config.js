@@ -13,7 +13,7 @@ export default defineConfig({
         proxy: {
             // ✅ CORS 문제 방지 (프론트 → 백엔드 요청 프록시)
             '/api': {
-                target: import.meta.env.VITE_API_BASE_URL || 'https://hifor.onrender.com',
+                target: "http://localhost:3000",
                 changeOrigin: true,
                 secure: true,
                 rewrite: (path) => path.replace(/^\/api/, ''), // '/api' 제거 후 백엔드 요청

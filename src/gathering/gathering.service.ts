@@ -195,7 +195,7 @@ export class GatheringService {
         .leftJoin('hifor_event.likes', 'likes') // 좋아요 테이블과 조인
         .addSelect('COUNT(DISTINCT likes.id)', 'likeCount') // DISTINCT 추가하여 좋아요 개수 계산
         .groupBy('hifor_event.id') // 이벤트별 그룹화
-        .orderBy('likeCount', 'DESC') // 좋아요 수 기준 내림차순 정렬
+        .orderBy('COUNT(DISTINCT likes.id)', 'DESC') // 좋아요 수 기준 내림차순 정렬
         .where('hifor_event.date >= :now', { now: now.toISOString() }) // 현재 날짜 이후 이벤트만 조회
         .getRawMany();
 
