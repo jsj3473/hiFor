@@ -36,8 +36,8 @@ export class User {
   
   @Column({ nullable: true })
   university: string;
-  
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+
+  @Column({ type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP' })
   passwordLastChanged: Date;
 
   @Column({ default: false })
