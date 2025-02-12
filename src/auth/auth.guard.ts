@@ -63,7 +63,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const response = context.switchToHttp().getResponse();
 
     const result = (await super.canActivate(context)) as boolean;
-
+    console.log('jwt전략66',result)
     // 인증에 실패한 경우 로그인 페이지로 리다이렉트
     if (!result) {
       // 브라우저 요청일 경우 리다이렉트 가능 (REST API가 아닌 웹 어플리케이션 상황)

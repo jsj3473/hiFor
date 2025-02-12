@@ -114,9 +114,9 @@ export class AuthController {
     });
     console.log('115',jwtToken)
     // JWT를 쿠키로 설정
+
     res.cookie('access_token', jwtToken.access_token, {
       httpOnly: false,
-      secure: this.configService.get<string>('NODE_ENV') === 'production',
       maxAge: 3600000, // 1시간
     });
 
@@ -156,7 +156,8 @@ export class AuthController {
   @Get('profile')
   @UseGuards(JwtAuthGuard) 
   getProfile(@Request() req: Request) {
-    const user = (req as any).user;  
+    const user = (req as any).user;
+    console.log('어스컨트롤러160:',user);
     return { user };
   }  
   

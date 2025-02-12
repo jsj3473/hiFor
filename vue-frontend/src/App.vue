@@ -255,6 +255,7 @@ export default {
 
     // Check login status
     const checkLoginStatus = async () => {
+      console.log('앱뷰258')
       const token = sessionStorage.getItem('token');
       if (token) {
         setToken(token); // Restore token for standard login users
@@ -262,6 +263,7 @@ export default {
 
       // Check Google login status via cookies
       const cookieExists = document.cookie.split('; ').some((cookie) => cookie.startsWith('access_token='));
+      console.log('appvue266',cookieExists)
       if (cookieExists) {
         try {
           const response = await axios.get(
@@ -270,7 +272,7 @@ export default {
           );
 
           const user = response.data.user;
-
+          console.log('user:앱뷰273',user)
           setUserId(user.userId);
           setToken(user.jwtToken);
           sessionStorage.setItem('token', user.jwtToken);
