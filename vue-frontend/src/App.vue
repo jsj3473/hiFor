@@ -253,6 +253,10 @@ export default {
       isMenuOpen.value = !isMenuOpen.value;
     };
 
+    // Check Google login status via cookies
+    const cookieExists = document.cookie.split('; ').some((cookie) => cookie.startsWith('access_token='));
+    console.log('appvue266',cookieExists)
+
     // Check login status
     const checkLoginStatus = async () => {
       console.log('앱뷰258')
@@ -288,7 +292,7 @@ export default {
 
     // Lifecycle hook
     onMounted(() => {
-      checkLoginStatus();
+      //checkLoginStatus();
     });
 
     return {
