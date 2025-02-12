@@ -346,24 +346,8 @@ const router = useRouter(); // Vue Router에 접근
       return;
     }
 
-    if (user.password.length < 8) {
-      alert('The password must be at least 8 characters long.');
-      return;
-    }
-
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
-    if (!passwordRegex.test(user.password)) {
-      alert('The password must include uppercase and lowercase letters, numbers, and special characters');
-      return;
-    }
-
     if (!userIdAvailable.value) {
       alert('The username or email is already in use.');
-      return;
-    }
-
-    if (user.password !== user.confirmPassword) {
-      alert('The passwords do not match.');
       return;
     }
 
