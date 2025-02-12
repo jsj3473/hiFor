@@ -79,10 +79,12 @@ export class AuthController {
   @Get('google')
   @UseGuards(GoogleAuthGuard)
   async googleAuthRedirect(@Request() req, @Response() res) {
-    const { user } = req;
 
+    const { user } = req;
+    console.log('84:',user)
     // 사용자 데이터 확인 (DB에서 다시 조회)
     const completeUser = await this.userService.findByEmail(user.email);
+    console.log('87:',completeUser)
 
     // 필수 정보가 누락되었는지 확인
     const isUserComplete =
@@ -110,7 +112,7 @@ export class AuthController {
       gender: completeUser.gender,
       nationality: completeUser.nationality,
     });
-
+    console.log('115',jwtToken)
     // JWT를 쿠키로 설정
     res.cookie('access_token', jwtToken.access_token, {
       httpOnly: false,
