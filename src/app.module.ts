@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module,  MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { GatheringModule } from './gathering/gathering.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
+import * as session from 'express-session';
+import * as passport from 'passport';
 
 @Module({
   imports: [
@@ -34,8 +36,28 @@ import { DataSource } from 'typeorm';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
+export class AppModule implements NestModule {
   constructor(private readonly dataSource: DataSource) {
     console.log('Loaded Entities:', this.dataSource.entityMetadatas.map((e) => e.name));
+  }
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+        .apply(
+            session({
+              secret: 'your-secret-key', // 보안을 위해 환경 변수로 관리하는 것이 좋음
+              resave: false,
+              saveUninitialized: false,
+              cookie: {
+                secure: true, // HTTPS 환경에서만 동작
+                httpOnly: true, // JavaScript에서 접근 불가
+                maxAge: 1000 * 60 * 60, // 1시간
+                sameSite: 'none', // 크로스 도메인 허용
+              },
+            }),
+            passport.initialize(),
+            passport.session(),
+        )
+        .forRoutes('*');
   }
 }

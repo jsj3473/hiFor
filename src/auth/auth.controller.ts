@@ -79,55 +79,30 @@ export class AuthController {
   @Get('google')
   @UseGuards(GoogleAuthGuard)
   async googleAuthRedirect(@Request() req, @Response() res) {
-
     const { user } = req;
-    console.log('84:',user)
-    // 사용자 데이터 확인 (DB에서 다시 조회)
+
+    // DB에서 사용자 정보 조회
     const completeUser = await this.userService.findByEmail(user.email);
-    console.log('87:',completeUser)
 
-    // 필수 정보가 누락되었는지 확인
-    const isUserComplete =
-        completeUser &&
-        completeUser.dob &&
-        completeUser.gender &&
-        completeUser.nationality;
-
-    // 환경 변수에서 프론트엔드 URL 가져오기
     const frontendUrl = this.configService.get<string>('FRONTEND_URL');
 
-    if (!isUserComplete) {
-      // 필수 정보가 없으면 JWT 발급 ❌ → 회원가입 페이지로 이동
+    if (!completeUser || !completeUser.dob || !completeUser.gender || !completeUser.nationality) {
       res.redirect(`${frontendUrl}/googleSignUp?email=${user.email}&name=${user.username}`);
       return;
     }
 
-    // 모든 정보가 있는 경우에만 JWT 발급
-    const jwtToken = await this.authService.googleGenerateJwtToken({
+    // ✅ 세션에 사용자 정보 저장
+    req.session.user = {
       id: completeUser.id,
       userId: completeUser.userId,
       email: completeUser.email,
       username: completeUser.username,
-      dob: completeUser.dob,
-      gender: completeUser.gender,
-      nationality: completeUser.nationality,
-    });
-    console.log('115',jwtToken)
-    // JWT를 쿠키로 설정
+    };
 
-    res.cookie('access_token', jwtToken.access_token, {
-      domain: '.hifor.kr', // 'www.hifor.kr' 및 'hifor.kr'에서 접근 가능하도록 설정
-      httpOnly: false,
-      secure: true,
-      maxAge: 3600000,
-      sameSite: 'None', // CORS 허용을 위해 유지
-    });
-
-
-
-    // 로그인 후 홈으로 리다이렉트
+    console.log('세션 저장 완료:', req.session.user);
     res.redirect(`${frontendUrl}/`);
   }
+
 
   
   @Post('googleSignUp')
