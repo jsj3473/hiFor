@@ -91,16 +91,18 @@ export class AuthController {
       return;
     }
 
-    // ✅ 세션에 사용자 정보 저장
-    req.session.user = {
+    const jwtToken = await this.authService.googleGenerateJwtToken({
       id: completeUser.id,
       userId: completeUser.userId,
       email: completeUser.email,
       username: completeUser.username,
-    };
+      dob: completeUser.dob,
+      gender: completeUser.gender,
+      nationality: completeUser.nationality,
+    });
 
-    console.log('세션 저장 완료:', req.session.user);
-    res.redirect(`${frontendUrl}/`);
+    res.redirect(`${frontendUrl}/?access_token=${jwtToken.access_token}&userId=${completeUser.userId}`);
+
   }
 
 

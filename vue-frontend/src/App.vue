@@ -257,38 +257,33 @@ export default {
     const cookieExists = document.cookie.split('; ').some((cookie) => cookie.startsWith('access_token='));
     console.log('appvue258',cookieExists)
 
-    // Check login status
+// 로그인 상태 확인 및 JWT 저장
     const checkLoginStatus = async () => {
-      console.log('앱뷰258')
-      const token = sessionStorage.getItem('token');
-      if (token) {
-        setToken(token); // Restore token for standard login users
+      console.log('앱뷰258');
+
+      // ✅ URL에서 access_token 가져오기
+      const urlParams = new URLSearchParams(window.location.search);
+      const accessToken = urlParams.get('access_token');
+      const userId = urlParams.get('userId');// Vuex 상태에 저장
+
+      if (accessToken) {
+        // ✅ 세션스토리지에 저장
+        sessionStorage.setItem('token', accessToken);
+        console.log('세션스토리지에 저장된 토큰:', accessToken);
+        store.commit('setToken', accessToken);
       }
 
-      // Check Google login status via cookies
-      const cookieExists = document.cookie.split('; ').some((cookie) => cookie.startsWith('access_token='));
-      console.log('appvue266',cookieExists)
-      if (cookieExists) {
-        try {
-          const response = await axios.get(
-              `${import.meta.env.VITE_API_BASE_URL}/auth/profile`,
-              { withCredentials: true }
-          );
-
-          const user = response.data.user;
-          console.log('user:앱뷰273',user)
-          setUserId(user.userId);
-          setToken(user.jwtToken);
-          sessionStorage.setItem('token', user.jwtToken);
-          document.cookie = 'access_token=; Max-Age=0; path=/;';
-          location.reload();
-          router.push('/');
-        } catch (error) {
-          console.error('Error checking login status:', error);
-          alert('Error verifying login status. Please try again.');
-        }
+      if (userId) {
+        // ✅ userId도 세션스토리지에 저장
+        sessionStorage.setItem('userId', userId);
+        store.commit('setUserId', userId);
+        console.log('세션스토리지에 저장된 userId:', userId);
       }
+
+      // ✅ URL에서 access_token과 userId를 제거하여 보안 강화
+      window.history.replaceState({}, document.title, window.location.pathname);
     };
+
 
     // Lifecycle hook
     onMounted(() => {
