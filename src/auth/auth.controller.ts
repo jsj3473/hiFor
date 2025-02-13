@@ -116,11 +116,13 @@ export class AuthController {
     // JWT를 쿠키로 설정
 
     res.cookie('access_token', jwtToken.access_token, {
+      domain: '.hifor.kr', // 'www.hifor.kr' 및 'hifor.kr'에서 접근 가능하도록 설정
       httpOnly: false,
-      secure: true, // 배포 환경에서는 HTTPS에서만 쿠키 저장
-      maxAge: 3600000, // 1시간
-      sameSite: 'None', // CORS 문제 방지 (다른 도메인 간 쿠키 전송 허용)
+      secure: true,
+      maxAge: 3600000,
+      sameSite: 'None', // CORS 허용을 위해 유지
     });
+
 
 
     // 로그인 후 홈으로 리다이렉트
