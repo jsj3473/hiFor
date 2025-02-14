@@ -872,6 +872,8 @@ onMounted(async () => {
   /* all events */
   .events-container{
     padding: 30px 150px;
+    max-width: 1470px;
+    justify-self: center;
   }
   /* pagenation */
   .pagination {
@@ -908,6 +910,8 @@ onMounted(async () => {
     background-color: #F8F8FB;
     border-radius: 40px;
     padding: 0px 150px;
+    max-width: 1470px;
+    justify-self: center;
   }
   .ex-text1{
     text-align:center;
@@ -1004,6 +1008,8 @@ onMounted(async () => {
     padding: 30px 150px;
     margin: 30px 0px;
     background-color: #F8F8FB;
+    max-width: 1470px;
+    justify-self: center;
   }
   .value-card{
     margin: 15px;
@@ -1151,6 +1157,8 @@ onMounted(async () => {
     padding-left:125px;
     padding-right:125px;
     margin-top: 90px;
+    max-width: 1470px;
+    justify-self: center;
   }
   .contact-box{
     background-color:#58C3FF;

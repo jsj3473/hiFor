@@ -82,7 +82,7 @@
             </p>
             <div class="col-12 p-0">
               <p class="card-info-text">
-                <img class="card-info-icon" src="/assets/img/icon_Date.png" alt="" /> {{ event.date }}
+                <img class="card-info-icon" src="/assets/img/icon_Date.png" alt="" /> {{ formattedDate }}
               </p>
             </div>
             <div class="col-12 p-0">
