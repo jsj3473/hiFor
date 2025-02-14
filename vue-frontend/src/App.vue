@@ -255,11 +255,9 @@ export default {
 
     // Check Google login status via cookies
     const cookieExists = document.cookie.split('; ').some((cookie) => cookie.startsWith('access_token='));
-    console.log('appvue258',cookieExists)
 
 // 로그인 상태 확인 및 JWT 저장
     const checkLoginStatus = async () => {
-      console.log('앱뷰258');
 
       // ✅ URL에서 access_token 가져오기
       const urlParams = new URLSearchParams(window.location.search);
@@ -269,7 +267,6 @@ export default {
       if (accessToken) {
         // ✅ 세션스토리지에 저장
         sessionStorage.setItem('token', accessToken);
-        console.log('세션스토리지에 저장된 토큰:', accessToken);
         store.commit('setToken', accessToken);
       }
 
@@ -277,7 +274,6 @@ export default {
         // ✅ userId도 세션스토리지에 저장
         sessionStorage.setItem('userId', userId);
         store.commit('setUserId', userId);
-        console.log('세션스토리지에 저장된 userId:', userId);
       }
 
       // ✅ URL에서 access_token과 userId를 제거하여 보안 강화

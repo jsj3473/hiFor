@@ -34,14 +34,11 @@ export class AuthService {
 
   async validateUser(userId: string, password: string) {
     const user = await this.userService.getUser(userId);
-    //console.log('user in v',user);
     if (!user) {
       return null;
     }
 
     const { password: hashedPassword, ...userInfo } = user;
-    //console.log('pw:',password);
-    //console.log('hpw:',hashedPassword)
     if (await bcrypt.compare(password, hashedPassword)) {
       return userInfo;
     }
@@ -51,7 +48,6 @@ export class AuthService {
   async generateJwtToken(user: any) {
     const payload = { email: user.email, userId: user.userId };
     const token = this.jwtService.sign(payload);
-    //console.log('Generated JWT Token:', token); // 생성된 토큰 확인
     return {
       access_token: token,
     };

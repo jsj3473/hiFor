@@ -1,7 +1,18 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, MoreThanOrEqual, Repository } from 'typeorm';
-import {AdEmail, HiforEvent, Image, Like, Participant} from './gathering.entity';
+import {
+  AdEmail,
+  HiforEvent,
+  Image,
+  Like,
+  Participant,
+} from './gathering.entity';
 import { User } from '../user/user.entity';
 import { CreateEventDto, SearchEventDto } from './gathering.dto';
 import { EmailService } from '../mail/mail.service';
@@ -187,24 +198,25 @@ export class GatheringService {
   async getHotEvents() {
     try {
       const now = new Date();
-
+      const nowString = now.toISOString().slice(0, 19).replace("T", " ");
 
       const events = await this.eventRepository
         .createQueryBuilder('hifor_event') // 테이블 이름을 hifor_event로 지정
         .leftJoin('hifor_event.participants', 'participants') // 관계도 수정
         .leftJoin('hifor_event.likes', 'likes') // 좋아요 테이블과 조인
         .addSelect('COUNT(DISTINCT likes.id)', 'likeCount') // DISTINCT 추가하여 좋아요 개수 계산
-        .groupBy('hifor_event.id') // 이벤트별 그룹화
+          .where("hifor_event.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Seoul' >= :now", { now: nowString })
+          .groupBy('hifor_event.id') // 이벤트별 그룹화
         .orderBy('COUNT(DISTINCT likes.id)', 'DESC') // 좋아요 수 기준 내림차순 정렬
-        .where('hifor_event.date >= :now', { now: now.toISOString() }) // 현재 날짜 이후 이벤트만 조회
         .getRawMany();
+      
+      
 
 
       // Raw 데이터 가공 (참가자 수 포함)
       const processedEvents = await Promise.all(
         events.map(async (event) => {
           try {
-
             // 참가자 수 계산
             const approvedParticipantsCount = await this.participantRepository.count({
               where: {
@@ -212,8 +224,8 @@ export class GatheringService {
                 status: 'Approved',
               },
             });
-
-            const formattedEvent = {
+            console.log('227-------------:',event.hifor_event_date)
+            return {
               id: event.hifor_event_id,
               name: event.hifor_event_name,
               description: event.hifor_event_description,
@@ -227,8 +239,6 @@ export class GatheringService {
               participants: approvedParticipantsCount, // 승인된 참가자 수
               likes: parseInt(event.likeCount, 10), // 좋아요 수 변환
             };
-
-            return formattedEvent;
 
           } catch (innerError) {
             console.error('❌ Error processing event:', event, innerError.message);

@@ -14,8 +14,6 @@ import { FindPasswordDto } from 'src/user/user.dto';
 import { GatheringService } from '../gathering/gathering.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ContactDto } from './mail.dto';
-import {SessionAuthGuard} from "../auth/auth.guard";
-
 @Controller('mail')
 export class VerificationController {
   constructor(

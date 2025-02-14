@@ -30,7 +30,7 @@
               <div class="row">
                 <div class="col-6">
                   <p class="card-info-text">
-                    <img class="card-info-icon" src="/assets/img/icon_Date.png" alt="" /> {{ event.date }}
+                    <img class="card-info-icon" src="/assets/img/icon_Date.png" alt="" /> {{ formattedDate }}
                   </p>
                 </div>
                 <div class="col-6">
@@ -101,7 +101,7 @@
 
 <script>
 import axios from 'axios';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 
 export default {
   props: {
@@ -113,6 +113,13 @@ export default {
   setup(props) {
     const isLiked = ref(false);
     const localEvent = ref({ ...props.event }); // 로컬 상태 생성
+    // 📌 날짜를 한국 시간(KST)으로 변환하는 computed 속성 추가
+    const formattedDate = computed(() => {
+      if (!localEvent.value.date) return "";
+      const date = new Date(localEvent.value.date);
+      return date.toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" }); // ✅ 날짜만 변환
+    });
+
     // 좋아요 상태 초기화
     const initializeLikeStatus = async () => {
       try {
@@ -131,6 +138,7 @@ export default {
         console.error('Failed to initialize like status:', error);
       }
     };
+
     const toggleLike = async () => {
       const userId = sessionStorage.getItem('userId'); // 로그인 여부 확인
 
@@ -153,7 +161,6 @@ export default {
             }
         );
 
-
         // 백엔드로부터 최신 좋아요 상태를 반영
         localEvent.value.likes = response.data.likesLen;
       } catch (error) {
@@ -172,6 +179,7 @@ export default {
       isLiked,
       toggleLike,
       localEvent,
+      formattedDate, // ✅ 변환된 날짜 반환
     }
   }
 };

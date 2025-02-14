@@ -14,8 +14,6 @@ import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import {SessionAuthGuard} from "../auth/auth.guard";
-
 
 
 @Controller('user')

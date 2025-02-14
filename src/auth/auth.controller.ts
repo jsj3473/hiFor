@@ -15,8 +15,6 @@ import {
 import { CreateUserDto, SignInUserDto } from 'src/user/user.dto';
 import {
   GoogleAuthGuard,
-  signInGuard,
-  JwtAuthGuard
 } from './auth.guard';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
@@ -34,8 +32,7 @@ export class AuthController {
   async signUp(@Body() userDto: CreateUserDto) {
     return await this.authService.signUp(userDto); 
   }
-  
-  //@UseGuards(signInGuard) 보안사항 생긴다면 가드를 이용하자
+
   @Post('signIn')
   async signIn(@Body() userDto: SignInUserDto) {
     // 1. 사용자 정보 확인
@@ -110,8 +107,6 @@ export class AuthController {
   @Post('googleSignUp')
   async handleGoogleSignUp(@Body() body: any) {
     const { email, userId, dob, gender, nationality } = body;
-
-    console.log('googlesignup body',body)
     try {
       // 서비스 호출
       const user = await this.userService.findByEmail(email);
@@ -133,16 +128,7 @@ export class AuthController {
     
     
   }
-  
 
-  @Get('profile')
-  @UseGuards(JwtAuthGuard) 
-  getProfile(@Request() req: Request) {
-    const user = (req as any).user;
-    console.log('어스컨트롤러160:',user);
-    return { user };
-  }  
-  
   @Post('checkCurrentPassword')
   async checkCurrentPassword(@Body('userId') userId: string, @Body('password') password: string) {
 
