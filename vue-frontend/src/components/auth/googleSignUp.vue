@@ -1,108 +1,108 @@
 <template xmlns="http://www.w3.org/1999/html">
   <div class="login-container">
 
-      <div class="create-image">
-          <p class="banner-title">
-              Start real <br>
-              Korean Life <br>
-              from the <span style="color: #58C3FF;">HiFor.</span>
-          </p>
-      </div>
+    <div class="create-image">
+      <p class="banner-title">
+        Start real <br>
+        Korean Life <br>
+        from the <span style="color: #58C3FF;">HiFor.</span>
+      </p>
+    </div>
 
-      <div class="create-form">
-          <h1>Sign Up</h1>
-          <p>Your life in Korea becomes more enjoyable here!</p>
+    <div class="create-form">
+      <h1>Sign Up</h1>
+      <p>Your life in Korea becomes more enjoyable here!</p>
 
-          <form @submit.prevent="handleRegister">
-            <div class="form-group">
-              <label for="email">User name</label>
-              <input type="text" v-model="name" placeholder="ex.HiFor" readonly />
+      <form @submit.prevent="handleRegister">
+        <div class="form-group">
+          <label for="email">User name</label>
+          <input type="text" v-model="name" placeholder="ex.HiFor" readonly />
 
+        </div>
+        <div class="form-group">
+          <div class="row half-input-row">
+            <div class="col-6 email-box">
+              <label for="email">Email</label>
+              <input type="email" v-model="user.email" placeholder="Email" readonly />
             </div>
-            <div class="form-group">
-              <div class="row half-input-row">
-                <div class="col-6 email-box">
-                  <label for="email">Email</label>
-                  <input type="email" v-model="user.email" placeholder="Email" readonly />
-                </div>
-              </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">ID</label>
+          <input type="text" v-model="user.userId" id="name" placeholder="ex.HiFor" required />
+        </div>
+
+        <div class="form-group">
+          <div class="row half-input-row">
+            <div class="col-6">
+              <label for="email">Date of Birth</label>
+              <input type="date" id="date" v-model="user.dob" required />
             </div>
-              <div class="form-group">
-                  <label for="email">ID</label>
-                  <input type="text" v-model="user.userId" id="name" placeholder="ex.HiFor" required />
-              </div>
-
-              <div class="form-group">
-                  <div class="row half-input-row">
-                      <div class="col-6">
-                          <label for="email">Date of Birth</label>
-                          <input type="date" id="date" v-model="user.dob" required />
-                      </div>
-                      <div class="col-6">
-                          <label for="email">Gender</label>
-                          <select id="gender" v-model="user.gender" required>
-                              <option disabled hidden selected>Gender</option>
-                              <option value="male">Male</option>
-                              <option value="Female">Female</option>
-                          </select>
-                      </div>
-                  </div>
-              </div>
-
-            <div>
-              <!-- 통합 검색 입력 필드 -->
-              <div class="form-group">
-                <label for="">Nationality</label>
-                <input
-                  type="text"
-                  v-model="searchQuery"
-                  @focus="showDropdown = true"
-                  @blur="hideDropdown"
-                  @input="filterCountries"
-                  placeholder="Search for a country..."
-                  class="search-input"
-                  required
-                />
-                <!-- 드롭다운 -->
-                <ul v-if="showDropdown" class="dropdown-list">
-                  <li
-                    v-for="country in filteredCountries.slice(0,5)"
-                    :key="country.code"
-                    @mousedown="selectCountry(country)"
-                    class="dropdown-item"
-                  >
-                    {{ country.name }}
-                  </li>
-                </ul>
-              </div>
+            <div class="col-6">
+              <label for="email">Gender</label>
+              <select id="gender" v-model="user.gender" required>
+                <option disabled hidden selected>Gender</option>
+                <option value="male">Male</option>
+                <option value="Female">Female</option>
+              </select>
             </div>
+          </div>
+        </div>
+
+        <div>
+          <!-- 통합 검색 입력 필드 -->
+          <div class="form-group">
+            <label for="">Nationality</label>
+            <input
+              type="text"
+              v-model="searchQuery"
+              @focus="showDropdown = true"
+              @blur="hideDropdown"
+              @input="filterCountries"
+              placeholder="Search for a country..."
+              class="search-input"
+              required
+            />
+            <!-- 드롭다운 -->
+            <ul v-if="showDropdown" class="dropdown-list">
+              <li
+                v-for="country in filteredCountries.slice(0,5)"
+                :key="country.code"
+                @mousedown="selectCountry(country)"
+                class="dropdown-item"
+              >
+                {{ country.name }}
+              </li>
+            </ul>
+          </div>
+        </div>
 
 
-            <!-- 체크박스 동의 영역 -->
-            <div class="row agree-box">
-              <div class="col-12">
-                <button type="button" class="agree-all" @click="toggleAllCheckboxes">Accept All</button>
-              </div>
+        <!-- 체크박스 동의 영역 -->
+        <div class="row agree-box">
+          <div class="col-12">
+            <button type="button" class="agree-all" @click="toggleAllCheckboxes">Accept All</button>
+          </div>
 
-              <div v-for="(checkbox, index) in checkboxes" :key="index" class="checkbox-item">
-                <label>
+          <div v-for="(checkbox, index) in checkboxes" :key="index" class="checkbox-item">
+            <label>
                   <span v-if="index === 0">
                     I accept and agree to the <span class="popup-link" @click="openPopup(0)">Terms of use</span> (Required)
                   </span>
-                  <span v-else-if="index === 1">
+              <span v-else-if="index === 1">
                     I accept and agree to the <span class="popup-link" @click="openPopup(1)">Privacy policy.</span> (Required)
                   </span>
-                  <span v-else-if="index === 2">
+              <span v-else-if="index === 2">
                     I agree <span class="popup-link" @click="openPopup(2)">to collect and use personal information for the purpose of receiving and promoting marketing.</span> (Optional)
                   </span>
-                </label>
-                <input type="checkbox" v-model="checkbox.checked" />
-              </div>
-            </div>
-            <button type="button" class="btn-primary handel-register-btn" :disabled="!requiredChecked" @click="handleRegister">Sign up</button>
+            </label>
+            <input type="checkbox" v-model="checkbox.checked" />
+          </div>
+        </div>
+        <button type="button" class="btn-primary handel-register-btn" :disabled="!requiredChecked" @click="handleRegister">Sign up</button>
 
-          </form>
-      </div>
+      </form>
+    </div>
 
   </div>
 </template>
@@ -338,7 +338,7 @@ const checkboxes = ref([
   },
   {
     label:
-        "I agree to collect and use personal information for the purpose of receiving and promoting marketing. (Optional)",
+      "I agree to collect and use personal information for the purpose of receiving and promoting marketing. (Optional)",
     checked: false,
   },
 ]);
@@ -356,7 +356,7 @@ const hideDropdown = () => {
 
 const filteredCountries = computed(() => {
   return countries.value.filter(country =>
-      country.name.toLowerCase().includes(searchQuery.value.toLowerCase()))
+    country.name.toLowerCase().includes(searchQuery.value.toLowerCase()))
 
 })
 // JWT 토큰 추출 및 디코딩
