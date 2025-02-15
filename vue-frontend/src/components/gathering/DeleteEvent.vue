@@ -103,6 +103,7 @@
 
 
       alert("Event successfully deleted and notification sent!");
+      window.location.href = `/`;
     } catch (error) {
       console.error("Error during request:", error);
       alert("Failed to complete the request. Please try again.");

@@ -14,12 +14,10 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const frontendUrl = configService.get<string>('FRONTEND_URL');
 
-  console.log('CORS Origin:', frontendUrl); // 디버깅용
-
   app.enableCors({
     origin: [frontendUrl],
     credentials: true, // 쿠키 사용 허용
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
   app.useGlobalPipes(new ValidationPipe({

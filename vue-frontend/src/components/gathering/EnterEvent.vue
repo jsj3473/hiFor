@@ -1,4 +1,4 @@
-<template>
+ <template>
 
     <!-- 호스트 질문이 있는경우 -->
     <template v-if="event.question">
@@ -38,7 +38,7 @@
 
             <div class="form-group">
               <label for="details">Question for Selection</label>
-              <div class="ipnut-detail" name="" id="">Where are you from?</div>
+              <div class="ipnut-detail" name="" id="">{{event.question}}</div>
             </div>
 
             <div class="form-group">
@@ -314,10 +314,14 @@ const submitEvent = async () => {
 
     if (response.status === 201) {
       alert('Registration successful!');
+      window.location.href = `/events/${event.value.id}`;
     }
   } catch (error) {
-    console.error('Error during registration:', error);
-    alert('Failed to register for the event. Please try again.');
+    if (error.response) {
+      alert(error.response.data.message); // "User has already joined this event" 표시
+    } else {
+      alert('An unexpected error occurred.');
+    }
   }
 };
 

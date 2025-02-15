@@ -74,7 +74,7 @@
     <!-- 찹가자 답변 박스 -->
     <div class="create-form" >
         <!-- 답변 -->
-        <div class="form-group" v-for="participant in participants" :key="participant.id">
+        <div class="form-group" v-for="participant in approvedParticipants" :key="participant.id">
           <label class="guest-name">
             <router-link :to="`/userPage/${participant.user.userId}`" >
               <img class="guest-icon" :src="participant.user.profileImage || '/assets/images/default-avatar.png'" alt=""> {{participant.user.username}}
@@ -94,7 +94,7 @@
     <div class="create-form-op2">
       <form>
         <div class="agreement-container">
-          <button class="btn-primary">Complete</button>
+          <button type="button" class="btn-primary" @click="redirectToEvent">Complete</button>
         </div>
       </form>
     </div>
@@ -124,6 +124,10 @@ const pendingParticipants = computed(() => {
   return participants.value.filter((participant) => participant.status === "Pending");
 });
 
+const approvedParticipants = computed(() => {
+  return participants.value.filter((participant) => participant.status === "Approved");
+});
+
 
 // API 호출 함수
 const loadEventDetails = async () => {
@@ -144,9 +148,17 @@ const loadEventDetails = async () => {
     console.error("Error loading event details:", error);
   }
 };
+// Vue setup function 내에 추가
+const redirectToEvent = () => {
+  window.location.href = `/events/${event.value.id}`;
+};
 
 
 const updateParticipantStatus = async (participantId, status) => {
+  if(status === 'Approved' && currentCount.value >= maxParticipants.value ){
+    alert('Maximum number of participants reached')
+    return
+  }
   try {
     await axios.patch(
         `${import.meta.env.VITE_API_BASE_URL}/gathering/${participantId}/status`,

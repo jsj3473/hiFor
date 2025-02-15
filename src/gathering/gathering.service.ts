@@ -617,6 +617,19 @@ export class GatheringService {
     if (!user) {
       throw new Error('User not found');
     }
+
+    // 기존 참가 여부 확인 (중복 방지)
+    const existingParticipant = await this.participantRepository.findOne({
+      where: {
+        event: { id: eventId },
+        user: { userId: _userId },
+      },
+    });
+
+    if (existingParticipant) {
+      throw new HttpException('User has already joined this event', HttpStatus.BAD_REQUEST);
+    }
+
     const status = event.type === 'Register' ? 'Pending' : 'Approved';
 
     const participant = this.participantRepository.create({

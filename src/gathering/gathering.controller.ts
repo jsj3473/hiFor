@@ -157,10 +157,8 @@ import { extname } from 'path';
       return { isLiked };
     }
     @Post('createParticipant')
-    //@UseGuards(SessionAuthGuard)
     async createParticipant(@Body() createParticipantDto: CreateParticipantDto) {
       const { eventId, userId, answer } = createParticipantDto;
-      console.log(userId)
       return await this.gatheringService.createParticipant(eventId, userId, answer);
     }
 
