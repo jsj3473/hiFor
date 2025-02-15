@@ -224,7 +224,6 @@ export class GatheringService {
                 status: 'Approved',
               },
             });
-            console.log('227-------------:',event.hifor_event_date)
             return {
               id: event.hifor_event_id,
               name: event.hifor_event_name,
@@ -326,7 +325,6 @@ export class GatheringService {
       event.participants?.filter(
         (participant) => participant.status !== 'Rejected',
       ) || [];
-      console.log(JSON.stringify(event, null, 2)); // 이벤트 데이터를 JSON 형식으로 출력
 
     return event;
   }
@@ -576,7 +574,6 @@ export class GatheringService {
     }
     // 좋아요 여부 확인
     const userIndex = event.likes.findIndex((like) => like.user.id === user.id);
-    //console.log("idx:",userIndex)
     if (userIndex > -1) {
       // 좋아요 제거
       const likeToRemove = event.likes[userIndex];
@@ -692,9 +689,6 @@ export class GatheringService {
           };
         }),
       );
-
-      // 디버깅: 매핑된 결과 확인
-      console.log(`Mapped Events:`, mappedEvents);
 
       // 매핑된 이벤트를 반환
       return mappedEvents;
