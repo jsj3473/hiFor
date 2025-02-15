@@ -322,6 +322,7 @@ const submitEvent = async () => {
     } else {
       alert('An unexpected error occurred.');
     }
+    window.location.href = `/events/${event.value.id}`;
   }
 };
 

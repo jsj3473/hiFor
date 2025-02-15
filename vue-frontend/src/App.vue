@@ -7,35 +7,51 @@
       <!-- 헤더 -->
       <!-- 메페,올이벤트 헤더-->
       <div  v-if="$route.meta.mainHeader" class="row header-space-main">
-        <div class="header-logo">
-          <router-link class="header-nav-text" to="/"><img class="logo-hifor" src="/assets/img/logo_HiFor.png" alt=""></router-link>
-        </div>
-        <div class="header-nav main-page">
-          <router-link class="header-nav-text" to="/">Home</router-link>
-          <router-link class="header-nav-text" to="/allEvents">All Events</router-link>
-          <router-link class="header-nav-text" to="/fnq">Help</router-link>
-          <router-link class="header-nav-text" to="/notice">Blogs</router-link>
-          <router-link v-if="!isLoggedIn" class="header-nav-btn" to="/logIn">SignIn/SignUp</router-link>
-          <router-link v-if="isLoggedIn" class="header-nav-btn" :to="`/userPage/${userId}`">My Page</router-link>
-          <router-link v-if="isLoggedIn" class="header-nav-btn" to="/postEvent">Create Event</router-link>
-          <router-link v-if="isLoggedIn" class="header-nav-btn" to="/" @click="logout">logout</router-link>
-        </div>
+        <header class="header">
+          <div class="logo">
+            <router-link class="header-nav-text" to="/">
+              <img class="logo-hifor" src="/assets/img/logo_HiFor.png" alt="">
+            </router-link>
+          </div>
+          <!-- PC 네비게이션 메뉴 -->
+          <nav class="nav-links">
+            <ul>
+              <li class="li-text-op1"><router-link to="/">Home</router-link></li>
+              <li class="li-text-op1"><router-link to="/allEvents">Events</router-link></li>
+              <li class="li-text-op1"><router-link to="/fnq">Help</router-link></li>
+              <li class="li-text-op1"><router-link to="/notice">Blogs</router-link></li>
+              <li class="li-btn-op1" v-if="!isLoggedIn"><router-link to="/logIn">SignIn / SignUp</router-link></li>
+              <!-- 로그인 시 -->
+              <li class="li-btn-op1" v-if="isLoggedIn"><router-link to="/postEvent">Create Event</router-link></li>
+              <li class="li-btn-op1" v-if="isLoggedIn"><router-link :to="`/userPage/${userId}`">My Page</router-link></li>
+              <li class="li-btn-op1" v-if="isLoggedIn"><router-link to="/" @click="logout">logout</router-link></li>
+            </ul>
+          </nav>
+        </header>
       </div>
       <!--나머지 헤더 -->
       <div  v-if="!$route.meta.mainHeader" class="row header-space">
-        <div class="header-logo">
-          <router-link class="header-nav-text" to="/"><img class="logo-hifor" src="/assets/img/logo_HiFor.png" alt=""></router-link>
-        </div>
-        <div class="header-nav">
-          <router-link class="header-nav-text" to="/">Home</router-link>
-          <router-link class="header-nav-text" to="/allEvents">All Events</router-link>
-          <router-link class="header-nav-text" to="/fnq">Help</router-link>
-          <router-link class="header-nav-text" to="/notice">Blogs</router-link>
-          <router-link v-if="!isLoggedIn" class="header-nav-btn" to="/logIn">SignIn/SignUp</router-link>
-          <router-link v-if="isLoggedIn" class="header-nav-btn" :to="`/userPage/${userId}`">My Page</router-link>
-          <router-link v-if="isLoggedIn" class="header-nav-btn" to="/postEvent">Create Event</router-link>
-          <router-link v-if="isLoggedIn" class="header-nav-btn" to="/" @click="logout">logout</router-link>
-        </div>
+        <header class="header">
+          <div class="logo">
+            <router-link class="header-nav-text" to="/">
+              <img class="logo-hifor" src="/assets/img/logo_HiFor.png" alt="">
+            </router-link>
+          </div>
+          <!-- PC 네비게이션 메뉴 -->
+          <nav class="nav-links">
+            <ul>
+              <li class="li-text-op1"><router-link to="/">Home</router-link></li>
+              <li class="li-text-op1"><router-link to="/allEvents">Events</router-link></li>
+              <li class="li-text-op1"><router-link to="/fnq">Help</router-link></li>
+              <li class="li-text-op1"><router-link to="/notice">Blogs</router-link></li>
+              <li class="li-btn-op1" v-if="!isLoggedIn"><router-link to="/logIn">SignIn / SignUp</router-link></li>
+              <!-- 로그인 시 -->
+              <li class="li-btn-op1" v-if="isLoggedIn"><router-link to="/postEvent">Create Event</router-link></li>
+              <li class="li-btn-op1" v-if="isLoggedIn"><router-link :to="`/userPage/${userId}`">My Page</router-link></li>
+              <li class="li-btn-op1" v-if="isLoggedIn"><router-link to="/" @click="logout">logout</router-link></li>
+            </ul>
+          </nav>
+        </header>
       </div>
     </header>
 
@@ -68,15 +84,15 @@
         <div class="follow-us">
           <p class="footer-text">Follow us</p>
           <div class="row follow-row">
-            <p class="follow-instagram">
+            <a class="follow-instagram" href="https://www.instagram.com/hifor.official?igsh=c3NxNzl6MTllaHY4&utm_source=qr">
               <img src="/assets/img/icon_Instagram.png" alt=""> Instagram
-            </p>
-            <p class="follow-facebook">
+            </a>
+            <a class="follow-facebook" href="">
               <img src="/assets/img/icon_Facebook.png" alt=""> Facebook
-            </p>
-            <p class="follow-youtube">
+            </a>
+            <a class="follow-kakao" href="https://open.kakao.com/o/g2LzoHah">
               <img src="/assets/img/icon_KakaoTalk.png" alt=""> KakaoTalk
-            </p>
+            </a>
           </div>
         </div>
         <div class="newsletter-container">
@@ -129,11 +145,11 @@
           <li><router-link to="/allEvents" @click="toggleMenu">All Events</router-link></li>
           <li><router-link to="/fnq" @click="toggleMenu">Help</router-link></li>
           <li><router-link to="/notice" @click="toggleMenu">Blogs</router-link></li>
-          <li class="li-btn-op1"><router-link to="/logIn">SignIn / SignUp</router-link></li>
+          <li class="li-btn-op1" v-if="!isLoggedIn"><router-link to="/logIn">SignIn / SignUp</router-link></li>
           <!-- 로그인 시 -->
-          <!-- <li class="li-btn-op1"><router-link to="/">Create Event</router-link></li>
-          <li class="li-btn-op1"><router-link to="/">My Page</router-link></li>
-          <li class="li-btn-op1"><router-link to="/">logout</router-link></li> -->
+          <li class="li-btn-op1" v-if="isLoggedIn"><router-link to="/postEvent">Create Event</router-link></li>
+          <li class="li-btn-op1" v-if="isLoggedIn"><router-link :to="`/userPage/${userId}`">My Page</router-link></li>
+          <li class="li-btn-op1" v-if="isLoggedIn"><router-link to="/" @click="logout">logout</router-link></li>
         </ul>
       </div>
     </header>
