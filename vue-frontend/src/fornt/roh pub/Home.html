@@ -1,0 +1,1110 @@
+<!-- bootstrap 적용 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+
+<!-- Java Script -->
+ <script>
+ </script>
+
+
+<!-- css -->
+
+<style>
+  .row{
+    width:100%;
+  }
+  .space{
+    padding: 75px;
+  }
+
+  /* Mobile Css */
+  @media screen and (max-width:768px){
+    .web{
+        display: none;
+    }
+    .mobile{
+        display: block;
+    }
+
+    .container{
+      width: 100%;
+      max-width: 100%;
+      padding: 0px !important;
+    }
+    .m-header{
+      height: 60px;
+    }
+    .m-events-carousel{
+      width: 100%;
+      height: 325px;
+    }
+    .carousel-item{
+      width: 100%;
+      height: 325px;
+    }
+
+    /* Event Section */
+    .m-evnet-section{
+      background-color: #E6ECE7;
+      padding-left: 10px !important;
+      padding-right: 10px !important;
+    }
+    .m-title{
+      color: #07722B;
+      font-size: 20px;
+      font-weight: bold;
+      margin-left: 15px;
+      padding-top: 25px;
+    }
+    .m-card-box{
+      justify-self: center;
+      padding: 8px;
+      background-color: #fff;
+      border-radius: 16px;
+    }
+    .m-card-img-box{
+      width: 102px !important;
+      height: 102px;
+      padding-left: 0px !important;
+      border-radius: 16px;
+    }
+    .m-card-img{
+      width: 102px;
+      height: 102px;
+      border-radius: 16px;
+    }
+    .m-card-title{
+      font-size: 14px;
+      font-weight: 600;
+      width: max-content;
+    }
+  }
+
+  /* Web Css */
+  @media screen and (min-width:769px){
+    .web{
+        display: block;
+    }
+    .mobile{
+        display: none;
+    }
+
+    /* header */
+    .header-box{
+      height: 90px;
+    }
+
+    /* banner */
+    .main-banner{
+      background-image: url('/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/banner_img.png');
+      background-size: cover;
+      height: 480px;
+      background-position: center;
+      margin-bottom:60px;
+    }
+    .banner-text-box1{
+      padding-top: 72px;
+    }
+    .banner-text1{
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 16px;
+      letter-spacing: 0.06em;
+      color: #0CA835;
+      text-align: center;
+      text-decoration-skip-ink: none;
+    }
+    .banner-text-box2{
+      margin-bottom: 40px;
+    }
+    .banner-title{
+      font-size: 50px;
+      font-weight: 700;
+      line-height: 64px;
+      text-align: center;
+    }
+    .banner-button-box{
+      text-align: center;
+    }
+    .banner-button{
+      background: none;
+      border: 2px solid #0CA835;
+      padding: 15px;
+      padding-left: 20px;
+      padding-right: 20px;
+      border-radius: 30px;
+      color: #0CA835;
+    }
+    .banner-button:hover{
+      background-color: #0CA835;
+      border: 2px solid #0CA835;
+      color: #ffffff;
+      padding: 15px;
+      padding-left: 20px;
+      padding-right: 20px;
+      border-radius: 30px;
+    }
+    .events-carousel{
+      height: 180px;
+      margin-bottom: 60px;
+      width: 80%;
+    }
+    .bc-img{
+      height: 180px;
+      width: 100%;
+      object-fit: cover;
+      background-color: #CBD7EA;
+      border: none;
+    }
+
+    /* cards */
+    .cs-title{
+      font-size: 38px;
+      font-weight: bold;
+    }
+
+    /* ex */
+    .ex-text1{
+      text-align:center;
+    }
+    .ex-title{
+      text-align:center;
+    }
+    .ex-icon1{}
+    .ex-icon2{}
+    .ex-icon3{
+      margin-top:-10px;
+      margin-left:-40px;
+    }
+    .ex-con{
+      height:800px;
+      align-content:center;
+      background-color: #F8F8FB;
+      border-radius: 40px;
+    }
+    .ex-box{
+      text-align:center;
+    }
+    .ex-icon1{
+      width:150px;
+      margin-top:10px;
+      margin-bottom:40px;
+    }
+    .ex-icon2{
+      width:150px;
+      margin-top:10px;
+      margin-bottom:40px;
+    }
+    .ex-icon3{
+      height:210px;
+    }
+    .ex-text2{
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 40px;
+      text-align: center;
+      text-underline-position: from-font;
+      text-decoration-skip-ink: none;
+    }
+    .ex-text3{
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 28px;
+      text-align: center;
+      text-underline-position: from-font;
+      text-decoration-skip-ink: none;
+    }
+
+
+    /* Contact-Us */
+    .contact-con{
+      height:630px;
+      background-color:#F8F8FB;
+      border-radius:40px;
+      justify-items: center;
+      padding-top:40px;
+      padding-bottom: 40px;
+      padding-left:125px;
+      padding-right:125px;
+    }
+    .contact-box{
+      background-color:#12CF51;
+      height:550px;
+      border-radius: 40px;
+    }
+    .c-img-box{
+      height:550px;
+    }
+    .c-img-box1{
+      text-align: right;
+    }
+    .c-img-box2{
+      align-self:end;
+    }
+    .c-img1{
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      margin-bottom:25px;
+    }
+    .c-img3{
+      margin-bottom:25px;
+    }
+    .c-text-box{
+      padding-top:120px;
+      padding-bottom:120px;
+    }
+    .c-title{
+      color: #ffffff;
+      font-size: 50px;
+      font-weight: 700;
+      line-height: 64px;
+    }
+    .c-text{
+      color: #f1f1f1;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 28px;
+    }
+    .contact-btn{
+      width: 155px;
+      height: 58px;
+      background-color: black;
+      border-radius: 100px;
+      color: #ffffff;
+      margin-top: 40px;
+      border: none;
+    }
+
+    /* cards */
+    .card-box{
+      margin-top:20px;
+      margin-bottom:20px;
+      margin-right: 10px;
+      margin-left: 10px;
+    }
+    .card-box:hover{
+      box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    }
+    .card-title{
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 20px;
+      text-align: left;
+      padding-top: 15px;
+      padding-bottom: 15px;
+    }
+    .card{
+      border-radius:30px !important;
+      margin-bottom: 33px;
+    }
+    .card-img{
+      height: 250px;
+      object-fit: cover;
+      border-radius:30px !important;
+    }
+    .card-info-icon{
+      width: 16px;
+      height: 16px;
+    }
+    .card-info-text{
+      align-content: center;
+    }
+    .card-host{
+      margin: 0px;
+      cursor: pointer;
+    }
+    .host-icon{
+      width: 32px;
+      height: 32px;
+      border-radius: 100%;
+    }
+    .showall-btn{
+      margin-top: 33px;
+      margin-bottom: 66px;
+      background-color: #0CA835;
+      border: 1px #0CA835 solid;
+      width: 189px;
+      height: 56px;
+      color: #ffffff;
+      font-style: italic;
+      font-weight: bold;
+      border-radius: 108px;
+    }
+
+    /* how to enjoy */
+    .ex-text1{
+      text-align:center;
+    }
+    .ex-title{
+      text-align:center;
+    }
+    .ex-icon1{}
+    .ex-icon2{}
+    .ex-icon3{
+      margin-top:-10px;
+      margin-left:-40px;
+    }
+    .ex-con{
+      height:800px;
+      align-content:center;
+      background-color: #F8F8FB;
+      border-radius: 40px;
+    }
+    .ex-box{
+      text-align:center;
+    }
+    .ex-icon1{
+      width:150px;
+      margin-top:10px;
+      margin-bottom:40px;
+    }
+    .ex-icon2{
+      width:150px;
+      margin-top:10px;
+      margin-bottom:40px;
+    }
+    .ex-icon3{
+      height:210px;
+    }
+    .ex-text2{
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 40px;
+      text-align: center;
+      text-underline-position: from-font;
+      text-decoration-skip-ink: none;
+    }
+    .ex-text3{
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 28px;
+      text-align: center;
+      text-underline-position: from-font;
+      text-decoration-skip-ink: none;
+    }
+  }
+
+</style>
+
+
+<!-- page -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!-- bootstrap 적용 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!-- icon style sheet -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous">
+
+    <!--  -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+
+    <!-- 반응형 레이아웃 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+
+  <body>
+
+  <!-- Mobile -->
+  <div class="mobile">
+    <!-- 헤더공간 -->
+    <div class="m-header"></div>
+    <!-- Event Carousel -->
+    <div class="container m-events-carousel">
+      <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active" data-bs-interval="10000">
+            <img class="bc-img" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex8.png" class="d-block w-100" alt="...">
+          </div>
+          <div class="carousel-item" data-bs-interval="2000">
+            <img class="bc-img" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex8.png" class="d-block w-100" alt="...">
+          </div>
+          <div class="carousel-item">
+            <img class="bc-img" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex8.png" class="d-block w-100" alt="...">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+    <!-- Hosted by HiFor -->
+     <div class="container m-evnet-section">
+      <div class="row">
+        <p class="m-title">Hosted by HiFor</p>
+      </div>
+      <div class="row m-card-box">
+        <div class="m-card-img-box">
+          <img class="m-card-img" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex8.png" alt="">
+        </div>
+        <div class="m-card-info-box">
+          <p class="m-card-title">HiFor Open Party</p>
+          <div class="row m-hashtag-row">
+            <router-link>
+              <button class="m-hashtag">#Party</button>
+            </router-link>
+            <router-link>
+              <button class="m-hashtag">#YOLO</button>
+            </router-link>
+          </div>
+          <div class="row m-card-info-row">
+            <div class="col-6">
+              <p class="m-card-info"><img class="m-card-info-icon" src="" alt="">8:00 Pm Nov 15, 2023</p>
+            </div>
+            <div class="col-6">
+              <p class="m-card-info"><img class="m-card-info-icon" src="" alt="">Hongdae, Seoul</p>
+            </div>
+            <div class="col-6">
+              <p class="m-card-info"><img class="m-card-info-icon" src="" alt="">05/20</p>
+            </div>
+            <div class="col-6">
+              <p class="m-card-info"><img class="m-card-info-icon" src="" alt="">37</p>
+            </div>
+          </div>
+          <div class="row m-host-row">
+            <p class="m-host"><img class="m-host-icon" src="" alt="">HiFor</p>
+            <button class="m-card-share">
+              <img class="m-share-icon" src="" alt="">
+            </button>
+          </div>
+        </div>
+      </div>
+     </div>
+  </div>
+
+  <!-- Web -->
+  <div class="web">
+    <!-- header -->
+    <div class="container header-space"></div>
+
+    <!-- banner -->
+     <div class="contaienr main-banner">
+      <div class="row">
+        <div class="col-12 banner-text-box1">
+          <p class="banner-text1">Welcome to HiFor</p>
+        </div>
+        <div class="col-12 banner-text-box2">
+          <p class="banner-title">
+            The Real Experience<br>
+            of Korean Life, Start<br>
+            From The <span style="color:#0CA835;">HiFor.</span><br>
+          </p>
+        </div>
+        <div class="col-12 banner-button-box">
+          <button type="button" class="banner-button">Browse events</button>
+        </div>
+      </div>
+     </div>
+
+     <!-- Event Carousel -->
+      <div class="container events-carousel">
+        <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active" data-bs-interval="10000">
+              <img class="bc-img" src="" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item" data-bs-interval="2000">
+              <img class="bc-img" src="" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+              <img class="bc-img" src="" class="d-block w-100" alt="...">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+
+     <!-- Hifor cards -->
+      <div class="container cards-section">
+
+        <div class="row">
+          <p class="cs-title">Hosted by HiFor</p>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <router-link>
+              <div class="card">
+                <img src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex7.jpeg" class="card-img-top card-img" alt="...">
+                <div class="card-body">
+                  <p class="card-title">hifor party</p>
+                  <div class="row hashtag-row">
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Date_icon.png" alt="">
+                        Nov 26, 2024
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Mappin_icon.png" alt="">
+                        Hongdae, Seoul
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/User_icon.png" alt="">
+                        <span>05</span>/<span>20</span>
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Heart.png" alt="">
+                        <span>37</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <router-link>
+                      <p class="card-host">
+                        <img class="host-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/c-img3.png" alt="">
+                        HiFor
+                      </p>
+                    </router-link>
+                  </div>
+                </div>
+              </div>
+            </router-link>
+          </div>
+          <div class="col">
+            <router-link>
+              <div class="card">
+                <img src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex5.jpeg" class="card-img-top card-img" alt="...">
+                <div class="card-body">
+                  <p class="card-title">hifor party</p>
+                  <div class="row hashtag-row">
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Date_icon.png" alt="">
+                        Nov 26, 2024
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Mappin_icon.png" alt="">
+                        Hongdae, Seoul
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/User_icon.png" alt="">
+                        <span>05</span>/<span>20</span>
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Heart.png" alt="">
+                        <span>37</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <router-link>
+                      <p class="card-host">
+                        <img class="host-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/c-img3.png" alt="">
+                        HiFor
+                      </p>
+                    </router-link>
+                   
+                  </div>
+                </div>
+              </div>
+            </router-link>
+          </div>
+          <div class="col">
+            <router-link>
+              <div class="card">
+                <img src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex6.jpeg" class="card-img-top card-img" alt="...">
+                <div class="card-body">
+                  <p class="card-title">hifor party</p>
+                  <div class="row hashtag-row">
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Date_icon.png" alt="">
+                        Nov 26, 2024
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Mappin_icon.png" alt="">
+                        Hongdae, Seoul
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/User_icon.png" alt="">
+                        <span>05</span>/<span>20</span>
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Heart.png" alt="">
+                        <span>37</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <router-link>
+                      <p class="card-host">
+                        <img class="host-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/c-img3.png" alt="">
+                        HiFor
+                      </p>
+                    </router-link>
+                   
+                  </div>
+                </div>
+              </div>
+            </router-link>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="collapse multi-collapse" id="multiCollapseExample1">
+              <div class="card">
+                <img src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex6.jpeg" class="card-img-top card-img" alt="...">
+                <div class="card-body">
+                  <p class="card-title">hifor party</p>
+                  <div class="row hashtag-row">
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Date_icon.png" alt="">
+                        Nov 26, 2024
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Mappin_icon.png" alt="">
+                        Hongdae, Seoul
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/User_icon.png" alt="">
+                        <span>05</span>/<span>20</span>
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Heart.png" alt="">
+                        <span>37</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <router-link>
+                      <p class="card-host">
+                        <img class="host-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/c-img3.png" alt="">
+                        HiFor
+                      </p>
+                    </router-link>
+                   
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="collapse multi-collapse" id="multiCollapseExample2">
+              <div class="card">
+                <img src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex6.jpeg" class="card-img-top card-img" alt="...">
+                <div class="card-body">
+                  <p class="card-title">hifor party</p>
+                  <div class="row hashtag-row">
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Date_icon.png" alt="">
+                        Nov 26, 2024
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Mappin_icon.png" alt="">
+                        Hongdae, Seoul
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/User_icon.png" alt="">
+                        <span>05</span>/<span>20</span>
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Heart.png" alt="">
+                        <span>37</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <router-link>
+                      <p class="card-host">
+                        <img class="host-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/c-img3.png" alt="">
+                        HiFor
+                      </p>
+                    </router-link>
+                   
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="collapse multi-collapse" id="multiCollapseExample3">
+              <div class="card">
+                <img src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex6.jpeg" class="card-img-top card-img" alt="...">
+                <div class="card-body">
+                  <p class="card-title">hifor party</p>
+                  <div class="row hashtag-row">
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Date_icon.png" alt="">
+                        Nov 26, 2024
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Mappin_icon.png" alt="">
+                        Hongdae, Seoul
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/User_icon.png" alt="">
+                        <span>05</span>/<span>20</span>
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Heart.png" alt="">
+                        <span>37</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <router-link>
+                      <p class="card-host">
+                        <img class="host-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/c-img3.png" alt="">
+                        HiFor
+                      </p>
+                    </router-link>
+                   
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row text-center">
+          <router-link>
+            <p class="d-inline-flex gap-1">
+              <button class="showall-btn" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">
+                Show More
+              </button>
+            </p>
+          </router-link>
+        </div>
+
+      </div>
+
+      <!-- Host cards -->
+      <div class="container cards-section">
+        <div class="row">
+          <p class="cs-title">Hot events</p>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <router-link>
+              <div class="card">
+                <img src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex1.jpeg" class="card-img-top card-img" alt="...">
+                <div class="card-body">
+                  <p class="card-title">hifor party</p>
+                  <div class="row hashtag-row">
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Date_icon.png" alt="">
+                        Nov 26, 2024
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Mappin_icon.png" alt="">
+                        Hongdae, Seoul
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/User_icon.png" alt="">
+                        <span>05</span>/<span>20</span>
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Heart.png" alt="">
+                        <span>37</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <router-link>
+                      <p class="card-host">
+                        <img class="host-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex1.jpeg" alt="">
+                        Eddie Roh
+                      </p>
+                    </router-link>
+                   
+                  </div>
+                </div>
+              </div>
+            </router-link>
+          </div>
+          <div class="col">
+            <router-link>
+              <div class="card">
+                <img src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex1.jpeg" class="card-img-top card-img" alt="...">
+                <div class="card-body">
+                  <p class="card-title">hifor party</p>
+                  <div class="row hashtag-row">
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Date_icon.png" alt="">
+                        Nov 26, 2024
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Mappin_icon.png" alt="">
+                        Hongdae, Seoul
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/User_icon.png" alt="">
+                        <span>05</span>/<span>20</span>
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Heart.png" alt="">
+                        <span>37</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <router-link>
+                      <p class="card-host">
+                        <img class="host-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex1.jpeg" alt="">
+                        Eddie Roh
+                      </p>
+                    </router-link>
+                   
+                  </div>
+                </div>
+              </div>
+            </router-link>
+          </div>
+          <div class="col">
+            <router-link>
+              <div class="card">
+                <img src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex1.jpeg" class="card-img-top card-img" alt="...">
+                <div class="card-body">
+                  <p class="card-title">hifor party</p>
+                  <div class="row hashtag-row">
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Date_icon.png" alt="">
+                        Nov 26, 2024
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Mappin_icon.png" alt="">
+                        Hongdae, Seoul
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/User_icon.png" alt="">
+                        <span>05</span>/<span>20</span>
+                      </p>
+                    </div>
+                    <div class="col-6">
+                      <p class="card-info-text">
+                        <img class="card-info-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/icons/Heart.png" alt="">
+                        <span>37</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <router-link>
+                      <p class="card-host">
+                        <img class="host-icon" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/ex1.jpeg" alt="">
+                        Eddie Roh
+                      </p>
+                    </router-link>
+                   
+                  </div>
+                </div>
+              </div>
+            </router-link>
+          </div>
+          
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="text-center">
+              <router-link>
+                <button class="showall-btn" type="button" class="btn btn-outline-success">
+                  Show All
+                </button>
+              </router-link>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- space -->
+
+      <!-- explain section -->
+      <div class="contaienr ex-con">
+        <div class="row">
+          <div class="col ex-text1">
+            <p>How it works</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col ex-title">
+            <h2>Learn how the experience works</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1"></div>
+          <div class="col ex-box">
+            <img class="ex-icon1" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/Group 1000005008.png" alt=""><br>
+            <img class="ex-num1" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/MapPin (1).png" alt=""><br>
+            <p class="ex-text2">
+              Search for events<br>
+              interests you 
+            </p>
+            <p class="ex-text3">
+              Search for a topic you're interested in and<br> find a event you want!
+            </p>
+          </div>
+          <div class="col ex-box">
+            <img class="ex-icon2" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/Group 1000005011.png" alt=""><br>
+            <img class="ex-num2" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/MapPin (2).png" alt=""><br>
+            <p class="ex-text2">
+              Create any events<br>you want! 
+            </p>
+            <p class="ex-text3">
+              If you don't like anything or have a good idea,<br>make your own event!
+            </p>
+          </div>
+          <div class="col ex-box">
+            <img class="ex-icon3" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/con.svg" alt=""><br>
+            <img class="ex-num3" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/MapPin (3).png" alt=""><br>
+            <p class="ex-text2">
+              Enjoy an event and<br> connect with people
+            </p>
+            <p class="ex-text3">
+              Enjoy the event and have a new meeting with<br> new people at HiFor!
+            </p>
+          </div>
+          <div class="col-1"></div>
+        </div>
+      </div>
+
+      <!-- space -->
+      <div class="container space"></div>
+
+      <!-- contact to post events -->
+      <div class="contaeiner contact-con">
+        <div class="row contact-box">
+          <div class="col-6">
+            <div class="row c-img-box">
+              <div class="col-6 c-img-box1">
+                <img class="c-img1" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/c-img1.png" alt="">
+                <img class="c-img2" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/c-img2.png" alt="">
+              </div>
+              <div class="col-6 c-img-box2">
+                <img class="c-img3" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/c-img3.png" alt="">
+                <img class="c-img4" src="/Users/eddieroh/Desktop/hiFor-master/vue-frontend/src(20241114)/assets/images/c-img4.png" alt="">
+              </div>
+            </div>
+          </div>
+          <div class="col-6 c-text-box">
+            <p class="c-title">
+              Create the next<br>event you want!
+            </p>
+            <p class="c-text">Make your own ideas or whatev er you want an event on HiFor and enjoy it</p>
+            <button class="contact-btn" type="button">Post a  event</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  </body>
+</html>
