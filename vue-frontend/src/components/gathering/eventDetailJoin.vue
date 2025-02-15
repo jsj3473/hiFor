@@ -67,7 +67,7 @@
               <div class="card-body">
                 <button class="btn_like" :class="{ on: isLiked }" @click="toggleLike">like</button>
                 <div class="row">
-                  <div class="col-2 card-date-icon">{{ event.date.split('-')[2] }}</div>
+                  <div class="col-2 card-date-icon">{{ dateForCalender}}</div>
                   <div class="col-10">
                     <p class="s-card-text1">Event Date</p>
                     <p class="s-card-text2">{{ formattedDate }} / {{event.time}}</p> <!-- 시간정보 넣어주셈 ex.11am or 15:00 -->
@@ -365,6 +365,10 @@
             price: 0,
             question: '',
       });
+      const dateForCalender = computed(() => {
+        const dateObj = new Date(event.value.date);
+        return dateObj.getDate().toString().padStart(2, '0'); // 2자리 숫자로 변환
+      });
       const isLiked = ref(false);
       const isParticipating = ref(false); // 사용자 참여 여부 상태
       const formattedDate = computed(() => {
@@ -603,7 +607,8 @@ const iframeUrl = computed(() => seoulDistrictsMap[event.value.location] || "");
         handleLoginRedirect,
         isEventJoinable,
         imagesToDisplay,
-        iframeUrl 
+        iframeUrl ,
+        dateForCalender,
       };
     },
   };
