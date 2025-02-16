@@ -164,7 +164,7 @@ router.beforeEach((to, from, next) => {
     const isAuthenticated = store.getters["isLoggedIn"]; // Vuex에서 인증 상태 가져오기
     
     if (!isAuthenticated) {
-      alert("로그인이 필요합니다!");
+      alert("Login is required!");
       return next('/login'); // 로그인 페이지로 리디렉트
     }
   }
