@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
 
 # 5. 이미지 저장할 디렉토리 생성 (이벤트 이미지 & 프로필 이미지)
-RUN mkdir -p /app/event-images /app/profile-images
+RUN mkdir -p /app/uploads/event-images /app/uploads/profile-images
 
 
 # 6. Redis 설치

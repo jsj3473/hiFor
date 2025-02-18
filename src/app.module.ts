@@ -60,14 +60,14 @@ export class AppModule implements NestModule {
     consumer
       .apply(
         session({
-          secret: process.env.SESSION_SECRET || 'your-secret-key',
+          secret: 'your-secret-key', // 보안을 위해 환경 변수로 관리하는 것이 좋음
           resave: false,
           saveUninitialized: false,
           cookie: {
-            secure: process.env.NODE_ENV === 'production', // 프로덕션에서는 true, 개발 환경에서는 false
-            httpOnly: true,
+            secure: true, // HTTPS 환경에서만 동작
+            httpOnly: true, // JavaScript에서 접근 불가
             maxAge: 1000 * 60 * 60, // 1시간
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 크로스 도메인 허용 여부
+            sameSite: 'none', // 크로스 도메인 허용
           },
         }),
         passport.initialize(),

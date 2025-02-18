@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   app:
@@ -6,14 +6,15 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://hifor_database_user:Ylsg3mONeC29BUWosFz0gDshsJ1TyfTC@dpg-cum2spl6l47c7393qbpg-a.singapore-postgres.render.com/hifor_database
+      - DATABASE_URL=postgresql://hifor_database_user:Ylsg3mONeC29BUWosFz0gDshsJ1TyfTC@dpg-cum2spl6l47c7393qbpg-a.singapore-postgres.render.com/hifor_database?sslmode=require
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - UPLOADS_PATH=/app/uploads
     volumes:
-      - ./event-images:/app/event-images
-      - ./profile-images:/app/profile-images
+      - ./uploads:/app/uploads
 
   redis:
     image: redis:latest
@@ -21,6 +22,11 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
 volumes:
   redis-data:
