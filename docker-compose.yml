@@ -7,11 +7,10 @@ services:
       - "3000:3000"
     depends_on:
       - redis
-      - postgres  # PostgreSQL 서비스 추가
     environment:
-      - DB_HOST=postgres
+      - DB_HOST=dpg-cum2spl6l47c7393qbpg-a  # Render PostgreSQL 호스트
       - DB_PORT=5432
-      - DB_USER=postgres
+      - DB_USER=hifor_database_user
       - DB_PASSWORD=Ylsg3mONeC29BUWosFz0gDshsJ1TyfTC
       - DB_NAME=hifor_database
       - REDIS_HOST=redis
@@ -27,20 +26,6 @@ services:
     volumes:
       - redis-data:/data
 
-  postgres:  # PostgreSQL 컨테이너 추가
-    image: postgres:14
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Ylsg3mONeC29BUWosFz0gDshsJ1TyfTC
-      POSTGRES_DB: hifor_database
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-
 volumes:
   redis-data:
-    driver: local
-  postgres-data:
     driver: local
