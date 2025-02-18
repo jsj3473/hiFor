@@ -8,11 +8,7 @@ services:
     depends_on:
       - redis
     environment:
-      - DB_HOST=dpg-cum2spl6l47c7393qbpg-a  # Render PostgreSQL 호스트
-      - DB_PORT=5432
-      - DB_USER=hifor_database_user
-      - DB_PASSWORD=Ylsg3mONeC29BUWosFz0gDshsJ1TyfTC
-      - DB_NAME=hifor_database
+      - DATABASE_URL=postgresql://hifor_database_user:Ylsg3mONeC29BUWosFz0gDshsJ1TyfTC@dpg-cum2spl6l47c7393qbpg-a.singapore-postgres.render.com/hifor_database
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     volumes:
