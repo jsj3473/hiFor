@@ -76,40 +76,30 @@ export class UserController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './vue-frontend/public/profile-images',
+        destination: process.env.UPLOADS_DIR || '/app/profile-images', // Docker 볼륨 경로
         filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
           callback(null, uniqueSuffix + extname(file.originalname));
         },
       }),
       fileFilter: (req, file, callback) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
-          return callback(
-            new HttpException(
-              'Only image files are allowed!',
-              HttpStatus.BAD_REQUEST,
-            ),
-            false,
-          );
+          return callback(new HttpException('Only image files are allowed!', HttpStatus.BAD_REQUEST), false);
         }
         callback(null, true);
       },
     }),
   )
-  async uploadProfileImage(
-    @Param('userId') userId: string,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
+  async uploadProfileImage(@Param('userId') userId: string, @UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
     }
 
-    const imageUrl = `/profile-images/${file.filename}`;
-    const updatedUser = await this.userService.updateProfileImage(
-      userId,
-      imageUrl,
-    );
+    // 업로드된 파일의 저장 경로
+    const imageUrl = `https://hifor-1.onrender.com/profile-images/${file.filename}`;
+
+    // DB에 저장된 유저 프로필 이미지 업데이트
+    const updatedUser = await this.userService.updateProfileImage(userId, imageUrl);
 
     if (!updatedUser) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);

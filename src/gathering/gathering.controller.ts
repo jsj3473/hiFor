@@ -38,24 +38,23 @@ import { extname } from 'path';
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './vue-frontend/public/event-images',
+        destination: process.env.UPLOADS_DIR || '/app/event-images', // Docker 볼륨 경로
         filename: (req, file, callback) => {
           const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
           callback(null, uniqueSuffix + extname(file.originalname));
         },
       }),
-      limits: { fileSize: 5 * 1024 * 1024 }, // 파일 크기 제한: 5MB
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB 제한
     }),
   )
-  async uploadImage(@UploadedFile() file: Express.Multer.File,@Req() req) {
+  async uploadImage(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
-      throw new Error('No file uploaded');
+      throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
     }
 
-    // 업로드된 파일 경로 생성
-    const imageUrl = `/event-images/${file.filename}`;
+    // 업로드된 파일의 저장 경로
+    const imageUrl = `https://hifor-1.onrender.com/event-images/${file.filename}`;
 
-    // 파일 정보 반환
     return {
       success: true,
       fileName: file.originalname,

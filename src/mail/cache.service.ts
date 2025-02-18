@@ -1,22 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import Redis from 'ioredis';
 
 @Injectable()
 export class CacheService {
-  private redis: Redis;
+  private readonly redis: Redis;
+  private readonly logger = new Logger(CacheService.name); // NestJS Logger 사용
 
   constructor() {
     this.redis = new Redis({
-      enableOfflineQueue: false, // Redis 서버가 없을 때 연결 시도를 중지
-      retryStrategy: () => null, // 자동 재연결을 하지 않도록 설정
-      reconnectOnError: () => false, // 연결 오류 발생 시 재연결 시도 중지
+      enableOfflineQueue: false, // Redis가 없을 때 요청 대기하지 않음
+      retryStrategy: (times) => Math.min(times * 50, 2000), // 재연결 시도 (최대 2초 대기)
+      reconnectOnError: (err) => {
+        this.logger.warn(`[Redis Error]: ${err.message}`);
+        return true; // 특정 에러 발생 시 재연결 시도
+      },
     });
 
-    // 에러 로그 숨기기
+    // Redis 에러 로깅 (개발 모드에서만)
     this.redis.on('error', (err) => {
       if (process.env.NODE_ENV === 'development') {
-        console.warn('[Redis Warning]:', err.message); // 개발 모드에서만 출력
+        this.logger.warn(`[Redis Warning]: ${err.message}`);
       }
+    });
+
+    this.redis.on('connect', () => {
+      this.logger.log('Connected to Redis');
+    });
+
+    this.redis.on('reconnecting', () => {
+      this.logger.warn('Reconnecting to Redis...');
     });
   }
 
@@ -28,7 +40,7 @@ export class CacheService {
         await this.redis.set(key, value);
       }
     } catch (err) {
-      console.warn(`[CacheService] Redis set error: ${err.message}`);
+      this.logger.warn(`[CacheService] Redis set error: ${err.message}`);
     }
   }
 
@@ -36,7 +48,7 @@ export class CacheService {
     try {
       return await this.redis.get(key);
     } catch (err) {
-      console.warn(`[CacheService] Redis get error: ${err.message}`);
+      this.logger.warn(`[CacheService] Redis get error: ${err.message}`);
       return null;
     }
   }
@@ -45,7 +57,7 @@ export class CacheService {
     try {
       await this.redis.del(key);
     } catch (err) {
-      console.warn(`[CacheService] Redis delete error: ${err.message}`);
+      this.logger.warn(`[CacheService] Redis delete error: ${err.message}`);
     }
   }
 }
