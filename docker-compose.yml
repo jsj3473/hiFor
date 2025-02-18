@@ -5,9 +5,42 @@ services:
     build: .
     ports:
       - "3000:3000"
+    depends_on:
+      - redis
+      - postgres  # PostgreSQL 서비스 추가
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=Ylsg3mONeC29BUWosFz0gDshsJ1TyfTC
+      - DB_NAME=hifor_database
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     volumes:
       - ./event-images:/app/event-images
-      - ./profile-images:/app/profile-images  # 프로필 이미지 저장 폴더 추가
+      - ./profile-images:/app/profile-images
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  postgres:  # PostgreSQL 컨테이너 추가
+    image: postgres:14
+    restart: always
     environment:
-      - REDIS_HOST=localhost
-      - REDIS_PORT=6379
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Ylsg3mONeC29BUWosFz0gDshsJ1TyfTC
+      POSTGRES_DB: hifor_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  redis-data:
+    driver: local
+  postgres-data:
+    driver: local
