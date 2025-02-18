@@ -509,7 +509,7 @@ const router = useRouter(); // Vue Router에 접근
     }
 
     if (!userIdAvailable.value) {
-      alert('The username or email is already in use.');
+      alert('The userId is already in use.');
       return;
     }
 
