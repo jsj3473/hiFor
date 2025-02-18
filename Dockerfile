@@ -19,7 +19,7 @@ RUN mkdir -p /app/event-images /app/profile-images
 RUN apt-get update && apt-get install -y redis-server
 
 # 7. 포트 설정 (6379 제거)
-EXPOSE 3000  # Render에서 3000번 포트만 사용
+EXPOSE 3000
 
 # 8. Redis 실행 + 서버 실행
 CMD redis-server --daemonize yes && npm run start
