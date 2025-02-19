@@ -28,6 +28,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import * as console from 'node:console';
 import { extname } from 'path';
+import supabase from '../supabase';
 
 @Controller('gathering')
   export class GatheringController {
@@ -37,14 +38,14 @@ import { extname } from 'path';
   @Post('upload-image-postEvent')
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({
-        destination: process.env.UPLOADS_DIR || '/app/event-images', // Docker 볼륨 경로
-        filename: (req, file, callback) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          callback(null, uniqueSuffix + extname(file.originalname));
-        },
-      }),
+      storage: undefined, // Supabase 사용 시 Multer의 storage 필요 없음
       limits: { fileSize: 5 * 1024 * 1024 }, // 5MB 제한
+      fileFilter: (req, file, callback) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+          return callback(new HttpException('Only image files are allowed!', HttpStatus.BAD_REQUEST), false);
+        }
+        callback(null, true);
+      },
     }),
   )
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
@@ -52,8 +53,25 @@ import { extname } from 'path';
       throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
     }
 
-    // 업로드된 파일의 저장 경로
-    const imageUrl = `https://hifor-1.onrender.com/event-images/${file.filename}`;
+    // 파일명 생성 (이벤트용 이미지라 event- 접두사 추가)
+    const fileExt = extname(file.originalname);
+    const fileName = `event-${Date.now()}${fileExt}`;
+
+    // Supabase Storage에 업로드
+    const { data, error } = await supabase.storage
+      .from('event-images') // Supabase Storage의 버킷 이름
+      .upload(fileName, file.buffer, {
+        cacheControl: '3600',
+        upsert: true, // 중복 시 덮어쓰기
+        contentType: file.mimetype,
+      });
+
+    if (error) {
+      throw new HttpException('Failed to upload image', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // Supabase에서 제공하는 퍼블릭 URL 생성
+    const imageUrl = `https://your-project-id.supabase.co/storage/v1/object/public/event-images/${fileName}`;
 
     return {
       success: true,

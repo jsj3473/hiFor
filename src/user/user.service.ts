@@ -34,7 +34,6 @@ export class UserService {
     const result = await this.userRepository.findOne({
       where: { userId },
     });
-  console.log('result:',result)
     // 새로운 객체를 만들어 age 추가
     return {
       ...result, // 기존 user 필드 복사

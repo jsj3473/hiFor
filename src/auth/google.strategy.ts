@@ -35,7 +35,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       let user: User;
       try {
         user = await this.userService.findByEmail(email);
-        console.log("구글스트레티지38번줄 구글에서 리턴한 유저",user)
       } catch (error) {
         console.error(`Error finding user by email (${email}):`, error);
         throw new Error('Failed to find user by email');

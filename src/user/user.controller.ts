@@ -14,6 +14,7 @@ import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import supabase from '../supabase';
 
 
 @Controller('user')
@@ -72,16 +73,12 @@ export class UserController {
     // 2. 조회된 유저의 아이디 반환 (보안을 위해 이메일로 전송하는 것도 가능)
     return { username: user.userId, message: '아이디 찾기가 완료되었습니다.' };
   }
+
+
   @Post('uploadProfileImage/:userId')
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({
-        destination: process.env.UPLOADS_DIR || '/app/profile-images', // Docker 볼륨 경로
-        filename: (req, file, callback) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          callback(null, uniqueSuffix + extname(file.originalname));
-        },
-      }),
+      storage: undefined,
       fileFilter: (req, file, callback) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
           return callback(new HttpException('Only image files are allowed!', HttpStatus.BAD_REQUEST), false);
@@ -95,8 +92,26 @@ export class UserController {
       throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
     }
 
-    // 업로드된 파일의 저장 경로
-    const imageUrl = `https://hifor-1.onrender.com/profile-images/${file.filename}`;
+    // 파일 확장자 추출
+    const fileExt = extname(file.originalname);
+    const fileName = `${userId}-${Date.now()}${fileExt}`;
+    console.log('user컨트롤러98',fileName)
+
+    // Supabase Storage에 업로드
+    const { data, error } = await supabase.storage
+      .from('profile-images') // Supabase Storage 버킷 이름
+      .upload(fileName, file.buffer, {
+        cacheControl: '3600',
+        upsert: true, // 중복 시 덮어쓰기
+        contentType: file.mimetype,
+      });
+
+    if (error) {
+      throw new HttpException('Failed to upload image', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // Supabase에서 제공하는 퍼블릭 URL 생성
+    const imageUrl = `https://vpiwvjxuobsmetklofb.supabase.co/storage/v1/object/public/profile-images/${fileName}`;
 
     // DB에 저장된 유저 프로필 이미지 업데이트
     const updatedUser = await this.userService.updateProfileImage(userId, imageUrl);
