@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import * as fs from 'fs';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { EmailVerification } from './emailVerification.entity';
 // 이메일 전송에 필요한 데이터 타입 정의
 export interface CreateParticipantEmailData {
   hostName: string;      // 호스트 이름
@@ -16,7 +19,9 @@ export class EmailService {
   private transporter;
   private mailOptions;
 
-  constructor(private readonly configService: ConfigService,) {
+  constructor(private readonly configService: ConfigService,
+              @InjectRepository(EmailVerification)
+              private readonly emailRepo: Repository<EmailVerification>,) {
 
     // SMTP 설정
     this.transporter = nodemailer.createTransport({
@@ -38,41 +43,56 @@ export class EmailService {
     };
   }
 
-  // 이메일 인증 코드 전송 메서드
-  async sendVerificationCode(email: string, code: string) {
+  // Generate and Send Email Verification Code
+  async sendVerificationEmail(email: string): Promise<{ message: string }> {
+    // Generate 6-character random code
+    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+    // Delete any existing verification code for this email
+    await this.emailRepo.delete({ email });
+
+    // Save new verification code
+    const verification = this.emailRepo.create({ email, code });
+    await this.emailRepo.save(verification);
+
+    // Email sending options
     const mailOptions = {
-      ...this.mailOptions,
-      to: email, // 수신자 이메일 주소
-      subject: '이메일 인증 코드',
-      text: `인증번호는 ${code}입니다.`,
+      from: this.configService.get<string>('EMAIL_USER'),
+      to: email,
+      subject: 'Email Verification Code',
+      text: `Your verification code is: ${code}. Please enter this code within 10 minutes.`,
     };
 
     try {
       await this.transporter.sendMail(mailOptions);
-      console.log(`인증 코드 이메일이 ${email}로 전송되었습니다.`);
+      console.log(`Verification code sent to ${email}`);
     } catch (error) {
-      console.error('이메일 전송 실패:', error);
-      throw new Error('이메일 전송에 실패했습니다.');
+      console.error('Failed to send email:', error);
+      throw new Error('Failed to send verification email. Please try again.');
     }
+
+    return { message: 'A verification code has been sent to your email.' };
   }
 
-  // 비밀번호 초기화 이메일 전송 메서드
+// Send reset password email
   async sendResetPasswordEmail(recipientEmail: string, newPassword: string): Promise<void> {
     const mailOptions = {
       ...this.mailOptions,
-      to: recipientEmail, // 수신자 이메일 주소
-      subject: '비밀번호 초기화 안내',
-      text: `임시 비밀번호: ${newPassword}\n로그인 후 비밀번호를 변경해 주세요.`,
+      to: recipientEmail, // Recipient email address
+      subject: 'Password Reset Instructions',
+      text: `Your temporary password: ${newPassword}\nPlease log in and change your password immediately.`,
     };
 
     try {
       await this.transporter.sendMail(mailOptions);
-      console.log(`임시 비밀번호 이메일이 ${recipientEmail}로 전송되었습니다.`);
+      console.log(`Temporary password email sent to ${recipientEmail}`);
     } catch (error) {
-      console.error('이메일 전송 실패:', error);
-      throw new Error('이메일 전송에 실패했습니다.');
+      console.error('Failed to send reset password email:', error);
+      throw new Error('Failed to send password reset email. Please try again.');
     }
   }
+
+// Send contact form email
   async sendContactEmail(
     title: string,
     phone: string,
@@ -82,20 +102,20 @@ export class EmailService {
   ): Promise<void> {
     const mailOptions: nodemailer.SendMailOptions = {
       ...this.mailOptions,
-      from: process.env.EMAIL_USER, // 발신자 이메일
-      to: process.env.EMAIL_USER, // 수신자 이메일 (자기 자신에게 보냄)
-      subject: `문의: ${title}`,
-      text: `문의 내용:\n\n
-      제목: ${title}\n
-      휴대전화: ${phone}\n
-      이메일: ${email}\n
-      메시지:\n${message}\n
-      `,
+      from: process.env.EMAIL_USER, // Sender email
+      to: process.env.EMAIL_USER, // Recipient (self)
+      subject: `Inquiry: ${title}`,
+      text: `Inquiry Details:\n\n
+    Subject: ${title}\n
+    Phone: ${phone}\n
+    Email: ${email}\n
+    Message:\n${message}\n
+    `,
       attachments: file
         ? [
           {
             filename: file.originalname,
-            content: Buffer.isBuffer(file.buffer) ? file.buffer : Buffer.from(file.buffer), // Buffer 변환
+            content: Buffer.isBuffer(file.buffer) ? file.buffer : Buffer.from(file.buffer), // Convert Buffer
           },
         ]
         : [],
@@ -103,11 +123,13 @@ export class EmailService {
 
     try {
       await this.transporter.sendMail(mailOptions);
+      console.log(`Inquiry email sent successfully.`);
     } catch (error) {
-      console.error('문의 이메일 전송 실패:', error);
-      throw new Error('문의 이메일 전송에 실패했습니다.');
+      console.error('Failed to send inquiry email:', error);
+      throw new Error('Failed to send inquiry email. Please try again.');
     }
   }
+
   // 승인 이메일 전송 메서드
   async sendApprovedEmail(
     recipientEmail: string,
@@ -195,9 +217,6 @@ export class EmailService {
     // 메일 제목
     const subject = '[HiFor] A new participant has signed up!';
 
-    // 관리 페이지 링크 (프로덕션 URL에 맞게 수정)
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
-    const manageEventUrl = `${frontendUrl}/gathering/${eventId}`;
 
     // HTML 포맷의 메일 본문 작성
     const htmlContent = `
@@ -207,14 +226,6 @@ export class EmailService {
       <p><strong>Participant:</strong> ${participantName}</p>
       <p>You can now approve or decline their request. Check your event dashboard and welcome your new member!</p>
       <br>
-      <p>
-        <a 
-          href="${manageEventUrl}" 
-          style="display:inline-block;padding:10px 15px;background-color:#007bff;color:#fff;text-decoration:none;border-radius:5px;"
-        >
-          Manage Event
-        </a>
-      </p>
       <br>
       <p>Best,<br/>The HiFor Team</p>
     `;

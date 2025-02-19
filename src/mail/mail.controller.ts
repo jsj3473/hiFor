@@ -8,39 +8,34 @@ import {
   UploadedFile, HttpException, HttpStatus, UseGuards, Param,
 } from '@nestjs/common';
 import { EmailService } from './mail.service'; // 이메일 전송을 담당하는 서비스
-import { CacheService } from './cache.service'; // 인증번호 저장을 담당하는 서비스 (예: Redis)
 import { UserService } from '../user/user.service';
 import { FindPasswordDto } from 'src/user/user.dto';
 import { GatheringService } from '../gathering/gathering.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ContactDto } from './mail.dto';
+import { EmailVerification } from './emailVerification.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 @Controller('mail')
 export class VerificationController {
   constructor(
     private readonly emailService: EmailService,
-    private readonly cacheService: CacheService,
     private readonly userService: UserService,
     private readonly gatheringService: GatheringService,
+    @InjectRepository(EmailVerification)
+    private readonly emailRepo: Repository<EmailVerification>,
   ) {}
 
   @Post('sendVerification')
   async sendVerification(@Body('email') email: string) {
-    //console.log('email in sverification',email)
     if (!email) {
-      throw new BadRequestException('이메일을 입력해주세요.');
+      throw new BadRequestException('Please enter your email.');
     }
-    // 1. 인증번호 생성 (랜덤 6자리 숫자)
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // 2. 인증코드와 이메일을 임시 저장 (캐시 또는 DB에 저장)
-    const verificationKey = `verification_${email}`;
-    await this.cacheService.set(verificationKey, verificationCode, { ttl: 300 }); // 5분 유효 기간
-
-    // 3. 이메일로 인증코드 전송
-    await this.emailService.sendVerificationCode(email, verificationCode);
-
-    return { verificationCode, message: '인증번호가 이메일로 전송되었습니다.' };
+    // Directly call the service method that handles everything
+    return this.emailService.sendVerificationEmail(email);
   }
+
 
   @Post('findPassword')
   async findPassword(@Body() findPasswordDto: FindPasswordDto) {
@@ -49,7 +44,7 @@ export class VerificationController {
     // 1. 아이디와 이메일로 사용자 조회
     const user = await this.userService.findByUsernameAndEmail(userId, email);
     if (!user) {
-      throw new NotFoundException('아이디와 이메일이 일치하는 사용자가 없습니다.');
+      throw new NotFoundException("There is no user matching the provided ID and email.");
     }
 
     // 2. 무작위 비밀번호 생성 및 이메일 전송
@@ -68,20 +63,19 @@ export class VerificationController {
       throw new BadRequestException('Email and code are required.');
     }
 
-    const verificationKey = `verification_${email}`;
-    const storedCode = await this.cacheService.get(verificationKey);
+    // Find the verification code in the database
+    const verification = await this.emailRepo.findOne({ where: { email, code } });
 
-    if (!storedCode) {
-      throw new BadRequestException('The verification code has expired.');
+    if (!verification) {
+      throw new BadRequestException('Invalid or expired verification code.');
     }
 
-    if (storedCode !== code) {
-      throw new BadRequestException('The verification code does not match.');
-    }
 
-    // 인증 성공: 필요한 추가 작업 수행 (예: 계정 활성화)
-    return { message: 'Email verification has been completed.' };
+    // Delete verification record upon success
+    await this.emailRepo.delete({ email });
+    return { message: 'Email verification has been successfully completed.' };
   }
+
 
   @Post('deleteEvent/:id') // 이벤트 ID를 URL 파라미터로 받음
   async sendDeleteEventEmail(
@@ -104,12 +98,11 @@ export class VerificationController {
       }
 
       for (const participant of participants) {
-        console.log('📧 이메일 전송:', participant.email);
         try {
           await this.emailService.sendEventDeletionEmail(participant.email, message);
           await delay(1000); // 1초(1000ms) 대기 후 다음 이메일 전송
         } catch (error) {
-          console.error(`❌ 이메일 전송 실패 (${participant.email}):`, error);
+          console.error(`❌ fail (${participant.email}):`, error);
         }
       }
 

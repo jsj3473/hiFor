@@ -1,17 +1,19 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm'; // ✅ TypeOrmModule 추가
 import { VerificationController } from './mail.controller';
 import { EmailService } from './mail.service';
-import { CacheService } from './cache.service';
+import { EmailVerification } from './emailVerification.entity'; // ✅ 엔터티 추가
 import { UserModule } from '../user/user.module';
 import { GatheringModule } from '../gathering/gathering.module';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([EmailVerification]), // ✅ EmailVerification 엔터티 등록
     UserModule,
-    GatheringModule, // 📌 GatheringModule을 import하여 이벤트 데이터 사용 가능
+    forwardRef(() => GatheringModule),
   ],
   controllers: [VerificationController],
-  providers: [EmailService, CacheService],
-  exports: [EmailService],
+  providers: [EmailService],
+  exports: [EmailService, TypeOrmModule],
 })
 export class MailModule {}

@@ -51,44 +51,44 @@
     </div>
   
      <!-- contents -->
-    <div class="contents-con">
-        <div class="row card-row">
-            
-            <div
-                class="col-3 card-box"
-                v-for="(card, index) in visibleCards"
-                :key="index"
-            >
-                <router-link to="/">
-                    <div class="card">
-                        <div class="card-img">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="icon_tema">
-                                        {{ card.language }}
-                                    </div>
-                                    <div class="participants">
-                                        {{ card.type }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <p class="card-info-text">
-                                        {{ card.date }}
-                                    </p>
-                                </div>
-                            </div>
-                        <p class="card-title">{{ card.title }}</p>
-                        </div>
-                    </div>
-                </router-link>
-            </div>
-  
-        </div>
-    </div>
+  <!-- <div class="contents-con">
+       <div class="row card-row">
+
+           <div
+               class="col-3 card-box"
+               v-for="(card, index) in visibleCards"
+               :key="index"
+           >
+               <router-link to="/">
+                   <div class="card">
+                       <div class="card-img">
+                           <div class="row">
+                               <div class="col-12">
+                                   <div class="icon_tema">
+                                       {{ card.language }}
+                                   </div>
+                                   <div class="participants">
+                                       {{ card.type }}
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                       <div class="card-body">
+                           <div class="row">
+                               <div class="col-12">
+                                   <p class="card-info-text">
+                                       {{ card.date }}
+                                   </p>
+                               </div>
+                           </div>
+                       <p class="card-title">{{ card.title }}</p>
+                       </div>
+                   </div>
+               </router-link>
+           </div>
+
+       </div>
+   </div>-->
     <!-- 더보기 버튼 -->
     <div class="load-more-container" v-if="hasMoreCards">
       <button class="load-more-btn" @click="loadMoreCards">Load More</button>
