@@ -25,6 +25,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
+    "@nestjs/cli": "^9.5.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.4",
     "@nestjs/core": "^9.0.0",
