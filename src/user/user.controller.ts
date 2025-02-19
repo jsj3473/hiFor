@@ -95,15 +95,13 @@ export class UserController {
     // 파일 확장자 추출
     const fileExt = extname(file.originalname);
     const fileName = `${userId}-${Date.now()}${fileExt}`;
-    console.log('user컨트롤러98',fileName)
 
     // Supabase Storage에 업로드
     const { data, error } = await supabase.storage
-      .from('profile-images') // Supabase Storage 버킷 이름
+      .from('profile-images')
       .upload(fileName, file.buffer, {
-        cacheControl: '3600',
-        upsert: true, // 중복 시 덮어쓰기
         contentType: file.mimetype,
+        upsert: true,
       });
 
     if (error) {
@@ -111,7 +109,7 @@ export class UserController {
     }
 
     // Supabase에서 제공하는 퍼블릭 URL 생성
-    const imageUrl = `https://vpiwvjxuobsmetklofb.supabase.co/storage/v1/object/public/profile-images/${fileName}`;
+    const imageUrl = `https://vpivwjxuuobsmetklofb.supabase.co/storage/v1/object/public/profile-images/${fileName}`;
 
     // DB에 저장된 유저 프로필 이미지 업데이트
     const updatedUser = await this.userService.updateProfileImage(userId, imageUrl);

@@ -155,24 +155,6 @@ const handleFileChange = async (event) => {
   const formData = new FormData();
   formData.append("file", file); // 🔥 파일을 FormData에 추가
 
-  const fileName = file.name; // 파일명을 원래 파일명으로 사용
-  const bucketName = "profile-images"; // 업로드할 버킷 이름
-
-  const response = await fetch(
-    `https://hvpivwjxuuobsmetklofb.supabase.co/storage/v1/object/public/profile-images/${fileName}`,
-    {
-      method: "PUT", // 🔥 Supabase Storage에 업로드하려면 PUT 사용
-      headers: {
-        "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwaXZ3anh1dW9ic21ldGtsb2ZiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczOTk1NTYxNSwiZXhwIjoyMDU1NTMxNjE1fQ.ciOSs23SWf8_Ju7sem4sLxpHFlnl83F0SjEDZOdZ7Ak`, // 🔥 인증 필요
-        "Content-Type": file.type, // 파일 타입 지정
-      },
-      body: file, // 🔥 FormData가 아니라 file 자체를 body로 보냄
-    }
-  );
-
-  const result = await response.json();
-  console.log(result);
-  formData.append('file', file);
   try {
     // 서버로 이미지 업로드
     const response = await axios.post(

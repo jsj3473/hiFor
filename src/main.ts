@@ -42,9 +42,6 @@ async function bootstrap() {
   );
 
   app.use(passport.initialize());
-
-  // ✅ 정적 파일 서비스 제공
-  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
   // ✅ 전역 Validation Pipe 설정
   app.useGlobalPipes(
       new ValidationPipe({

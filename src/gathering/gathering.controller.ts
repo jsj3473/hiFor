@@ -59,19 +59,17 @@ import supabase from '../supabase';
 
     // Supabase Storage에 업로드
     const { data, error } = await supabase.storage
-      .from('event-images') // Supabase Storage의 버킷 이름
+      .from('event-images')
       .upload(fileName, file.buffer, {
-        cacheControl: '3600',
-        upsert: true, // 중복 시 덮어쓰기
         contentType: file.mimetype,
+        upsert: true,
       });
-
     if (error) {
       throw new HttpException('Failed to upload image', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // Supabase에서 제공하는 퍼블릭 URL 생성
-    const imageUrl = `https://your-project-id.supabase.co/storage/v1/object/public/event-images/${fileName}`;
+    const imageUrl = `https://vpivwjxuuobsmetklofb.supabase.co/storage/v1/object/public/event-images/${fileName}`;
 
     return {
       success: true,

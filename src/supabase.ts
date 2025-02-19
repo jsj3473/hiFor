@@ -4,8 +4,8 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 // 환경 변수 확인 (보안 상 SERVICE_ROLE_KEY는 출력하지 않음)
-console.log("🔹 Supabase URL:", process.env.SUPABASE_URL ? "✅ Loaded" : "❌ Missing");
-console.log("🔹 Supabase Service Role Key:", process.env.SUPABASE_SERVICE_ROLE_KEY ? "✅ Loaded (Hidden)" : "❌ Missing");
+console.log("🔹 Supabase URL:", process.env.SUPABASE_URL);
+console.log("🔹 Supabase Service Role Key:", process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
   throw new Error("❌ Missing Supabase environment variables. Check your .env file.");
