@@ -7,18 +7,18 @@
           <div
             class="profile-img"
             @click="triggerFileInput"
-            :class="{ 'hover-enabled': currentUserId == wantShowUserId }"
+            :class="{ 'hover-enabled': currentUserId === wantShowUserId }"
             :style="{ backgroundImage: `url(${user.profileImage})` }"
           >
             <input
-              v-if="currentUserId==wantShowUserId"
+              v-if="currentUserId===wantShowUserId"
               type="file"
               ref="fileInput"
               accept="image/*"
               @change="handleFileChange"
               style="display: none"
             />
-            <img v-if="currentUserId==wantShowUserId" src="/assets/img/icon_UserCamera.png" alt="">
+            <img v-if="currentUserId===wantShowUserId" src="/assets/img/icon_UserCamera.png" alt="">
           </div>
 
           <p class="profile-name">{{ user.username }}</p>
@@ -48,7 +48,7 @@
               <router-link :to="`/events/${event.id}`">
               <div class="mp-card">
                 <div class="row">
-                  <div class="col-4 mp-event-img"></div>
+                  <div class="col-4 mp-event-img" :style="{ backgroundImage: `url(${event.mainImage})` }"></div>
                   <div class="col-8">
                     <p class="mp-event-title">{{event.title}}</p>
                     <span>{{ event.participants }}</span>/<span>{{ event.maxParticipants }}</span>
@@ -68,7 +68,7 @@
               <router-link :to="`/events/${event.id}`">
               <div class="mp-card">
                 <div class="row">
-                  <div class="col-4 mp-event-img"></div>
+                  <div class="col-4 mp-event-img" :style="{ backgroundImage: `url(${event.mainImage})` }"></div>
                   <div class="col-8">
                     <p class="mp-event-title">{{event.title}}</p>
                     <p class="mp-event-host" @click.stop>
@@ -97,7 +97,7 @@
               <router-link :to="`/events/${event.id}`">
               <div class="mp-card">
                 <div class="row">
-                  <div class="col-4 mp-event-img"></div>
+                  <div class="col-4 mp-event-img" :style="{ backgroundImage: `url(${event.mainImage})` }"></div>
                   <div class="col-8">
                     <p class="mp-event-title">{{event.title}}</p>
                     <p class="mp-event-host" @click.stop>
@@ -377,7 +377,6 @@ a{
 }
 
 .mp-event-img {
-  background-image: url('/assets/img/img_LogInBanner1.png');
   background-size: cover;
   background-position: center;
   border-radius: 8px;
