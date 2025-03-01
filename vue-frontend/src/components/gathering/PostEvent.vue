@@ -1050,7 +1050,6 @@ const openPopup = () => {
     background-color: #4457FF;
   }
   .editor {
-    min-height: 200px;
     border: 1px solid #ddd;
     padding: 10px;
     border-radius: 5px;
