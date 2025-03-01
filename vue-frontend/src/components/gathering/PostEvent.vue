@@ -227,7 +227,7 @@ import axios from "axios";
 import { useRouter } from 'vue-router';
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
-import { watch } from 'node:fs';
+import { watch } from 'vue';
 // 폼 데이터 및 상태 관리
 const form = ref({
   category: "",
