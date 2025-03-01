@@ -87,11 +87,10 @@ export class VerificationController {
       const participants = await this.gatheringService.getParticipantsByEventId(eventId);
 
       if (!participants || participants.length === 0) {
-        throw new HttpException(
-            'No participants found for this event.',
-            HttpStatus.NOT_FOUND,
-        );
+        console.log(`ℹ️ No participants found for event ID ${eventId}. Skipping email notifications.`);
+        return;
       }
+
 
       async function delay(ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));

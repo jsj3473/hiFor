@@ -111,19 +111,9 @@
 
           <div class="form-group">
             <label for="details">Event details</label>
-            <textarea class="ipnut-detail"
-                      v-model="form.description"
-                      placeholder="You Might Include..
-
- - Purpose of the event
- - planned activities
- - who can join
- - what to expect
-                        "
-                      name=""
-                      id=""
-            ></textarea>
+            <EditorContent v-if="editor" :editor="editor" class="editor" />
           </div>
+
 
           <!-- Dropzone 수정된 부분 -->
           <div class="form-group">
@@ -232,10 +222,12 @@
 </template>
 
 <script setup>
-import { ref, toRaw } from 'vue';
+import { onBeforeUnmount, onMounted, ref, toRaw } from 'vue';
 import axios from "axios";
 import { useRouter } from 'vue-router';
-
+import { Editor, EditorContent } from '@tiptap/vue-3'
+import StarterKit from '@tiptap/starter-kit'
+import { watch } from 'node:fs';
 // 폼 데이터 및 상태 관리
 const form = ref({
   category: "",
@@ -253,7 +245,28 @@ const form = ref({
   mainImage: "", // 첫 번째 이미지 URL
   images: [], // 나머지 이미지 URL 배열
 });
+const editor = ref(null) // 초기값을 null로 설정
+onMounted(() => {
+  editor.value = new Editor({
+    extensions: [StarterKit],
+    content: form.value.description,
+    onUpdate: ({ editor }) => {
+      form.value.description = editor.getHTML()
+    },
+  })
+  console.log("Editor instance:", editor.value)
+})
+onBeforeUnmount(() => {
+  if (editor.value) {
+    editor.value.destroy()
+  }
+})
 
+watch(() => form.value.description, (newVal) => {
+  if (editor.value && editor.value.getHTML() !== newVal) {
+    editor.value.commands.setContent(newVal)
+  }
+})
 const uploadedFiles = ref([]);
 const maxFiles = 5;
 
@@ -362,6 +375,7 @@ const postEvent = async () => {
 
     try {
       // withCredentials 옵션은 쿠키 전송이 필요한 경우 사용합니다.
+      console.log(enrichedFormData)
       const response = await axios.post(
           `${import.meta.env.VITE_API_BASE_URL}/gathering/submit`,
           enrichedFormData,
@@ -381,11 +395,6 @@ const postEvent = async () => {
         console.error("Error creating event:", error);
       }
     }
-
-
-
-
-
     // 폼 초기화
     Object.keys(form.value).forEach((key) => {
       form.value[key] = "";
@@ -509,6 +518,8 @@ const openPopup = () => {
 
   popupWindow.document.write(popupContent);
   popupWindow.document.close();
+
+
 };
 </script>
 
@@ -1037,6 +1048,12 @@ const openPopup = () => {
 
   .join-now-button-op2:hover:not(:disabled) {
     background-color: #4457FF;
+  }
+  .editor {
+    min-height: 200px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
   }
 
 }
