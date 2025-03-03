@@ -67,7 +67,6 @@ export class CreateEventDto {
 
   @IsOptional()
   @IsNumber()
-  @IsPositive()
   price?: number;
 
   @IsOptional()

@@ -318,12 +318,15 @@ const postEvent = async () => {
       alert("The maximum number of participants must be greater than the minimum number.");
       return;
     }
+    if(form.value.minParticipants <= 0) {
+      alert("Minumum participants can't be 0");
+      return;
+    }
 
     // 현재 날짜와 시간 가져오기
     const now = new Date();
     const eventDateTime = new Date(`${form.value.date}T${form.value.time}`);
 
-    console.log(eventDateTime,now)
     // 날짜와 시간이 현재보다 과거인지 확인
     if (eventDateTime < now) {
       alert("The event date and time must be in the future.");
@@ -400,6 +403,10 @@ const postEvent = async () => {
         if (error.response.status === 401) {
           alert("Login is required.");
           window.location.href = `${import.meta.env.VITE_BASE_URL}/logIn/`;
+        }
+        else if(error.response.status === 413) {
+          alert("The image data is too big to upload");
+          return;
         }
       } else if (error.request) {
         // 요청이 이루어졌으나 응답을 받지 못한 경우
