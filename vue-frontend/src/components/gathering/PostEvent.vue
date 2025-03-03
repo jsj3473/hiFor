@@ -375,26 +375,41 @@ const postEvent = async () => {
 
     try {
       // withCredentials 옵션은 쿠키 전송이 필요한 경우 사용합니다.
-      console.log(enrichedFormData)
+      console.log("🔹 [DEBUG] enrichedFormData before request:", JSON.stringify(enrichedFormData, null, 2));
+
       const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/gathering/submit`,
-          enrichedFormData,
-          {
-            withCredentials: true, // 인증 정보를 포함
-          }
+        `${import.meta.env.VITE_API_BASE_URL}/gathering/submit`,
+        enrichedFormData,
+        {
+          withCredentials: true, // 인증 정보를 포함
+        }
       );
+
+      console.log("✅ [SUCCESS] Event created:", response.data);
 
       await router.push(`/events/${response.data.event.id}`);
     } catch (error) {
-      // 에러 객체에 response가 있고, 상태 코드가 401이면 로그인 필요
-      if (error.response && error.response.status === 401) {
-        alert("Login is required.");
-        // 로그인 페이지로 리다이렉트 (절대 URL 사용)
-        window.location.href = `${import.meta.env.VITE_BASE_URL}/logIn/`;
+      console.error("❌ [ERROR] Failed to create event");
+
+      if (error.response) {
+        // 서버 응답이 있을 경우 (HTTP 상태 코드 포함)
+        console.error("📌 [ERROR RESPONSE] Status:", error.response.status);
+        console.error("📌 [ERROR RESPONSE] Data:", error.response.data);
+        console.error("📌 [ERROR RESPONSE] Headers:", error.response.headers);
+
+        if (error.response.status === 401) {
+          alert("Login is required.");
+          window.location.href = `${import.meta.env.VITE_BASE_URL}/logIn/`;
+        }
+      } else if (error.request) {
+        // 요청이 이루어졌으나 응답을 받지 못한 경우
+        console.error("📌 [ERROR REQUEST] No response received:", error.request);
       } else {
-        console.error("Error creating event:", error);
+        // 요청 자체가 실패한 경우 (네트워크 문제 등)
+        console.error("📌 [ERROR MESSAGE] Request setup issue:", error.message);
       }
     }
+
     // 폼 초기화
     Object.keys(form.value).forEach((key) => {
       form.value[key] = "";
